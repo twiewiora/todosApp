@@ -16,12 +16,7 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration process_explicitly_annotated="false">
-        <fileset id="fileset" name="Persistance Application Context" removed="false">
-          <dependency>web application context</dependency>
-          <file>file://$MODULE_DIR$/src/main/resources/spring/persistenceContext.xml</file>
-        </fileset>
-      </configuration>
+      <configuration process_explicitly_annotated="false" />
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">

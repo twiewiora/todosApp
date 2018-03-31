@@ -10,8 +10,6 @@
 		http://www.springframework.org/schema/data/jpa
 		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <context:property-placeholder location="classpath:config.properties" />
-
     <context:component-scan base-package="todosWebApp" />
     <jpa:repositories base-package="todosWebApp.persistence.repository" />
     <context:annotation-config />
