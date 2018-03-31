@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="@localhost">
+  <database-model serializer="dbm" rdbms="HSQLDB" format-version="4.4">
+    <root id="1"/>
+    <database id="2" parent="1" name="PUBLIC">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </database>
+    <schema id="3" parent="2" name="INFORMATION_SCHEMA"/>
+    <schema id="4" parent="2" name="PUBLIC">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="5" parent="2" name="SYSTEM_LOBS"/>
+    <table id="6" parent="4" name="TASK"/>
+    <column id="7" parent="6" name="ID">
+      <Position>1</Position>
+      <DataType>BIGINT(64)|-5</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="8" parent="6" name="TITLE">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <key id="9" parent="6" name="SYS_PK_10437">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>
