@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.TaskService;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -21,9 +22,10 @@ public class TaskController {
     @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
     public String index() {
 
-        taskService.addTask(new Task("title1"));
-        taskService.addTask(new Task("title2"));
-        taskService.addTask(new Task("title3"));
+        taskService.addTask(new Task("title1", new Date(System.currentTimeMillis())));
+        taskService.addTask(new Task("title2", new Date(System.currentTimeMillis())));
+        taskService.addTask(new Task("title3", new Date(System.currentTimeMillis())));
+
 
         List<Task> list = taskService.getAll();
         list.forEach(task -> System.out.println(task.getTitle()));
