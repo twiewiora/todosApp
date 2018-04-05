@@ -15,11 +15,18 @@ public class Category {
 
     @ManyToOne
     private Category parent;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Category> subCategories = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Task> tasks = new HashSet<>();
+
+    public Category(){
+    }
+
+    public Category(String name){
+        this.name = name;
+    }
 
     public Set<Task> getTasks() {
         return tasks;
@@ -49,6 +56,22 @@ public class Category {
         this.parent = parent;
     }
 
+    public void addSubCategory(Category category){
+        subCategories.add(category);
+    }
+
+    public void removeSubCategory(Category category){
+        subCategories.remove(category);
+    }
+
+    public void removeTask(Task task){
+        tasks.remove(task);
+    }
+
+    public void addTask(Task task){
+        tasks.add(task);
+    }
+
     public Set<Category> getSubCategories() {
         return subCategories;
     }
@@ -56,4 +79,5 @@ public class Category {
     public void setSubCategories(Set<Category> subCategories) {
         this.subCategories = subCategories;
     }
+
 }

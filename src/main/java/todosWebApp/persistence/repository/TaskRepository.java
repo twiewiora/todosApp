@@ -5,13 +5,27 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import todosWebApp.persistence.model.Task;
+import todosWebApp.persistence.queries.TaskDataQuery;
 
 import java.util.List;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Integer> {
+public interface TaskRepository extends JpaRepository<Task, Integer>, TaskDataQuery {
 
+    @Override
     @Query("select task from Task task where task.title = :title")
     public List<Task> findByTitle(@Param("title") String title);
+
+    @Override
+    @Query("select task from Task task")
+    List<Task> getAllTasks();
+
+    @Override
+    @Query("select task from Task task where task.id = :taskId")
+    Task getTaskById(@Param("taskId") Long taskId);
+
+    @Override
+    @Query("select task from Task task where task.category.id = :categoryId")
+    List<Task> getTasksByCategory(@Param("categoryId") Long categoryId);
 
 }

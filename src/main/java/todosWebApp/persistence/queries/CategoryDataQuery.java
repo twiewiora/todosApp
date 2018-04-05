@@ -1,11 +1,10 @@
-package todosWebApp.persistence.service;
+package todosWebApp.persistence.queries;
 
 import todosWebApp.persistence.model.Category;
 
 import java.util.List;
 
-public interface CategoryDatabase {
-
+public interface CategoryDataQuery {
     List<Category> getAllCategories();
 
     Category getCategoryById(Long categoryId);
@@ -13,10 +12,4 @@ public interface CategoryDatabase {
     Category getRootCategory();
 
     List<Category> getAllBaseCategories();
-
-    void createCategory(String name);
-
-    void createCategory(String name, Long parentCategoryId);
-
-
 }
