@@ -1,11 +1,9 @@
 package todosWebApp.persistence.creators;
 
-import org.springframework.data.repository.query.Param;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.model.Task;
 
 import java.sql.Date;
-import java.util.List;
 
 public interface TaskDataCreator {
 

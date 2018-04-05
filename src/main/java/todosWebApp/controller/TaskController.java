@@ -27,16 +27,7 @@ public class TaskController {
 
     @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
     public String index() {
-
-
         categoryService.createRootCategoryIfNotExists();
-
-
-        System.out.println(categoryService.getRootCategory());
-
-//        taskService.addTask(new Task("title1", new Date(System.currentTimeMillis())));
-//        taskService.addTask(new Task("title2", new Date(System.currentTimeMillis())));
-//        taskService.addTask(new Task("title3", new Date(System.currentTimeMillis())));
 
         Task t1 =taskService.createTask("title1", new Date(System.currentTimeMillis()));
         Category c1 = categoryService.createCategory("level1");
