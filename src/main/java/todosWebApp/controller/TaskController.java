@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import todosWebApp.persistence.model.Task;
+import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
 import java.sql.Date;
@@ -15,6 +16,10 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private CategoryService categoryService;
+
 
     public TaskController() {
     }
