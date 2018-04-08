@@ -52,7 +52,6 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
         }
 
         return root;
-
     }
 
     @Override

@@ -21,7 +21,6 @@ public class Task {
     @JoinColumn(name = "CATEGORY_FOREIGN_KEY")
     private Category category;
 
-
     public Task(){
     }
 

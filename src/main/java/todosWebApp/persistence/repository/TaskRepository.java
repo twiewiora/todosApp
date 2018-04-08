@@ -14,7 +14,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer>, TaskDataQu
 
     @Override
     @Query("select task from Task task where task.title = :title")
-    public List<Task> findByTitle(@Param("title") String title);
+    List<Task> findByTitle(@Param("title") String title);
 
     @Override
     @Query("select task from Task task")
