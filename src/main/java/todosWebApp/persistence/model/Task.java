@@ -1,12 +1,10 @@
 package todosWebApp.persistence.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 
 @Entity
@@ -34,11 +32,6 @@ public class Task {
     public Task(String title, Long date) {
         this.title = title;
         this.date = date;
-
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date);
-        System.out.println("hour insert : " + cal.get(Calendar.HOUR));
     }
 
     @JsonProperty
@@ -79,12 +72,9 @@ public class Task {
     }
 
     @JsonProperty
-    public String getCalendarDate() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date);
-        System.out.println("hour: " + cal.get(Calendar.HOUR));
+    public String getDeadline() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-        return sdf.format(cal.getTime());
+        return sdf.format(date);
     }
 
     public void setDate(Long date) {
