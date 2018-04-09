@@ -10,7 +10,6 @@ import todosWebApp.persistence.queries.TaskDataQuery;
 import todosWebApp.persistence.repository.CategoryRepository;
 import todosWebApp.persistence.repository.TaskRepository;
 
-import java.sql.Date;
 import java.util.List;
 
 @Component
@@ -53,12 +52,12 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public Task createTask(String name, Date date) {
+    public Task createTask(String name, Long date) {
         return createTask(name, date, categoryRepository.getRootCategory());
     }
 
     @Override
-    public Task createTask(String name, Date date, Category category) {
+    public Task createTask(String name, Long date, Category category) {
         Task task = new Task(name, date);
         setTaskCategoryRelation(task, category);
         taskRepository.save(task);
@@ -83,7 +82,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
 
     @Override
-    public void assignDate(Long taskId, Date date) {
+    public void assignDate(Long taskId, Long date) {
         Task task = getTaskById(taskId);
         task.setDate(date);
         taskRepository.save(task);

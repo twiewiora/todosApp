@@ -12,7 +12,7 @@ import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
-import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -32,11 +32,10 @@ public class TaskController {
     public String index() {
         categoryService.createRootCategoryIfNotExists();
 
-        Task t1 =taskService.createTask("title1", new Date(System.currentTimeMillis()));
+        Task t1 =taskService.createTask("title1", Calendar.getInstance().getTimeInMillis());
         Category c1 = categoryService.createCategory("level1");
         Category c2 = categoryService.createCategory("level2", c1.getId());
         taskService.createTask("c2 task", c2);
-        taskService.assignDate(t1.getId(), new Date(0L));
 
         List<Task> list = taskService.getAllTasks();
         list.forEach(task -> System.out.println(task.getTitle()));
