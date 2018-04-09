@@ -27,8 +27,8 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public List<Task> findByTitle(String title) {
-        return taskRepository.findByTitle(title);
+    public List<Task> getTaskByTitle(String title) {
+        return taskRepository.getTaskByTitle(title);
     }
 
     @Override
@@ -97,9 +97,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public void setDone(Long taskId) {
+    public void setDone(Long taskId, boolean isDone) {
         Task task = getTaskById(taskId);
-        task.setDone(true);
+        task.setDone(isDone);
         taskRepository.save(task);
     }
 

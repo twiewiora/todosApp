@@ -22,6 +22,6 @@ public interface TaskDataCreator {
 
    void assignCategory(Long taskId, Long categoryId);
 
-   void setDone(Long taskId);
+   void setDone(Long taskId, boolean isDone);
    
 }

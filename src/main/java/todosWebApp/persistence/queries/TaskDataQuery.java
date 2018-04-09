@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TaskDataQuery {
 
-    List<Task> findByTitle(String title);
+    List<Task> getTaskByTitle(String title);
 
     List<Task> getAllTasks();
 
