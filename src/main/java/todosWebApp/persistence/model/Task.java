@@ -35,7 +35,7 @@ public class Task {
     }
 
     @JsonProperty
-    public Long getCategoryId(){
+    public Long getCategoryId() {
         return category.getId();
     }
 
@@ -73,8 +73,12 @@ public class Task {
 
     @JsonProperty
     public String getDeadline() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-        return sdf.format(date);
+        if (date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+            return sdf.format(date);
+        } else {
+            return "";
+        }
     }
 
     public void setDate(Long date) {
