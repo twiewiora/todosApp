@@ -1,5 +1,8 @@
 package todosWebApp.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -17,6 +20,7 @@ public class Task {
 
     private Boolean done = false;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "CATEGORY_FOREIGN_KEY")
     private Category category;
@@ -27,6 +31,11 @@ public class Task {
     public Task(String title, Date date) {
         this.title = title;
         this.date = date;
+    }
+
+    @JsonProperty
+    public Long getCategoryId(){
+        return category.getId();
     }
 
     public Category getCategory() {

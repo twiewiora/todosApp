@@ -62,7 +62,6 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         Task task = new Task(name, date);
         setTaskCategoryRelation(task, category);
         taskRepository.save(task);
-        categoryRepository.save(category);
 
         return task;
     }
@@ -79,17 +78,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void deleteTask(Task task) {
-        if(task.getCategory() != null)
-            unsetRelation(task, task.getCategory());
         taskRepository.delete(task);
     }
 
-    private void unsetRelation(Task task, Category category) {
-        task.setCategory(null);
-        category.removeTask(task);
-        taskRepository.save(task);
-        categoryRepository.save(category);
-    }
 
     @Override
     public void assignDate(Long taskId, Date date) {
@@ -102,11 +93,8 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public void assignCategory(Long taskId, Long categoryId) {
         Task task = getTaskById(taskId);
         Category category = categoryRepository.getCategoryById(categoryId);
-        if(task.getCategory() != null)
-            unsetRelation(task, task.getCategory());
         setTaskCategoryRelation(task, category);
         taskRepository.save(task);
-        categoryRepository.save(category);
     }
 
     @Override
@@ -117,12 +105,6 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     private void setTaskCategoryRelation(Task task, Category category){
-        if(task.getCategory() != null) {
-            task.getCategory().removeTask(task);
-            task.setCategory(null);
-            categoryRepository.save(task.getCategory());
-        }
         task.setCategory(category);
-        category.addTask(task);
     }
 }
