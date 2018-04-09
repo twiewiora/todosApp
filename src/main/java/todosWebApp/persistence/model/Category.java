@@ -1,8 +1,9 @@
 package todosWebApp.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Category {
@@ -13,13 +14,9 @@ public class Category {
 
     private String name;
 
+    @JsonIgnore
     @ManyToOne
     private Category parent;
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Category> subCategories = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Task> tasks = new HashSet<>();
 
     public Category(){
     }
@@ -28,12 +25,11 @@ public class Category {
         this.name = name;
     }
 
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
+    @JsonProperty
+    public Long getParentCategoryId(){
+        if(parent != null)
+            return parent.getId();
+        return null;
     }
 
     public Long getId() {
@@ -54,30 +50,6 @@ public class Category {
 
     public void setParent(Category parent) {
         this.parent = parent;
-    }
-
-    public void addSubCategory(Category category){
-        subCategories.add(category);
-    }
-
-    public void removeSubCategory(Category category){
-        subCategories.remove(category);
-    }
-
-    public void removeTask(Task task){
-        tasks.remove(task);
-    }
-
-    public void addTask(Task task){
-        tasks.add(task);
-    }
-
-    public Set<Category> getSubCategories() {
-        return subCategories;
-    }
-
-    public void setSubCategories(Set<Category> subCategories) {
-        this.subCategories = subCategories;
     }
 
 }

@@ -75,10 +75,6 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
     }
 
     private static void setCategoryParentRelation(Category child, Category parent){
-        if(child.getParent() != null)
-            child.getParent().removeSubCategory(child);
-
         child.setParent(parent);
-        parent.addSubCategory(child);
     }
 }
