@@ -136,6 +136,10 @@ public class TaskController {
     public void moveTask
             (@RequestParam String taskID,
              @RequestParam(required = false) String newParentTaskId) {
-        // TODO gdy będzie gotowa obsługa przeniesienia taska ze względu na priorytet
+
+        if(newParentTaskId == null)
+            taskService.moveTask(Long.decode(taskID), null);
+        else
+            taskService.moveTask(Long.decode(taskID), Long.decode(newParentTaskId));
     }
 }

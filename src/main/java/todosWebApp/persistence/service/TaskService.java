@@ -27,6 +27,13 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
+    public void moveTask(Long taskId, Long newParentTaskId) {
+        // TODO implement moving task
+        // the task should be moved one position below newParentTaskId while newParentTasId shouldn't be moved at all
+        // if newParentTaskId is null then the task should be moved on top of the line
+    }
+
+    @Override
     public List<Task> getTaskByTitle(String title) {
         return taskRepository.getTaskByTitle(title);
     }
