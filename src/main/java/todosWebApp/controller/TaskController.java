@@ -109,9 +109,11 @@ public class TaskController {
         taskService.deleteTask(Long.decode(taskID));
     }
 
-    @RequestMapping(value = "task/swap",
+    @RequestMapping(value = "task/move",
                     method = RequestMethod.POST)
-    public void swapTask(@RequestParam String firstTaskID, @RequestParam String secondTaskID) {
-        // TODO gdy będzie gotowa obsługa zamiany tasków ze względu na priorytet
+    public void moveTask
+            (@RequestParam String taskID,
+             @RequestParam(required = false) String newParentTaskId) {
+        // TODO gdy będzie gotowa obsługa przeniesienia taska ze względu na priorytet
     }
 }
