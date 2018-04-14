@@ -5,6 +5,7 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
+import {RaisedButton} from "material-ui";
 
 const state = {
     fixedHeader: true,
@@ -12,9 +13,9 @@ const state = {
     stripedRows: false,
     showRowHover: false,
     selectable: true,
-    multiSelectable: false,
-    enableSelectAll: false,
-    deselectOnClickaway: true,
+    multiSelectable: true,
+    enableSelectAll: true,
+    deselectOnClickaway: false,
     showCheckboxes: false,
     height: '300px',
 };
@@ -22,8 +23,15 @@ const state = {
 
 export default ({ data}) => {
 
-        return (
+    this.setTaskState = function (e) {
+        alert(e.valueOf());
+        e.preventDefault();
+    }
+    return (
             <div>
+                <form>
+
+                </form>
                 <Table
                     fixedHeader={state.fixedHeader}
                     fixedFooter={state.fixedFooter}
@@ -37,11 +45,33 @@ export default ({ data}) => {
                         stripedRows={state.stripedRows}
                     >
                         {data.map((row, i) =>
-                            <TableRow key={i}>
-                                <TableRowColumn>{row}</TableRowColumn>
+
+                            <TableRow key={i} onChange={ (e) => { this.setTaskState(e) } }>
+                                <TableRowColumn>
+                                    {row}
+                                </TableRowColumn>
+                                <TableRowColumn>
+                                undone
+                                </TableRowColumn>
+                                <TableRowColumn>
+                                    <RaisedButton
+                                        label="Set as done"
+                                        id={i}
+                                        onClick={(e) => { this.setTaskState(e) }}
+                                    />
+                                </TableRowColumn>
+                                <TableRowColumn>
+                                    <RaisedButton
+                                        label="Delete"
+                                        id={i}
+                                        onClick={() => { alert(i); }}
+                                    />
+                                </TableRowColumn>
+
                         </TableRow>)}
                     </TableBody>
                 </Table>
             </div>
         );
+
 }
