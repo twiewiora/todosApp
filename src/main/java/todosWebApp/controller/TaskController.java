@@ -10,8 +10,6 @@ import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
-import java.util.List;
-
 @RestController
 public class TaskController {
 
@@ -23,7 +21,7 @@ public class TaskController {
 
     //TODO implement all of the below mappings
     private final String URL_TASK_GET_BY_ID = "/task/id/{id}";
-    private final String URL_TASK_GET_BY_TITLE = "/task/id/{title}";
+    private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId/{categoryId}";
     private final String URL_TASK_GET_ALL = "/task/getAll";
 
