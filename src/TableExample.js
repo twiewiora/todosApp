@@ -23,8 +23,8 @@ const state = {
 
 export default ({ data}) => {
 
-    this.setTaskState = function (e) {
-        alert(e.valueOf());
+    this.setTaskState = function (e, i) {
+        alert(i);
         e.preventDefault();
     }
     return (
@@ -46,7 +46,7 @@ export default ({ data}) => {
                     >
                         {data.map((row, i) =>
 
-                            <TableRow key={i} onChange={ (e) => { this.setTaskState(e) } }>
+                            <TableRow key={i} onChange={ (e) => { this.setTaskState(e, i) } }>
                                 <TableRowColumn>
                                     {row}
                                 </TableRowColumn>
@@ -57,7 +57,7 @@ export default ({ data}) => {
                                     <RaisedButton
                                         label="Set as done"
                                         id={i}
-                                        onClick={(e) => { this.setTaskState(e) }}
+                                        onClick={(e) => { this.setTaskState(e, i) }}
                                     />
                                 </TableRowColumn>
                                 <TableRowColumn>
