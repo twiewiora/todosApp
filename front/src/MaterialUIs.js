@@ -5,8 +5,9 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
-import {RaisedButton, TextField} from "material-ui";
+import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete"
+import './App.css';
 
 const stateTable = {
     fixedHeader: true,
@@ -20,36 +21,59 @@ const stateTable = {
     showCheckboxes: false,
     height: '300px',
 };
+function Task(name, id) {
+    this.name = name;
+    this.done = false;
+    this.id = id;
 
-function handleCellClick (rowNumber, columnNumber, evt) {
-    //alert(rowNumber)
+    this.getState = function () {
+        return this.done
+    };
+    this.getName = function () {
+        return this.name
+    };
+    this.getID = function () {
+        return this.id
+    };
+    this.setState = function (newState){
+        this.done = newState
+    }
 }
-
-
 
 class MaterialUIs extends Component {
     state = {
-        data: []
+        data: [],
     };
+    handleCheck(i){
+        let state = this.state.data[i].getState();
+        this.state.data[i].setState(!state);
+        this.setState((oldState) => {
+            return {
+                checked: !oldState.checked,
+            };
+        });
+        let selectedTask = this.state.data[i]
 
+    }
     addTask = function (e) {
         let name = document.getElementById("taskName").value;
-
-        this.setState({data : [...this.state.data, name]});
-        e.preventDefault();
+        let newTask = new Task(name, -1);
+        this.setState({data : [...this.state.data, newTask]});
     };
 
     removeTask = function (e, i) {
+        let selectedTask = this.state.data[i]
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
         }));
-        e.preventDefault();
     };
 
-    setTaskState = function (e, i) {
-        alert(i);
-        e.preventDefault();
+
+    getStripedStyle = function(index) {
+        return { background: index % 2 ? '#e6e6ff' : 'white' };
     };
+
+
     render() {
         return (
             <div>
@@ -58,13 +82,12 @@ class MaterialUIs extends Component {
                     label="Add task"
                     id="addButton"
                     onClick={(e) => { this.addTask(e) }}
-                />
+                /><br />
                 <Table
                     fixedHeader={stateTable.fixedHeader}
                     fixedFooter={stateTable.fixedFooter}
                     selectable={stateTable.selectable}
                     multiSelectable={stateTable.multiSelectable}
-                    onCellClick={handleCellClick }
                 >
                     <TableBody
                         displayRowCheckbox={stateTable.showCheckboxes}
@@ -72,26 +95,31 @@ class MaterialUIs extends Component {
                         showRowHover={stateTable.showRowHover}
                         stripedRows={stateTable.stripedRows}
                     >
-                        {this.state.data.map((row, i) =>
+                        <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                            <TableHeaderColumn>ID</TableHeaderColumn>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
+                            <TableHeaderColumn>Status</TableHeaderColumn>
+                            <TableHeaderColumn>Delete</TableHeaderColumn>
+                        </TableRow>
 
-                            <TableRow key={i} onClick={ (e) => { this.setTaskState(e, i) } }>
+                        {this.state.data.map((row, i) =>
+                            <TableRow key={i}
+                                      style={{ padding: '5px 20px', height: 25, ...this.getStripedStyle(i) }}>
                                 <TableRowColumn>
-                                    {row}
+                                    {row.getID()}
                                 </TableRowColumn>
                                 <TableRowColumn>
-                                    undone
+                                    {row.getName()}
                                 </TableRowColumn>
                                 <TableRowColumn>
-                                    <RaisedButton
-                                        label="Set as done"
-                                        id={i}
-                                        onClick={(e) => { this.setTaskState(e, i) }}
+                                    <Checkbox
+                                        checked={this.state.data[i].getState()}
+                                        onCheck={() => this.handleCheck(i)}
                                     />
                                 </TableRowColumn>
                                 <TableRowColumn>
                                     <TrashIcon onClick={(e) => { this.removeTask(e, i) }}/>
                                 </TableRowColumn>
-
                             </TableRow>)}
                     </TableBody>
                 </Table>
