@@ -14,6 +14,15 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+
+    @OneToOne
+    @JoinColumn(name = "PARENT_FOREIGN_KEY", referencedColumnName = "id")
+    private Task parent;
+
+	@OneToOne
+    @JoinColumn(name = "CHILD_FOREIGN_KEY", referencedColumnName = "id")
+    private Task child;
+
 	private String title;
 
     @JsonIgnore
@@ -70,6 +79,23 @@ public class Task {
     public Long getDate() {
         return date;
     }
+
+    public Task getParent() {
+        return parent;
+    }
+
+    public void setParent(Task parent) {
+        this.parent = parent;
+    }
+
+    public Task getChild() {
+        return child;
+    }
+
+    public void setChild(Task child) {
+        this.child = child;
+    }
+
 
     @JsonProperty
     public String getDeadline() {
