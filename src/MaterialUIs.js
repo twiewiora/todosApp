@@ -47,7 +47,6 @@ function Task(name, id) {
     }
 }
 
-var Client = require('node-rest-client').Client;
 class MaterialUIs extends Component {
     constructor(props) {
         super(props);
@@ -70,12 +69,7 @@ class MaterialUIs extends Component {
                 console.log(data);
                 for (let i = 0; i < data.length; i++){
                     let newTask = new Task(data[i].title, data[i].id);
-                    console.log("Data " + data[i].done);
-                    if (data[i].done === undefined){
-                        console.log("NIE");
-                        newTask.setState(false);
-                    }
-                    else newTask.setState(data[i].done);
+                    newTask.setState(data[i].done);
 
                     tasks.unshift(newTask);
                 }
@@ -101,20 +95,36 @@ class MaterialUIs extends Component {
             };
         });
         let selectedTask = this.state.data[i]
+        console.log(selectedTask);
+        this.markRequest(selectedTask);
+
+    }
+
+    markRequest(selectedTask) { // works bad on test serwer, should work good on real server
+       var data = new URLSearchParams("title=" + selectedTask.getName() + "&done="+ selectedTask.getState());
+        console.log(data);
+        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'PUT', body: data})
+            .then(res => {
+                console.log(res);
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+            });
 
     }
     addTask = function (e) {
         let name = document.getElementById("taskName").value;
         let newTask = new Task(name, -1);
         newTask.setState(false);
-        this.sendPost(newTask);
+        this.addRequest(newTask);
 
         console.log("DATA");
         console.log(this.state.data);
         window.location.reload();
     };
 
-    sendPost(newTask) {
+    addRequest(newTask) {
         console.log("json");
 
         var data = new URLSearchParams("title=" + newTask.getName());
@@ -137,7 +147,21 @@ class MaterialUIs extends Component {
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
         }));
+        this.deleteRequest(selectedTask);
     };
+
+    deleteRequest(selectedTask) {
+        var data = new URLSearchParams("/" + selectedTask.getID());
+        console.log(data);
+        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'DELETE'})
+           .then(res => {
+               console.log(res);
+               return res.json();
+           })
+           .then(data => {
+               console.log(data);
+           });
+    }
 
 
     getStripedStyle = function(index) {
