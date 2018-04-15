@@ -39,6 +39,9 @@ function Task(name, id) {
     this.getID = function () {
         return this.id
     };
+    this.setID = function (id) {
+        this.id = id;
+    };
     this.setState = function (newState){
         this.done = newState
     }
@@ -51,34 +54,43 @@ class MaterialUIs extends Component {
         this.state = {
             data: [],
         };
-        this.reloadPage = this.reloadPage.bind(this)
+        this.reloadPage = this.reloadPage.bind(this);
     }
     componentDidMount() {
         window.addEventListener('load', this.reloadPage);
 
     }
     reloadPage() {
-        let that = this;
-        let client = new Client();
         let tasks = [];
-        client.get("http://localhost:3001/tasks", function (data, response) {
-            // parsed response body as js object
-            for (let i = 0; i < data.length; i++){
-                let newTask = new Task(data[i].title, data[i].id);
-                newTask.setState(data[i].done);
-                tasks.unshift(newTask);
-            }
-        });
-        that.setState({
+        fetch('http://localhost:3001/tasks')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+                for (let i = 0; i < data.length; i++){
+                    let newTask = new Task(data[i].title, data[i].id);
+                    console.log("Data " + data[i].done);
+                    if (data[i].done === undefined){
+                        console.log("NIE");
+                        newTask.setState(false);
+                    }
+                    else newTask.setState(data[i].done);
+
+                    tasks.unshift(newTask);
+                }
+            });
+        this.setState({
             loading: true
         }, function(){
             setTimeout(function() {
-                that.setState({
+                this.setState({
                     data: tasks,
                     loading: false
                 });
-            }.bind(that), 3000)
-        }.bind(that));
+            }.bind(this), 3000)
+        }.bind(this));
+
     }
     handleCheck(i){
         let state = this.state.data[i].getState();
@@ -94,9 +106,31 @@ class MaterialUIs extends Component {
     addTask = function (e) {
         let name = document.getElementById("taskName").value;
         let newTask = new Task(name, -1);
-        this.setState({data : [...this.state.data, newTask]});
-        //window.location.reload();
+        newTask.setState(false);
+        this.sendPost(newTask);
+
+        console.log("DATA");
+        console.log(this.state.data);
+        window.location.reload();
     };
+
+    sendPost(newTask) {
+        console.log("json");
+
+        var data = new URLSearchParams("title=" + newTask.getName());
+        console.log(data);
+        fetch('http://localhost:3001/tasks', { method: 'POST', body: data})
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                newTask.setID(data.id);
+                newTask.setState(data.done);
+                this.setState({data : [...this.state.data, newTask]});
+                console.log(data);
+                console.log(newTask);
+            });
+    }
 
     removeTask = function (e, i) {
         let selectedTask = this.state.data[i]
