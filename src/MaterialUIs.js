@@ -6,8 +6,13 @@ import {
     TableRowColumn,
 } from 'material-ui/Table';
 import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
-import TrashIcon from "material-ui/svg-icons/action/delete"
+import TrashIcon from "material-ui/svg-icons/action/delete";
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './App.css';
+
+let getStripedStyle = function(index) {
+    return { background: index % 2 ? '#e6e6ff' : 'white' };
+};
 
 const stateTable = {
     fixedHeader: true,
@@ -21,8 +26,6 @@ const stateTable = {
     showCheckboxes: false,
     height: '300px',
 };
-
-
 
 
 function Task(name, id) {
@@ -47,6 +50,58 @@ function Task(name, id) {
     }
 }
 
+//index down here is always undefined, function getIndex is a workaround, no idea why
+const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
+    <TableRow key={getIndex(row.getID())}
+              style={{ padding: '5px 20px', height: 25, ...getStripedStyle(getIndex(row.getID())) }}>
+        <TableRowColumn>
+            {row.getID()}
+        </TableRowColumn>
+        <TableRowColumn>
+            {row.getName()}
+        </TableRowColumn>
+        <TableRowColumn>
+            <Checkbox
+                checked={row.getState()}
+                onCheck={() => handleCheck(getIndex(row.getID()))}
+            />
+        </TableRowColumn>
+        <TableRowColumn>
+            <TrashIcon onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
+        </TableRowColumn>
+    </TableRow>);
+
+
+const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck}) => {
+    return (
+        <Table
+            fixedHeader={stateTable.fixedHeader}
+            fixedFooter={stateTable.fixedFooter}
+            selectable={stateTable.selectable}
+            multiSelectable={stateTable.multiSelectable}
+        >
+            <TableBody
+                displayRowCheckbox={stateTable.showCheckboxes}
+                deselectOnClickaway={stateTable.deselectOnClickaway}
+                showRowHover={stateTable.showRowHover}
+                stripedRows={stateTable.stripedRows}
+            >
+                <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                    <TableHeaderColumn>ID</TableHeaderColumn>
+                    <TableHeaderColumn>Name</TableHeaderColumn>
+                    <TableHeaderColumn>Status</TableHeaderColumn>
+                    <TableHeaderColumn>Delete</TableHeaderColumn>
+                </TableRow>
+                {getData().map((value, index) => (
+                    <SortableItem key={`item-${index}`} index={index} row={value}
+                                  getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}/>
+                ))}
+            </TableBody>
+        </Table>
+    );
+});
+
+
 class MaterialUIs extends Component {
     constructor(props) {
         super(props);
@@ -55,6 +110,7 @@ class MaterialUIs extends Component {
         };
         this.reloadPage = this.reloadPage.bind(this);
     }
+
     componentDidMount() {
         window.addEventListener('load', this.reloadPage);
 
@@ -82,7 +138,7 @@ class MaterialUIs extends Component {
                     data: tasks,
                     loading: false
                 });
-            }.bind(this), 3000)
+            }.bind(this), 1000)
         }.bind(this));
 
     }
@@ -103,7 +159,7 @@ class MaterialUIs extends Component {
     markRequest(selectedTask) { // works bad on test serwer, should work good on real server
        var data = new URLSearchParams("title=" + selectedTask.getName() + "&done="+ selectedTask.getState());
         console.log(data);
-        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'PUT', body: data})
+        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'PUT', body: data}) //jeśli robią POST to ok, zmienić, jak nie, to z PUT sie pobawic
             .then(res => {
                 console.log(res);
                 return res.json();
@@ -121,7 +177,7 @@ class MaterialUIs extends Component {
 
         console.log("DATA");
         console.log(this.state.data);
-        window.location.reload();
+        //window.location.reload();
     };
 
     addRequest(newTask) {
@@ -136,7 +192,10 @@ class MaterialUIs extends Component {
             .then(data => {
                 newTask.setID(data.id);
                 newTask.setState(data.done);
-                this.setState({data : [...this.state.data, newTask]});
+                var temp = this.state.data;
+                temp.unshift(newTask);
+                this.setState({data : temp});
+
                 console.log(data);
                 console.log(newTask);
             });
@@ -144,6 +203,7 @@ class MaterialUIs extends Component {
 
     removeTask = function (e, i) {
         let selectedTask = this.state.data[i]
+        console.log(i)
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
         }));
@@ -164,8 +224,25 @@ class MaterialUIs extends Component {
     }
 
 
-    getStripedStyle = function(index) {
-        return { background: index % 2 ? '#e6e6ff' : 'white' };
+    onSortEnd = ({oldIndex, newIndex}) => {
+        this.setState({
+            data: arrayMove(this.state.data, oldIndex, newIndex),
+        });
+    };
+
+
+    getData = () => {
+      return this.state.data;
+    };
+
+
+    getIndex = (id) => {
+        let length = this.state.data.length;
+        for (let i = 0; i < length; i++) {
+            if(this.state.data[i].getID() === id){
+                return i;
+            }
+        }
     };
 
 
@@ -177,47 +254,9 @@ class MaterialUIs extends Component {
                     label="Add task"
                     id="addButton"
                     onClick={(e) => { this.addTask(e) }}
-                /><br />
-                <Table
-                    fixedHeader={stateTable.fixedHeader}
-                    fixedFooter={stateTable.fixedFooter}
-                    selectable={stateTable.selectable}
-                    multiSelectable={stateTable.multiSelectable}
-                >
-                    <TableBody
-                        displayRowCheckbox={stateTable.showCheckboxes}
-                        deselectOnClickaway={stateTable.deselectOnClickaway}
-                        showRowHover={stateTable.showRowHover}
-                        stripedRows={stateTable.stripedRows}
-                    >
-                        <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
-                            <TableHeaderColumn>ID</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Status</TableHeaderColumn>
-                            <TableHeaderColumn>Delete</TableHeaderColumn>
-                        </TableRow>
-
-                        {this.state.data.map((row, i) =>
-                            <TableRow key={i}
-                                      style={{ padding: '5px 20px', height: 25, ...this.getStripedStyle(i) }}>
-                                <TableRowColumn>
-                                    {row.getID()}
-                                </TableRowColumn>
-                                <TableRowColumn>
-                                    {row.getName()}
-                                </TableRowColumn>
-                                <TableRowColumn>
-                                    <Checkbox
-                                        checked={this.state.data[i].getState()}
-                                        onCheck={() => this.handleCheck(i)}
-                                    />
-                                </TableRowColumn>
-                                <TableRowColumn>
-                                    <TrashIcon onClick={(e) => { this.removeTask(e, i) }}/>
-                                </TableRowColumn>
-                            </TableRow>)}
-                    </TableBody>
-                </Table>
+                /><br/><br/>
+                <SortableTable getData={this.getData.bind(this)} getIndex={this.getIndex.bind(this)}
+                               removeTask={this.removeTask.bind(this)} handleCheck={this.handleCheck.bind(this)} onSortEnd={this.onSortEnd}/>
             </div>
         );
     }
