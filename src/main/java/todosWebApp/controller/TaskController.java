@@ -24,20 +24,16 @@ public class TaskController {
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId/{categoryId}";
     private final String URL_TASK_GET_ALL = "/task/getAll";
-
     private final String URL_TASK_CREATE = "/task/create";
     private final String URL_TASK_SET_DONE = "/task/setDone";
     private final String URL_TASK_SET_DATE = "/task/setDate";
     private final String URL_TASK_SET_CATEGORY = "/task/setCategory";
     private final String URL_TASK_SET_ORDER = "task/move";
     private final String URL_TASK_DELETE = "/task/delete";
-
     private final String URL_CATEGORY_GET_BASE = "/category/getBase";
     private final String URL_CATEGORY_GET_ALL = "/category/getAll";
     private final String URL_CATEGORY_GET_BY_ID = "/category/id/{id}";
-
     private final String URL_CATEGORY_CREATE = "/category/create";
-
     private final String FAIL_RETURN_VALUE = "false";
 
     public TaskController() {
@@ -65,6 +61,20 @@ public class TaskController {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.writeValueAsString(taskService.getTaskByTitle(title));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_TASK_GET_BY_CATEGORY,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getTaskByCategory(@PathVariable String id){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(taskService.getTasksByCategory(Long.decode(id)));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
@@ -118,19 +128,19 @@ public class TaskController {
     }
 
     @RequestMapping(value = URL_TASK_SET_DONE,
-                    method = RequestMethod.POST)
+            method = RequestMethod.POST)
     public void setTaskDone(@RequestParam String taskID, @RequestParam String checked) {
         taskService.setDone(Long.decode(taskID), Boolean.valueOf(checked));
     }
 
     @RequestMapping(value = URL_TASK_DELETE,
-                    method = RequestMethod.DELETE)
+            method = RequestMethod.DELETE)
     public void deleteTask(@RequestParam String taskID) {
         taskService.deleteTask(Long.decode(taskID));
     }
 
     @RequestMapping(value = URL_TASK_SET_ORDER,
-                    method = RequestMethod.POST)
+            method = RequestMethod.POST)
     public void moveTask
             (@RequestParam String taskID,
              @RequestParam(required = false) String newParentTaskId) {
@@ -140,4 +150,90 @@ public class TaskController {
         else
             taskService.moveTask(Long.decode(taskID), Long.decode(newParentTaskId));
     }
+
+    @RequestMapping(value = URL_TASK_SET_DATE,
+            method = RequestMethod.POST)
+    public void assignDate
+            (@RequestParam String taskID,
+             @RequestParam String date) {
+        taskService.assignDate(Long.decode(taskID), Long.decode(date));
+    }
+
+    @RequestMapping(value = URL_TASK_SET_CATEGORY,
+            method = RequestMethod.POST)
+    public void assignCategory
+            (@RequestParam String taskID,
+             @RequestParam String categoryId) {
+        taskService.assignCategory(Long.decode(taskID), Long.decode(categoryId));
+    }
+
+    @RequestMapping(
+            value = URL_CATEGORY_GET_BASE,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getAllBaseCategories(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(categoryService.getAllBaseCategories());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_CATEGORY_GET_ALL,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String  getAllCategories(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(categoryService.getAllCategories());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_CATEGORY_GET_BY_ID,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getCategoryById(@RequestParam String categoryId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(categoryService.getCategoryById(Long.decode(categoryId)));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value =   URL_CATEGORY_CREATE,
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String createCategory(@RequestParam String name,
+                                 @RequestParam(required = false) String parentCategoryId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Category newCategory;
+        try {
+            if (parentCategoryId != null) {
+                newCategory = categoryService.createCategory(name, Long.decode(parentCategoryId));
+            } else {
+                newCategory = categoryService.createCategory(name);
+            }
+            if (newCategory != null) {
+                return objectMapper.writeValueAsString(newCategory);
+            } else {
+                return FAIL_RETURN_VALUE;
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
 }
+
