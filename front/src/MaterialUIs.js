@@ -21,6 +21,10 @@ const stateTable = {
     showCheckboxes: false,
     height: '300px',
 };
+
+
+
+
 function Task(name, id) {
     this.name = name;
     this.done = false;
@@ -40,10 +44,42 @@ function Task(name, id) {
     }
 }
 
+var Client = require('node-rest-client').Client;
 class MaterialUIs extends Component {
-    state = {
-        data: [],
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+        };
+        this.reloadPage = this.reloadPage.bind(this)
+    }
+    componentDidMount() {
+        window.addEventListener('load', this.reloadPage);
+
+    }
+    reloadPage() {
+        let that = this;
+        let client = new Client();
+        let tasks = [];
+        client.get("http://localhost:3001/tasks", function (data, response) {
+            // parsed response body as js object
+            for (let i = 0; i < data.length; i++){
+                let newTask = new Task(data[i].title, data[i].id);
+                newTask.setState(data[i].done);
+                tasks.unshift(newTask);
+            }
+        });
+        that.setState({
+            loading: true
+        }, function(){
+            setTimeout(function() {
+                that.setState({
+                    data: tasks,
+                    loading: false
+                });
+            }.bind(that), 3000)
+        }.bind(that));
+    }
     handleCheck(i){
         let state = this.state.data[i].getState();
         this.state.data[i].setState(!state);
@@ -59,6 +95,7 @@ class MaterialUIs extends Component {
         let name = document.getElementById("taskName").value;
         let newTask = new Task(name, -1);
         this.setState({data : [...this.state.data, newTask]});
+        //window.location.reload();
     };
 
     removeTask = function (e, i) {
