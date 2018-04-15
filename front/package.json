@@ -11,7 +11,8 @@
     "react-scripts": "1.1.4",
     "request": "^2.85.0",
     "require.js": "^1.0.0",
-    "router.js": "^1.0.3"
+    "router.js": "^1.0.3",
+    "react-sortable-hoc": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
