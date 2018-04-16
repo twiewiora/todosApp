@@ -117,7 +117,7 @@ class MaterialUIs extends Component {
     }
     reloadPage() {
         let tasks = [];
-        fetch('http://localhost:3001/tasks')
+        fetch('http://localhost:8080/task/getAll')
             .then(res => {
                 return res.json();
             })
@@ -159,7 +159,7 @@ class MaterialUIs extends Component {
     markRequest(selectedTask) { // works bad on test serwer, should work good on real server
        var data = new URLSearchParams("title=" + selectedTask.getName() + "&done="+ selectedTask.getState());
         console.log(data);
-        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'PUT', body: data}) //jeśli robią POST to ok, zmienić, jak nie, to z PUT sie pobawic
+        fetch('http://localhost:8080/task/setDone' + selectedTask.getID(), { method: 'POST', body: data}) //jeśli robią POST to ok, zmienić, jak nie, to z PUT sie pobawic
             .then(res => {
                 console.log(res);
                 return res.json();
@@ -185,7 +185,7 @@ class MaterialUIs extends Component {
 
         var data = new URLSearchParams("title=" + newTask.getName());
         console.log(data);
-        fetch('http://localhost:3001/tasks', { method: 'POST', body: data})
+        fetch('http://localhost:8080/task/create', { method: 'POST', body: data})
             .then(res => {
                 return res.json();
             })
@@ -213,7 +213,7 @@ class MaterialUIs extends Component {
     deleteRequest(selectedTask) {
         var data = new URLSearchParams("/" + selectedTask.getID());
         console.log(data);
-        fetch('http://localhost:3001/tasks/' + selectedTask.getID(), { method: 'DELETE'})
+        fetch('http://localhost8080/task/delete' + selectedTask.getID(), { method: 'DELETE'})
            .then(res => {
                console.log(res);
                return res.json();
