@@ -213,7 +213,7 @@ class MaterialUIs extends Component {
     deleteRequest(selectedTask) {
         var data = new URLSearchParams("/" + selectedTask.getID());
         console.log(data);
-        fetch('http://localhost8080/task/delete' + selectedTask.getID(), { method: 'DELETE'})
+        fetch('http://localhost:8080/task/delete' + selectedTask.getID(), { method: 'DELETE'})
            .then(res => {
                console.log(res);
                return res.json();
