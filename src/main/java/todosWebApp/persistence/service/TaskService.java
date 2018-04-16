@@ -29,9 +29,44 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void moveTask(Long taskId, Long newParentTaskId) {
-        // TODO implement moving task
         // the task should be moved one position below newParentTaskId while newParentTasId shouldn't be moved at all
         // if newParentTaskId is null then the task should be moved on top of the line
+        Task toMove = getTaskById(taskId);
+
+        Task toMovePrev = toMove.getParent();
+        Task toMoveNext = toMove.getChild();
+        if(toMovePrev != null)
+            toMovePrev.setChild(toMoveNext);
+        if(toMoveNext != null)
+            toMoveNext.setParent(toMovePrev);
+
+        taskRepository.save(toMovePrev);
+        taskRepository.save(toMoveNext);
+
+        if(newParentTaskId == null && toMove.getParent() != null){
+            List<Task> orderedTasks = getAllTasks();
+            Task firstTask = orderedTasks.get(0);
+            firstTask.setParent(toMove);
+
+            toMove.setParent(null);
+            toMove.setChild(firstTask);
+
+            taskRepository.save(toMove);
+            taskRepository.save(firstTask);
+        }
+        else if (taskId.equals(newParentTaskId)){
+            Task parentTask = getTaskById(newParentTaskId);
+            Task parentTaskChild = parentTask.getChild();
+            parentTask.setChild(toMove);
+            if(parentTaskChild != null)
+                parentTaskChild.setParent(toMove);
+            toMove.setParent(parentTask);
+            toMove.setChild(parentTaskChild);
+
+            taskRepository.save(toMove);
+            taskRepository.save(parentTask);
+            taskRepository.save(parentTaskChild);
+        }
     }
 
     @Override
