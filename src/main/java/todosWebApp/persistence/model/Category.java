@@ -15,7 +15,7 @@ public class Category {
     private String name;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Category parent;
 
     public Category(){
