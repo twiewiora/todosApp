@@ -77,6 +77,11 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
     }
 
     @Override
+    public List<Category> getChildren(Long categoryId) {
+        return categoryRepository.getChildren(categoryId);
+    }
+
+    @Override
     public List<Category> getAllBaseCategories() {
         return categoryRepository.getAllBaseCategories();
     }

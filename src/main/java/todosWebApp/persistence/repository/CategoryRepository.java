@@ -27,4 +27,9 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>, Ca
     @Override
     @Query("select category from Category category where not category.parent = null and category.parent.parent = null")
     List<Category> getAllBaseCategories();
+
+    @Override
+    @Query("select category from Category category where category.parent.id = :categoryId")
+    List<Category> getChildren(@Param("categoryId") Long categoryId);
+
 }
