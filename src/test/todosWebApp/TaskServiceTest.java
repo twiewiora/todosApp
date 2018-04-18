@@ -1,8 +1,6 @@
 package todosWebApp;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
-import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +24,6 @@ import static org.junit.Assert.assertNotEquals;
 @ContextConfiguration(value = "file:webapp/WEB-INF/applicationContext.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup(value = "classpath:dbunit-test.xml", type = DatabaseOperation.INSERT)
 public class TaskServiceTest {
 
     @Autowired
@@ -90,7 +87,6 @@ public class TaskServiceTest {
         List<Task> taskList = taskService.getTasksByCategory(categoryService.getRootCategory().getId());
         assertEquals(true, taskList.stream().anyMatch(task -> task.getTitle().equals("TitleTask_1")));
     }
-    //TODO implement tests
 
     @Test
     public void getAllTasksTest(){
@@ -132,7 +128,9 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void moveTaskTest(){}
+    public void moveTaskTest(){
+        //TODO implement test
+    }
 
     @Test
     public void assignDateTest(){
@@ -158,26 +156,4 @@ public class TaskServiceTest {
         assertEquals(taskService.getTaskById(t1.getId()).getCategory().getName(), "job");
 
     }
-
-    @Test
-    public void getAllBaseCategoriesTest(){
-
-        List<Category> categories = categoryService.getAllBaseCategories();
-
-        assertEquals(categories.size(), 1);
-        assertEquals(categories.get(0).getName(), "house");
-
-    }
-
-    @Test
-    public void  getAllCategoriesTest(){}
-
-    @Test
-    public void getCategoryByIdTest(){}
-
-    @Test
-    public void createCategoryTest(){}
-
-
-
 }
