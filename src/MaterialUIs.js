@@ -32,17 +32,17 @@ const stateTable = {
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25, ...getStripedStyle(getIndex(row.getID())) }}>
-        <TableRowColumn>
+        <TableRowColumn id="taskName">
             {row.getName()}
         </TableRowColumn>
         <TableRowColumn>
-            <Checkbox
+            <Checkbox id="taskStatus"
                 checked={row.getState()}
                 onCheck={() => handleCheck(getIndex(row.getID()))}
             />
         </TableRowColumn>
         <TableRowColumn>
-            <TrashIcon onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
+            <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
         </TableRowColumn>
     </TableRow>);
 
