@@ -32,6 +32,7 @@ export function getAllTasks() {
                 tasks.unshift(newTask);
             }
         });
+    console.log(tasks);
     return tasks;
 }
 
