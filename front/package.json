@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "ajv": "^6.0.1",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
     "material-ui": "^0.20.0",
     "node-rest-client": "^3.1.0",
     "react": "^16.3.1",
@@ -15,6 +17,7 @@
     "request": "^2.85.0",
     "require.js": "^1.0.0",
     "router.js": "^1.0.3",
+    "sinon": "^4.5.0",
     "tachyons-components": "^1.0.0-1"
   },
   "scripts": {
