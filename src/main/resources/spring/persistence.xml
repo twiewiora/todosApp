@@ -18,8 +18,15 @@
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="generateDdl" value="true" />
-                <property name="showSql" value="${db.hibernate.showSql}" />
             </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">${db.hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.dialect">${db.hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${db.hibernate.show_sql}</prop>
+                <prop key="hibernate.connection.characterEncoding">${db.hibernate.connection.characterEncoding}</prop>
+            </props>
         </property>
     </bean>
 
