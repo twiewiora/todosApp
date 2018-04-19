@@ -5,10 +5,10 @@
   padding-right: 1%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.MenuIcon {
+    text-align: left;
 }
+
 input[type=text], input[type=date], select, textarea {
   padding: 12px;
   border: 1px solid #ccc;
@@ -31,6 +31,7 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: #4CAF50;
 }
+
 .App-header {
   background-color: #222;
   height: 150px;
@@ -56,9 +57,4 @@ table.center {
   padding: 8px;
   margin-left:auto;
   margin-right:auto;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }

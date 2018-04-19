@@ -66,10 +66,10 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                     <TableHeaderColumn>Status</TableHeaderColumn>
                     <TableHeaderColumn>Delete</TableHeaderColumn>
                 </TableRow>
-                {getData().map((value, index) => (
-                    <SortableItem key={`item-${index}`} index={index} row={value}
-                                  getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}/>
-                ))}
+                    {getData().map((value, index) => (
+                        <SortableItem key={`item-${index}`} index={index} row={value}
+                                      getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}/>
+                    ))}
             </TableBody>
         </Table>
     );
@@ -92,6 +92,8 @@ class MaterialUIs extends Component {
         this.setState({loading: false});
 
     }
+
+
     reloadPage() {
         this.setState({loading: true})
         let tasks = getAllTasks();
@@ -108,6 +110,8 @@ class MaterialUIs extends Component {
         }.bind(this));
 
     }
+
+
     handleCheck(i){
         let state = this.state.data[i].getState();
         this.state.data[i].setState(!state);
@@ -121,6 +125,7 @@ class MaterialUIs extends Component {
 
     }
 
+
     addTask = function () {
         let name = document.getElementById("taskName").value;
         let newTask = new Task(name, -1);
@@ -132,7 +137,6 @@ class MaterialUIs extends Component {
     };
 
 
-
     removeTask = function (e, i) {
         let selectedTask = this.state.data[i];
         this.setState(state => ({
@@ -140,6 +144,7 @@ class MaterialUIs extends Component {
         }));
         deleteRequest(selectedTask);
     };
+
 
     onSortEnd = ({oldIndex, newIndex}) => {
         this.setState({
