@@ -3,7 +3,6 @@ package todosWebApp.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.model.Task;
@@ -19,7 +18,6 @@ public class TaskController {
     @Autowired
     private CategoryService categoryService;
 
-    //TODO implement all of the below mappings
     private final String URL_TASK_GET_BY_ID = "/task/id/{id}";
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
@@ -42,7 +40,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_TASK_GET_BY_ID,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getTaskById(@PathVariable String id){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -56,7 +54,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_TASK_GET_BY_TITLE,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getTaskByTitle(@PathVariable String title){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -70,7 +68,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_TASK_GET_BY_CATEGORY,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getTaskByCategory(@PathVariable String id){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -83,9 +81,8 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_GET_ALL,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getAllTasks() {
-
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.writeValueAsString(taskService.getAllTasks());
@@ -98,8 +95,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_TASK_CREATE,
             method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+            produces = "application/json; charset=UTF-8")
     public String createTask(@RequestParam String title,
                              @RequestParam(required = false) String date,
                              @RequestParam(required = false) String categoryID) {
@@ -174,7 +170,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_CATEGORY_GET_BASE,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getAllBaseCategories(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -188,7 +184,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_CATEGORY_GET_ALL,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String  getAllCategories(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -202,7 +198,7 @@ public class TaskController {
     @RequestMapping(
             value = URL_CATEGORY_GET_BY_ID,
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = "application/json; charset=UTF-8")
     public String getCategoryById(@PathVariable String id) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -216,8 +212,7 @@ public class TaskController {
     @RequestMapping(
             value =   URL_CATEGORY_CREATE,
             method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+            produces = "application/json; charset=UTF-8")
     public String createCategory(@RequestParam String name,
                                  @RequestParam(required = false) String parentCategoryId) {
         ObjectMapper objectMapper = new ObjectMapper();
