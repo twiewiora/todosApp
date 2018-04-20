@@ -112,7 +112,7 @@ class MaterialUIs extends Component {
     }
 
 
-    handleCheck(i){
+     handleCheck(i){
         let state = this.state.data[i].getState();
         this.state.data[i].setState(!state);
         this.setState((oldState) => {
