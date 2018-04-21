@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 
-
 @Entity
 public class Task {
 
@@ -14,12 +13,13 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "PARENT_FOREIGN_KEY", referencedColumnName = "id")
     private Task parent;
 
-	@OneToOne
+    @JsonIgnore
+    @OneToOne
     @JoinColumn(name = "CHILD_FOREIGN_KEY", referencedColumnName = "id")
     private Task child;
 
