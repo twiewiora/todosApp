@@ -98,7 +98,7 @@ class MaterialUIs extends Component {
 
 
     reloadPage() {
-        this.setState({loading: true})
+        this.setState({loading: true});
         let tasks = getAllTasks();
 
         this.setState({
