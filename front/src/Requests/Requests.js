@@ -78,9 +78,10 @@ export function deleteRequest(selectedTask) {
 
 export function swapRequest(oldIndex, newIndex) {
     let params;
-    if (newIndex === 0) params = "taskID=" + oldIndex;
-    else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex-1);
+    if (newIndex === null) params = "taskID=" + oldIndex;
+    else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex);
     let data = new URLSearchParams(params);
+    console.log(params);
     fetch('http://localhost:8080/task/move', { method: 'POST', body: data})
         .then(res => {
         if (res.status !== 200){
