@@ -25,8 +25,9 @@ export function markRequest(selectedTask) {
     });
 
 }
-export function addRequest(newTask) {
-    let data = new URLSearchParams("title=" + newTask.getName());
+export function addRequest(newTaskName) {
+    let data = new URLSearchParams("title=" + newTaskName);
+    let newTask = new Task(newTaskName, -1);
     fetch('http://localhost:8080/task/create', { method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200){
@@ -78,8 +79,8 @@ export function deleteRequest(selectedTask) {
 
 export function swapRequest(oldIndex, newIndex) {
     let params;
-    if (newIndex === 0) params = "taskID=" + oldIndex;
-    else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex-1);
+    if (newIndex === null) params = "taskID=" + oldIndex;
+    else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex);
     let data = new URLSearchParams(params);
     fetch('http://localhost:8080/task/move', { method: 'POST', body: data})
         .then(res => {

@@ -6,13 +6,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 
-
 @Entity
 public class Task {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "PARENT_FOREIGN_KEY", referencedColumnName = "id")
+    private Task parent;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "CHILD_FOREIGN_KEY", referencedColumnName = "id")
+    private Task child;
 
 	private String title;
 
@@ -70,6 +79,23 @@ public class Task {
     public Long getDate() {
         return date;
     }
+
+    public Task getParent() {
+        return parent;
+    }
+
+    public void setParent(Task parent) {
+        this.parent = parent;
+    }
+
+    public Task getChild() {
+        return child;
+    }
+
+    public void setChild(Task child) {
+        this.child = child;
+    }
+
 
     @JsonProperty
     public String getDeadline() {

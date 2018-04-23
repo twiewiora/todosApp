@@ -10,6 +10,7 @@ import todosWebApp.persistence.queries.TaskDataQuery;
 import todosWebApp.persistence.repository.CategoryRepository;
 import todosWebApp.persistence.repository.TaskRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -28,9 +29,44 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void moveTask(Long taskId, Long newParentTaskId) {
-        // TODO implement moving task
-        // the task should be moved one position below newParentTaskId while newParentTasId shouldn't be moved at all
-        // if newParentTaskId is null then the task should be moved on top of the line
+        Task toMove = getTaskById(taskId);
+
+        Task toMovePrev = toMove.getParent();
+        Task toMoveNext = toMove.getChild();
+        if(toMovePrev != null){
+            toMovePrev.setChild(toMoveNext);
+            taskRepository.save(toMovePrev);
+        }
+        if(toMoveNext != null){
+            toMoveNext.setParent(toMovePrev);
+            taskRepository.save(toMoveNext);
+        }
+
+        if(newParentTaskId == null && toMove.getParent() != null){
+            List<Task> orderedTasks = getAllTasks();
+            Task firstTask = orderedTasks.get(0);
+            firstTask.setParent(toMove);
+
+            toMove.setParent(null);
+            toMove.setChild(firstTask);
+
+            taskRepository.save(toMove);
+            taskRepository.save(firstTask);
+        }
+        else if (!taskId.equals(newParentTaskId)){
+            Task parentTask = getTaskById(newParentTaskId);
+            Task parentTaskChild = parentTask.getChild();
+            parentTask.setChild(toMove);
+            if(parentTaskChild != null)
+                parentTaskChild.setParent(toMove);
+            toMove.setParent(parentTask);
+            toMove.setChild(parentTaskChild);
+
+            taskRepository.save(toMove);
+            taskRepository.save(parentTask);
+            if(parentTaskChild != null)
+                taskRepository.save(parentTaskChild);
+        }
     }
 
     @Override
@@ -40,7 +76,24 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public List<Task> getAllTasks() {
-        return taskRepository.getAllTasks();
+        return getAllTasksByParent();
+    }
+
+    private List<Task> getAllTasksByParent() {
+        List<Task> allTasks = taskRepository.getAllTasks();
+        List<Task> orderedTasks = new ArrayList<>();
+
+        if(!allTasks.isEmpty()) {
+            Task firstTask = allTasks.stream().filter(task -> task.getParent() == null).findFirst().get();
+            orderedTasks.add(firstTask);
+
+            for(int i=0; i < allTasks.size() - 1; i++){
+                Task nextTask = firstTask.getChild();
+                orderedTasks.add(nextTask);
+                firstTask = nextTask;
+            }
+        }
+        return orderedTasks;
     }
 
     @Override
@@ -67,8 +120,18 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public Task createTask(String name, Long date, Category category) {
         Task task = new Task(name, date);
         setTaskCategoryRelation(task, category);
-        taskRepository.save(task);
+        List<Task> orderedTasks = getAllTasksByParent();
 
+        if(!orderedTasks.isEmpty()) {
+            Task firstTask = orderedTasks.get(0);
+            firstTask.setParent(task);
+            task.setChild(firstTask);
+            taskRepository.save(task);
+            taskRepository.save(firstTask);
+        }
+        else {
+            taskRepository.save(task);
+        }
         return task;
     }
 
@@ -84,7 +147,24 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void deleteTask(Task task) {
-        taskRepository.delete(task);
+        List<Task> allTasks = taskRepository.findAll();
+
+        if(!allTasks.isEmpty()) {
+            Task parentTask = task.getParent();
+            Task childTask = task.getChild();
+
+            if(parentTask != null){
+                parentTask.setChild(childTask);
+                taskRepository.save(parentTask);
+            }
+
+            if(childTask != null){
+                childTask.setParent(parentTask);
+                taskRepository.save(childTask);
+            }
+
+            taskRepository.delete(task);
+        }
     }
 
 
