@@ -58,8 +58,9 @@ export function getAllTasks() {
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
 
-                tasks.unshift(newTask);
+                tasks.push(newTask);
             }
+            console.log(tasks);
         }).catch(function() {
             showRestartAlert("Oops! Problem with server. Cannot load tasks.");
     });
@@ -82,6 +83,8 @@ export function swapRequest(oldIndex, newIndex) {
     if (newIndex === null) params = "taskID=" + oldIndex;
     else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex);
     let data = new URLSearchParams(params);
+    console.log("oldIndex: " + oldIndex + " newParentID: " + newIndex);
+    console.log(params);
     fetch('http://localhost:8080/task/move', { method: 'POST', body: data})
         .then(res => {
         if (res.status !== 200){
