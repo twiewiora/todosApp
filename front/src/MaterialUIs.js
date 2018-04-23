@@ -148,15 +148,16 @@ class MaterialUIs extends Component {
 
     onSortEnd = ({oldIndex, newIndex}) => {
         if(oldIndex !== newIndex){
+            console.log(oldIndex + " " + newIndex);
             let taskID = this.state.data[oldIndex].getID();
             if(oldIndex > newIndex){
-                swapRequest(taskID, this.state.data[newIndex].getID());
-            } else {
                 let newParentID = null;
-                if(newIndex + 1 < this.state.data.length){
-                    newParentID = this.state.data[newIndex+1].getID();
+                if(newIndex - 1 >= 0){
+                    newParentID = this.state.data[newIndex-1].getID();
                 }
                 swapRequest(taskID, newParentID);
+            } else {
+                swapRequest(taskID, this.state.data[newIndex].getID());
             }
 
             this.setState({
