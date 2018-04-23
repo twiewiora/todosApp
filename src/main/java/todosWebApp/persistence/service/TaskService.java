@@ -29,14 +29,11 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void moveTask(Long taskId, Long newParentTaskId) {
-        // the task should be moved one position below newParentTaskId while newParentTasId shouldn't be moved at all
-        // if newParentTaskId is null then the task should be moved on top of the line
         Task toMove = getTaskById(taskId);
 
         Task toMovePrev = toMove.getParent();
         Task toMoveNext = toMove.getChild();
         if(toMovePrev != null){
-
             toMovePrev.setChild(toMoveNext);
             taskRepository.save(toMovePrev);
         }
@@ -123,14 +120,14 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public Task createTask(String name, Long date, Category category) {
         Task task = new Task(name, date);
         setTaskCategoryRelation(task, category);
-        List<Task> allTasks = taskRepository.getAllTasks();
+        List<Task> orderedTasks = getAllTasksByParent();
 
-        if(!allTasks.isEmpty()) {
-            Task lastTask = allTasks.get(allTasks.size() - 1);
-            lastTask.setChild(task);
-            task.setParent(lastTask);
+        if(!orderedTasks.isEmpty()) {
+            Task firstTask = orderedTasks.get(0);
+            firstTask.setParent(task);
+            task.setChild(firstTask);
             taskRepository.save(task);
-            taskRepository.save(lastTask);
+            taskRepository.save(firstTask);
         }
         else {
             taskRepository.save(task);
