@@ -31,16 +31,16 @@ const stateTable = {
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25, ...getStripedStyle(getIndex(row.getID())) }}>
-        <TableRowColumn id="taskName">
-            {row.getName()}
-        </TableRowColumn>
-        <TableRowColumn>
+        <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
                 onCheck={() => handleCheck(getIndex(row.getID()))}
             />
         </TableRowColumn>
-        <TableRowColumn>
+        <TableRowColumn id="taskName">
+            {row.getName()}
+        </TableRowColumn>
+        <TableRowColumn style={{ width: "10%" }}>
             <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
         </TableRowColumn>
     </TableRow>);
@@ -53,6 +53,7 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
             fixedFooter={stateTable.fixedFooter}
             selectable={stateTable.selectable}
             multiSelectable={stateTable.multiSelectable}
+            style={{ tableLayout: "auto" }}
         >
             <TableBody
                 displayRowCheckbox={stateTable.showCheckboxes}
@@ -61,8 +62,8 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                 stripedRows={stateTable.stripedRows}
             >
                 <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
-                    <TableHeaderColumn>Name</TableHeaderColumn>
                     <TableHeaderColumn>Status</TableHeaderColumn>
+                    <TableHeaderColumn>Name</TableHeaderColumn>
                     <TableHeaderColumn>Delete</TableHeaderColumn>
                 </TableRow>
                     {getData().map((value, index) => (
