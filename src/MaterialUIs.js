@@ -10,7 +10,6 @@ import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui"
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
-import Task from "./Task/Task";
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
 import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
@@ -32,9 +31,6 @@ const stateTable = {
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25, ...getStripedStyle(getIndex(row.getID())) }}>
-        <TableRowColumn id="taskID">
-            {row.getID()}
-        </TableRowColumn>
         <TableRowColumn id="taskName">
             {row.getName()}
         </TableRowColumn>
@@ -98,7 +94,7 @@ class MaterialUIs extends Component {
 
 
     reloadPage() {
-        this.setState({loading: true})
+        this.setState({loading: true});
         let tasks = getAllTasks();
 
         this.setState({
@@ -131,12 +127,11 @@ class MaterialUIs extends Component {
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
-        let newTask = new Task(name, -1);
-        newTask.setState(false);
-        newTask = addRequest(newTask);
+        let newTask = addRequest(name);
         let temp = this.state.data;
         temp.unshift(newTask);
         this.setState({data : temp});
+        console.log(newTask);
         document.getElementById('taskName').value = "";
         document.getElementById('taskName').hintText = "name";
     };
@@ -155,16 +150,12 @@ class MaterialUIs extends Component {
         if(oldIndex !== newIndex){
             let taskID = this.state.data[oldIndex].getID();
             if(oldIndex > newIndex){
-                console.log(oldIndex + " " + newIndex);
-                console.log(taskID + " " + this.state.data[newIndex].getID());
                 swapRequest(taskID, this.state.data[newIndex].getID());
             } else {
-                console.log(oldIndex + " " + newIndex);
                 let newParentID = null;
                 if(newIndex + 1 < this.state.data.length){
                     newParentID = this.state.data[newIndex+1].getID();
                 }
-                console.log(taskID + " " + newParentID);
                 swapRequest(taskID, newParentID);
             }
 
