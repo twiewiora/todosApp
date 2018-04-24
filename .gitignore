@@ -17,3 +17,5 @@
 
 testdb/
 target/
+node_modules/
+classes/

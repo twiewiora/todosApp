@@ -23,6 +23,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_ALL = "/task/getAll";
     private final String URL_TASK_CREATE = "/task/create";
+    private final String URL_TASK_DROP = "/task/drop/{id}/{parent}";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";
     private final String URL_TASK_SET_CATEGORY = "/task/setCategory";
@@ -132,6 +133,19 @@ public class TaskController {
             taskService.setDone(Long.decode(id), true);
         }
     }
+
+    @RequestMapping(value = URL_TASK_DROP,
+            method = RequestMethod.POST)
+    public void setTaskDoneAndDrop(@PathVariable String id, @PathVariable String parent) {
+        //long taskId = Long.decode(id);
+        if (taskService.getTaskById(Long.decode(id)).getDone()) {
+            taskService.setDone(Long.decode(id), false);
+        } else {
+            taskService.setDone(Long.decode(id), true);
+        }
+        moveTask(id, parent);
+    }
+
 
     @RequestMapping(value = URL_TASK_DELETE,
             method = RequestMethod.DELETE)
