@@ -1,0 +1,6 @@
+Pobieranie taskow z tygodnia
+GET: task/weeklyTasks/date=(DD-MM-RRRR)
+response: jsonik 
+Pobieranie nieprzydzielonych taskow
+GET: task/all/date=null
+response: jsonik

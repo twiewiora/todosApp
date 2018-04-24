@@ -1,0 +1,8 @@
+1. Zainstaluj node.js (i npm) 
+https://nodejs.org/en/
+Przetestuj wywołanie npm w konsoli.
+2. Przejdź do folderu /front projektu
+3. W konsoli uruchom:
+- npm install (dociągną się moduły do odpalenia reacta)
+- npm start (odpali się front na porcie 3000, może to potrwać chwilę) 
+Koniec :)
