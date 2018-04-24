@@ -58,7 +58,7 @@ export function getAllTasks() {
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
 
-                tasks.unshift(newTask);
+                tasks.push(newTask);
             }
             console.log(tasks);
         }).catch(function() {
