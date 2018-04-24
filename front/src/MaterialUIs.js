@@ -30,7 +30,7 @@ const stateTable = {
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, ...getStripedStyle(getIndex(row.getID())) }}>
+              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index) }}>
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
@@ -85,6 +85,7 @@ class MaterialUIs extends Component {
             loading: true
         };
         this.reloadPage = this.reloadPage.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this)
     }
 
     componentDidMount() {
@@ -92,7 +93,6 @@ class MaterialUIs extends Component {
         this.setState({loading: false});
 
     }
-
 
     reloadPage() {
         this.setState({loading: true});
@@ -112,16 +112,27 @@ class MaterialUIs extends Component {
     }
 
 
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.addTask();
+        }
+    }
+
      handleCheck(i){
         let state = this.state.data[i].getState();
+
+        let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
+                color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
-        let selectedTask = this.state.data[i];
         markRequest(selectedTask);
+
+
+
 
     }
 
@@ -136,6 +147,7 @@ class MaterialUIs extends Component {
         document.getElementById('taskName').value = "";
         document.getElementById('taskName').hintText = "name";
     };
+
 
 
     removeTask = function (e, i) {
@@ -181,12 +193,11 @@ class MaterialUIs extends Component {
             }
         }
     };
-
     render() {
         return (
             <div>
                 <h1 className="title"> New task </h1>
-                <TextField id="taskName" hintText="name"/><br />
+                <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
                 <RaisedButton
                     label="Add task"
                     id="addButton"
