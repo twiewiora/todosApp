@@ -12,7 +12,7 @@ import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
-import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
 
 
 const stateTable = {
@@ -30,11 +30,13 @@ const stateTable = {
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index) }}>
+              style={{ padding: '5px 20px', height: 25,
+                  background : getStripedStyle(getIndex(row.getID()), row.getState()) }}>
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
                 onCheck={() => handleCheck(getIndex(row.getID()))}
+                iconStyle={{fill: row.getState() ? 'black' : '#00bcd4'}}
             />
         </TableRowColumn>
         <TableRowColumn id="taskName">
@@ -108,7 +110,6 @@ class MaterialUIs extends Component {
                 });
             }.bind(this), 3000)
         }.bind(this));
-
     }
 
 
@@ -120,6 +121,7 @@ class MaterialUIs extends Component {
 
      handleCheck(i){
         let state = this.state.data[i].getState();
+        let firstDoneIndex = this.getFirstDoneTaskIndex();
 
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
@@ -132,8 +134,25 @@ class MaterialUIs extends Component {
         markRequest(selectedTask);
 
 
-
-
+        if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
+            if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
+                && !(!this.state.data[i].getState() && i === firstDoneIndex)) {
+                if(i > firstDoneIndex){
+                    this.setState({
+                        data: arrayMove(this.state.data, i, firstDoneIndex),
+                    });
+                } else {
+                    this.setState({
+                        data: arrayMove(this.state.data, i, firstDoneIndex - 1),
+                    });
+                }
+                /*markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);*/
+                swapRequest(this.state.data[i].getID(), this.state.data[firstDoneIndex - 1].getID());
+            } else {
+                console.log(i + " " + firstDoneIndex + " " + this.state.data[i].getState());
+                /*markRequest(selectedTask);*/
+            }
+        }
     }
 
 
@@ -146,6 +165,7 @@ class MaterialUIs extends Component {
         console.log(newTask);
         document.getElementById('taskName').value = "";
         document.getElementById('taskName').hintText = "name";
+
     };
 
 
@@ -156,6 +176,19 @@ class MaterialUIs extends Component {
             data: state.data.filter((x, j) => j !== i),
         }));
         deleteRequest(selectedTask);
+    };
+
+    getFirstDoneTaskIndex = function () {
+        let firstDoneTaskIndexAtTheBottom = null;
+        let length = this.state.data.length;
+        for (let i = length-1; i >= 0; i--){
+            if(this.state.data[i].getState() === false){
+                break;
+            } else {
+                firstDoneTaskIndexAtTheBottom = i;
+            }
+        }
+        return firstDoneTaskIndexAtTheBottom;
     };
 
 
