@@ -27,7 +27,7 @@ export function markRequest(selectedTask) {
 }
 
 export function markAndDropRequest(selectedTask, newParentTask) {
-    let data = new URLSearchParams("title=" + selectedTask.getName() + "&done="+ selectedTask.getState());
+    let data = new URLSearchParams("done="+ selectedTask.getState());
     fetch('http://localhost:8080/task/drop/' + selectedTask.getID() + '/' + newParentTask.getID(), { method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200){
