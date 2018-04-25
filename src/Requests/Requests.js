@@ -25,6 +25,20 @@ export function markRequest(selectedTask) {
     });
 
 }
+
+export function markAndDropRequest(selectedTask, newParentTask) {
+    let data = new URLSearchParams("title=" + selectedTask.getName() + "&done="+ selectedTask.getState());
+    fetch('http://localhost:8080/task/drop/' + selectedTask.getID() + '/' + newParentTask.getID(), { method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200){
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+        }).catch(function() {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
+
+}
+
 export function addRequest(newTaskName) {
     let data = new URLSearchParams("title=" + newTaskName);
     let newTask = new Task(newTaskName, -1);
