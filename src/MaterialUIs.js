@@ -131,12 +131,10 @@ class MaterialUIs extends Component {
                 color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
-        markRequest(selectedTask);
-
 
         if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
             if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
-                && !(!this.state.data[i].getState() && i === firstDoneIndex)) {
+                && !(!this.state.data[i].getState() && i <= firstDoneIndex)) {
                 if(i > firstDoneIndex){
                     this.setState({
                         data: arrayMove(this.state.data, i, firstDoneIndex),
@@ -146,11 +144,9 @@ class MaterialUIs extends Component {
                         data: arrayMove(this.state.data, i, firstDoneIndex - 1),
                     });
                 }
-                /*markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);*/
-                swapRequest(this.state.data[i].getID(), this.state.data[firstDoneIndex - 1].getID());
+                markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
             } else {
-                console.log(i + " " + firstDoneIndex + " " + this.state.data[i].getState());
-                /*markRequest(selectedTask);*/
+                markRequest(selectedTask);
             }
         }
     }
