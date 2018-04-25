@@ -9,6 +9,11 @@
     text-align: left;
 }
 
+.BackIcon {
+  text-align: left;
+}
+
+
 input[type=text], input[type=date], select, textarea {
   padding: 12px;
   border: 1px solid #ccc;
