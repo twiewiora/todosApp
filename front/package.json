@@ -4,15 +4,21 @@
   "private": true,
   "dependencies": {
     "ajv": "^6.0.1",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
     "material-ui": "^0.20.0",
     "node-rest-client": "^3.1.0",
     "react": "^16.3.1",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.3.1",
+    "react-loading": "^1.0.4",
     "react-scripts": "1.1.4",
+    "react-sortable-hoc": "^0.6.8",
     "request": "^2.85.0",
     "require.js": "^1.0.0",
     "router.js": "^1.0.3",
-    "react-sortable-hoc": "latest"
+    "sinon": "^4.5.0",
+    "tachyons-components": "^1.0.0-1"
   },
   "scripts": {
     "start": "react-scripts start",

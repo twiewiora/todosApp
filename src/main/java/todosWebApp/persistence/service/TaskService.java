@@ -29,19 +29,18 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void moveTask(Long taskId, Long newParentTaskId) {
-        // the task should be moved one position below newParentTaskId while newParentTasId shouldn't be moved at all
-        // if newParentTaskId is null then the task should be moved on top of the line
         Task toMove = getTaskById(taskId);
 
         Task toMovePrev = toMove.getParent();
         Task toMoveNext = toMove.getChild();
-        if(toMovePrev != null)
+        if(toMovePrev != null){
             toMovePrev.setChild(toMoveNext);
-        if(toMoveNext != null)
+            taskRepository.save(toMovePrev);
+        }
+        if(toMoveNext != null){
             toMoveNext.setParent(toMovePrev);
-
-        taskRepository.save(toMovePrev);
-        taskRepository.save(toMoveNext);
+            taskRepository.save(toMoveNext);
+        }
 
         if(newParentTaskId == null && toMove.getParent() != null){
             List<Task> orderedTasks = getAllTasks();
@@ -54,7 +53,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
             taskRepository.save(toMove);
             taskRepository.save(firstTask);
         }
-        else if (taskId.equals(newParentTaskId)){
+        else if (!taskId.equals(newParentTaskId)){
             Task parentTask = getTaskById(newParentTaskId);
             Task parentTaskChild = parentTask.getChild();
             parentTask.setChild(toMove);
@@ -65,7 +64,8 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
             taskRepository.save(toMove);
             taskRepository.save(parentTask);
-            taskRepository.save(parentTaskChild);
+            if(parentTaskChild != null)
+                taskRepository.save(parentTaskChild);
         }
     }
 
@@ -87,7 +87,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
             Task firstTask = allTasks.stream().filter(task -> task.getParent() == null).findFirst().get();
             orderedTasks.add(firstTask);
 
-            for(int i=0; i < allTasks.size(); i++){
+            for(int i=0; i < allTasks.size() - 1; i++){
                 Task nextTask = firstTask.getChild();
                 orderedTasks.add(nextTask);
                 firstTask = nextTask;
@@ -120,15 +120,18 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public Task createTask(String name, Long date, Category category) {
         Task task = new Task(name, date);
         setTaskCategoryRelation(task, category);
-        List<Task> allTasks = taskRepository.findAll();
+        List<Task> orderedTasks = getAllTasksByParent();
 
-        if(!allTasks.isEmpty()) {
-            Task lastTask = allTasks.get(allTasks.size() - 1);
-            lastTask.setChild(task);
-            task.setParent(lastTask);
-            taskRepository.save(lastTask);
+        if(!orderedTasks.isEmpty()) {
+            Task firstTask = orderedTasks.get(0);
+            firstTask.setParent(task);
+            task.setChild(firstTask);
+            taskRepository.save(task);
+            taskRepository.save(firstTask);
         }
-        taskRepository.save(task);
+        else {
+            taskRepository.save(task);
+        }
         return task;
     }
 
@@ -148,13 +151,17 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
         if(!allTasks.isEmpty()) {
             Task parentTask = task.getParent();
-            parentTask.setChild(task.getChild());
-
             Task childTask = task.getChild();
-            childTask.setParent(task.getParent());
 
-            taskRepository.save(parentTask);
-            taskRepository.save(childTask);
+            if(parentTask != null){
+                parentTask.setChild(childTask);
+                taskRepository.save(parentTask);
+            }
+
+            if(childTask != null){
+                childTask.setParent(parentTask);
+                taskRepository.save(childTask);
+            }
 
             taskRepository.delete(task);
         }
