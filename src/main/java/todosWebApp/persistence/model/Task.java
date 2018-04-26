@@ -61,6 +61,7 @@ public class Task {
     }
 
     public void setDone(Boolean done) {
+        System.out.println("setting done " + title + " " + done);
         this.done = done;
     }
 

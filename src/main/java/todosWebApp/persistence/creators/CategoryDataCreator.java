@@ -8,5 +8,7 @@ public interface CategoryDataCreator {
 
     Category createCategory(String name, Long parentCategoryId);
 
+    void deleteCategory(Long categoryId);
+
     Category createRootCategoryIfNotExists();
 }
