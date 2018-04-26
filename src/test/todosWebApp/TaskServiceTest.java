@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertNotEquals;
 @ContextConfiguration(value = "file:webapp/WEB-INF/applicationContext.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TaskServiceTest {
 
     @Autowired
@@ -59,6 +61,7 @@ public class TaskServiceTest {
 
             categoryService.deleteCategory(category.getId());
         }
+        categoryService.createRootCategoryIfNotExists();
     }
 
     private void deleteCategory(Category category){

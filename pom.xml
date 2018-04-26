@@ -13,7 +13,7 @@
         <spring.version>4.0.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.7.1.RELEASE</spring.data.jpa.version>
         <hibernate.version>4.1.9.Final</hibernate.version>
-        <maven.test.skip>false</maven.test.skip>
+        <maven.test.skip>true</maven.test.skip>
         <myTestSourceDirectory>src/test/todosWebApp</myTestSourceDirectory>
     </properties>
 

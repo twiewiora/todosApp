@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertNotEquals;
 @ContextConfiguration(value = "file:webapp/WEB-INF/applicationContext.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class CategoryServiceTest {
 
     @Autowired
@@ -29,19 +31,16 @@ public class CategoryServiceTest {
 
     @Before
     public void initDatabase(){
-        categoryService.createRootCategoryIfNotExists();
-
-        Category house = categoryService.createCategory("house");
-        categoryService.createCategory("tidying", house.getId());
-
+        Category category = categoryService.createCategory("house");
+        categoryService.createCategory("tidying", category.getId());
     }
 
     @After
     public void cleanDatabase(){
-        deleteCategory(categoryService.getRootCategory());
-
-        for(Category category : categoryService.getAllCategories()){
-            categoryService.deleteCategory(category.getId());
+        for(Category category : categoryService.getAllBaseCategories()){
+            if (category.getParent() != null) {
+                deleteCategory(category);
+            }
         }
     }
 
@@ -49,7 +48,6 @@ public class CategoryServiceTest {
         for(Category child: categoryService.getChildren(category.getId())){
             deleteCategory(child);
         }
-
         categoryService.deleteCategory(category.getId());
     }
 
@@ -84,7 +82,7 @@ public class CategoryServiceTest {
         List<Category> categories = categoryService.getAllCategories();
 
         assertNotEquals(categories.get(0).getId(), categories.get(1).getId());
-        assertEquals(categories.size(), 3);
+        assertEquals(categories.size(), 2);
     }
 
     @Test
