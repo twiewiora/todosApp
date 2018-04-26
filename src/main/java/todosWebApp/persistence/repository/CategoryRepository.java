@@ -13,7 +13,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer>, CategoryDataQuery {
 
     @Override
-    @Query("select category from Category category")
+    @Query("select category from Category category where not category.parent = null")
     List<Category> getAllCategories();
 
     @Override
