@@ -8,7 +8,16 @@
 .MenuIcon {
     text-align: left;
 }
-
+.calendarButton {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.homeButton {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
 input[type=text], input[type=date], select, textarea {
   padding: 12px;
   border: 1px solid #ccc;
