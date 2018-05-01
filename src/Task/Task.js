@@ -17,7 +17,7 @@ class Task {
         this.id = id;
     };
     setState = function (newState){
-        this.done = newState
+        this.done = newState;
     }
 
 }

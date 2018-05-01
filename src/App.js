@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Styles/App.css';
 import MaterialAll from './MaterialUIs';
 import MenuBase from './Menu'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {FontIcon, RaisedButton} from "material-ui";
+import {RaisedButton} from "material-ui";
 import Calendar from "./Calendar";
 
 const App = (props) =>
