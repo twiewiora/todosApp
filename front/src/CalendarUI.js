@@ -60,6 +60,7 @@ class CalendarUI extends Component {
             currentDateTitle: 0,
             currentDateObject: undefined,
             loading: true,
+            loadingAssign: false
         };
         this.getCurrentDate();
         this.reloadPage = this.reloadPage.bind(this);
@@ -78,14 +79,16 @@ class CalendarUI extends Component {
     reloadPage() {
         this.setState({loading: true});
         let weeklyTasks =  getWeekTasks(this.state.currentDateTitle);
-
+        let dailyTasks = [];
         let unassignedTasks = getUnassignedTasks();
         this.setState({
             loading: true
         }, function(){
             setTimeout(function() {
+                dailyTasks = this.getDailyTasks(weeklyTasks);
                 this.setState({
-                    data: weeklyTasks,
+                    weekData: weeklyTasks,
+                    data: dailyTasks,
                     unassigned: unassignedTasks,
                     loading: false
                 });
@@ -130,6 +133,21 @@ class CalendarUI extends Component {
 
         return dd + '-' + mm + '-' + yyyy;
     }
+    getReversedDateDescription(date){
+        var dd = date.getDate();
+        var mm = date.getMonth()+1; //January is 0!
+        var yyyy = date.getFullYear();
+
+        if(dd<10) {
+            dd = '0'+dd
+        }
+
+        if(mm<10) {
+            mm = '0'+mm
+        }
+
+        return yyyy + '-' + mm + '-' + dd;
+    }
     getCurrentDate() {
         var today = new Date();
         this.state.currentDateObject = new Date();
@@ -151,10 +169,17 @@ class CalendarUI extends Component {
             onClick={this.handleClose}
         />,
     ];
-
+    getDailyTasks(tasks){
+        let dailyTasks = [];
+        for (let i = 0; i < tasks.length; i++){
+            if (this.getReversedDateDescription(this.state.currentDateObject) === tasks[i].getDate()){
+                dailyTasks.push(tasks[i]);
+            }
+        }
+        return dailyTasks
+    }
     showDialog(index) {
         let name = this.state.data[index].getName();
-        console.log(this.state.data[index]);
         let status = this.state.data[index].getState();
         this.setState({descriptionName: "Name: " + name});
         this.setState({descriptionStatus: "Status: " + status});
@@ -164,17 +189,28 @@ class CalendarUI extends Component {
         let selectedTask = this.state.unassigned[index];
         selectedTask.setDate(this.state.currentDateTitle);
         assignToDate(selectedTask);
-        this.state.unassigned.splice(index, 1);
-        this.state.data.push(selectedTask);
         this.reloadPage();
+
 
     }
     previousDay() {
-
+        var newDate = this.state.currentDateObject;
+        newDate.setDate(newDate.getDate()-1);
+        this.setState({
+            currentDateObject: newDate,
+            currentDateTitle: this.getDateDescription(newDate),
+            data: this.getDailyTasks(this.state.weekData),
+        });
     }
 
     nextDay() {
-
+        var newDate = this.state.currentDateObject;
+        newDate.setDate(newDate.getDate()+1);
+        this.setState({
+            currentDateObject: newDate,
+            currentDateTitle: this.getDateDescription(newDate),
+            data: this.getDailyTasks(this.state.weekData),
+        });
     }
 
     render(){
@@ -183,11 +219,17 @@ class CalendarUI extends Component {
                 <div align="center">
                 <h1 className="title">
                     <IconButton>
+                        <PreviousWeekButton onClick={(e) => {this.previousWeek()}}/>
+                    </IconButton>
+                    <IconButton>
                         <PreviousDayButton onClick={(e) => {this.previousDay()}}/>
                     </IconButton>
                     {this.state.currentDateTitle}
                 <IconButton>
                     <NextDayButton onClick={(e) => {this.nextDay()}}/>
+                </IconButton>
+                <IconButton>
+                    <NextWeekButton onClick={(e) => {this.nextWeek()}}/>
                 </IconButton>
                 </h1>
                 </div>
@@ -254,6 +296,7 @@ class CalendarUI extends Component {
                     ))}
                 </TableBody>
             </Table>
+                {this.state.loadingAssign? <Loader/> : <div></div>}
         </div>
         )
     }

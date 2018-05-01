@@ -112,7 +112,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         cal.setTimeInMillis(date);
         cal.add(Calendar.DAY_OF_WEEK, -cal.get(Calendar.DAY_OF_WEEK) + 2);
         Long start = cal.getTimeInMillis();
-        cal.add(Calendar.DAY_OF_WEEK, 7);
+        cal.add(Calendar.DAY_OF_WEEK, 1);
         Long end = cal.getTimeInMillis();
         return getTasksFromInterval(start, end);
     }

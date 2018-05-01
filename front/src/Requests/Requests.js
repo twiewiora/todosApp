@@ -24,9 +24,12 @@ export function getWeekTasks(day){
             return res.json();
         })
         .then(data => {
+            console.log(data);
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
+                let date = data[i].deadline.substr(0, 10).replace(" ", '-').replace(" ", '-');
+                newTask.setDate(date);
 
                 tasks.push(newTask);
             }
