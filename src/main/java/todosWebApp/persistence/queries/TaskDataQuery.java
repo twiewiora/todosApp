@@ -16,4 +16,8 @@ public interface TaskDataQuery {
 
     List<Task> getTasksFromInterval(Long startDate, Long endDate);
 
+    List<Task> getUnassignedTasks();
+
+    Task getLastUncheckedTask();
+
 }

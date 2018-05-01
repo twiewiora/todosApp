@@ -11,5 +11,7 @@ public interface CategoryDataQuery {
 
     Category getRootCategory();
 
+    List<Category> getChildren(Long categoryId);
+
     List<Category> getAllBaseCategories();
 }
