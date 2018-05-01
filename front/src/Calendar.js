@@ -3,6 +3,7 @@ import './Styles/App.css';
 import {MuiThemeProvider, RaisedButton} from "material-ui";
 import App from "./App";
 import CalendarUI from "./CalendarUI";
+
 class Calendar extends React.Component{
     render() {
         return (

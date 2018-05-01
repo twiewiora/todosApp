@@ -1,18 +1,12 @@
 import React, {Component} from 'react';
-import {
-    Table,
-    TableBody,
-    TableRow,
-    TableRowColumn,
-}
-from 'material-ui/Table';
+import {Table, TableBody, TableRow, TableRowColumn,} from 'material-ui/Table';
 import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {arrayMove, SortableContainer, SortableElement} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
-import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {addRequest, deleteRequest, getAllTasks, markRequest, swapRequest} from "./Requests/Requests";
 
 
 const stateTable = {
