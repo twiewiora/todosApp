@@ -11,6 +11,7 @@ import todosWebApp.persistence.service.TaskService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -25,7 +26,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_ALL = "/task/getAll";
-    private final String URL_TASK_GET_LAST_WEEK = "/task/lastWeek";
+    private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
     private final String URL_TASK_CREATE = "/task/create";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";

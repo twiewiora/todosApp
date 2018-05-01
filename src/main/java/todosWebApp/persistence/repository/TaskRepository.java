@@ -30,6 +30,6 @@ public interface TaskRepository extends JpaRepository<Task, Integer>, TaskDataQu
 
     @Override
     @Query("select task from Task task where (not task.date = null) and task.date > :startDate and task.date < :endDate ")
-    List<Task> getTasksFromInterval(Long startDate, Long endDate);
+    List<Task> getTasksFromInterval(@Param("startDate") Long startDate, @Param("endDate") Long endDate);
 
 }
