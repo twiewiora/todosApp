@@ -11,6 +11,7 @@ import todosWebApp.persistence.repository.CategoryRepository;
 import todosWebApp.persistence.repository.TaskRepository;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Component
@@ -104,6 +105,21 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     @Override
     public List<Task> getTasksByCategory(Long categoryId) {
         return taskRepository.getTasksByCategory(categoryId);
+    }
+
+    public List<Task> getTasksFromLastWeek(Long date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date);
+        cal.add(Calendar.DAY_OF_WEEK, -cal.get(Calendar.DAY_OF_WEEK) + 2);
+        Long start = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_WEEK, 7);
+        Long end = cal.getTimeInMillis();
+        return getTasksFromInterval(start, end);
+    }
+
+    @Override
+    public List<Task> getTasksFromInterval(Long startDate, Long endDate) {
+        return taskRepository.getTasksFromInterval(startDate, endDate);
     }
 
     @Override

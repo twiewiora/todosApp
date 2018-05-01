@@ -9,6 +9,10 @@ import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 @RestController
 public class TaskController {
 
@@ -23,6 +27,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_UNASSIGNED = "/task/unassigned";
     private final String URL_TASK_GET_ALL = "/task/getAll";
+    private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
     private final String URL_TASK_GET_LAST_UNCHECKED_TASK = "/task/lastUnchecked";
     private final String URL_TASK_CREATE = "/task/create";
     private final String URL_TASK_DROP = "/task/drop/{id}/{parent}";
@@ -37,6 +42,8 @@ public class TaskController {
     private final String URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT = "/category/subcategories/{id}";
     private final String URL_CATEGORY_CREATE = "/category/create";
     private final String FAIL_RETURN_VALUE = "false";
+
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
     public TaskController() {
     }
@@ -64,6 +71,24 @@ public class TaskController {
         try {
             return objectMapper.writeValueAsString(taskService.getTaskByTitle(title));
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_TASK_GET_LAST_WEEK,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getTaskFromLastWeek(@PathVariable String date){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Long time = dateFormatter.parse(date).getTime();
+            return objectMapper.writeValueAsString(taskService.getTasksFromLastWeek(time));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        } catch (ParseException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
         }
@@ -202,7 +227,11 @@ public class TaskController {
     public void assignDate
             (@RequestParam String taskID,
              @RequestParam String date) {
-        taskService.assignDate(Long.decode(taskID), Long.decode(date));
+        try {
+            taskService.assignDate(Long.decode(taskID), dateFormatter.parse(date).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping(value = URL_TASK_SET_CATEGORY,
