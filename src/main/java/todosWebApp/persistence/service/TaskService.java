@@ -110,6 +110,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public List<Task> getUnassignedTasks() { return taskRepository.getUnassignedTasks(); }
 
     @Override
+    public Task getLastUncheckedTask(){ return taskRepository.getLastUncheckedTask(); }
+
+    @Override
     public Task createTask(String name) {
         return createTask(name, null, categoryRepository.getRootCategory());
     }
@@ -196,5 +199,4 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     private void setTaskCategoryRelation(Task task, Category category){
         task.setCategory(category);
     }
-
 }
