@@ -90,7 +90,10 @@ class MaterialUIs extends Component {
 
     componentDidMount() {
         window.addEventListener('load', this.reloadPage);
-        this.setState({loading: false});
+
+    }
+    componentWillMount() {
+        this.reloadPage();
 
     }
 
@@ -130,9 +133,6 @@ class MaterialUIs extends Component {
             };
         });
         markRequest(selectedTask);
-
-
-
 
     }
 
@@ -210,7 +210,7 @@ class MaterialUIs extends Component {
                                    removeTask={this.removeTask.bind(this)} handleCheck={this.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}/>
                 <br/>
-                {this.state.loading ? <Loader/> : <div></div>}
+                {this.state.loading? <Loader/> : <div></div>}
 
             </div>
         );
