@@ -9,6 +9,9 @@ import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 @RestController
 public class TaskController {
 
@@ -22,6 +25,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_ALL = "/task/getAll";
+    private final String URL_TASK_GET_LAST_WEEK = "/task/lastWeek";
     private final String URL_TASK_CREATE = "/task/create";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";
@@ -33,6 +37,8 @@ public class TaskController {
     private final String URL_CATEGORY_GET_BY_ID = "/category/id/{id}";
     private final String URL_CATEGORY_CREATE = "/category/create";
     private final String FAIL_RETURN_VALUE = "false";
+
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
     public TaskController() {
     }
@@ -60,6 +66,24 @@ public class TaskController {
         try {
             return objectMapper.writeValueAsString(taskService.getTaskByTitle(title));
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_TASK_GET_LAST_WEEK,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getTaskFromLastWeek(@PathVariable String date){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Long time = dateFormatter.parse(date).getTime();
+            return objectMapper.writeValueAsString(taskService.getTasksFromLastWeek(time));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        } catch (ParseException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
         }
