@@ -1,0 +1,43 @@
+#flyoutMenu {
+    width: 30vw;
+    height: 100vh;
+    background-color: #9898c9;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: transform .5s
+                cubic-bezier(0, .52, 0, 1);
+    overflow: scroll;
+    z-index: 1000;
+}
+
+#flyoutMenu.hide {
+    transform: translate3d(-30vw, 0, 0);
+}
+
+#flyoutMenu.show {
+    transform: translate3d(0vw, 0, 0);
+    overflow: hidden;
+}
+
+#flyoutMenu h2 a {
+    color: #333;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+#flyoutMenu h2 a:hover {
+    text-decoration: underline;
+}
+
+#flyoutMenu li {
+    color: #333;
+    margin-left: 15px;
+    text-decoration: none;
+    display: block;
+}
+
+#flyoutMenu li:hover {
+    text-decoration: underline;
+}
