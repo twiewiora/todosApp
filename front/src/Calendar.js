@@ -13,7 +13,7 @@ class Calendar extends React.Component{
                         <RaisedButton className="homeButton"
                                       target="_blank"
                                       label="Home"
-                                      onClick={e=>this.props.pager.push(App)}
+                                      onClick={e=>{this.props.pager.push(App)}}
                         />
                     </div>
                     <CalendarUI/>

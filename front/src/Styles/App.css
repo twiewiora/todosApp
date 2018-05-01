@@ -14,15 +14,25 @@
   right: 5px;
   top: 5px;
 }
-
+.weekFlowButton {
+  position: absolute;
+  left: 5px;
+}
 .homeButton {
   position: absolute;
   left: 5px;
   top: 5px;
 }
-
+.assignButton{
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
 .BackIcon {
   text-align: left;
+}
+.assignDiv{
+  position: absolute;
 }
 
 

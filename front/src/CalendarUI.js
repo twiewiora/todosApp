@@ -3,7 +3,7 @@ import './Styles/App.css';
 import {
     Dialog,
     FlatButton,
-    IconButton,
+    IconButton, RaisedButton,
     Table,
     TableBody,
     TableHeader,
@@ -14,7 +14,14 @@ import {
 import {getStripedStyle} from "./Styles/Styling";
 import Task from "./Task/Task";
 
-import Info from 'mui-icons/mdi/info';
+import InfoButton from 'mui-icons/mdi/info_outline';
+import PreviousDayButton from 'mui-icons/mdi/fast_rewind';
+import NextDayButton from 'mui-icons/mdi/fast_forward';
+import NextWeekButton from 'mui-icons/mdi/skip_next';
+import PreviousWeekButton from 'mui-icons/mdi/skip_previous';
+import AssignButton from 'mui-icons/mdi/call_made';
+import {assignToDate, getUnassignedTasks, getWeekTasks} from "./Requests/Requests";
+import Loader from "./Loader/Loader";
 
 const mainTableState = {
     fixedHeader: true,
@@ -28,26 +35,90 @@ const mainTableState = {
     showCheckboxes: false,
     displaySelectAll: false,
 };
-
+const unassignedTableState = {
+    fixedHeader: true,
+    fixedFooter: true,
+    stripedRows: false,
+    showRowHover: false,
+    selectable: false,
+    multiSelectable: false,
+    enableSelectAll: false,
+    deselectOnClickaway: false,
+    showCheckboxes: false,
+    displaySelectAll: false,
+};
 class CalendarUI extends Component {
     constructor(props) {
-        let newTask = new Task("Meh", -1);
-        newTask.setState(true);
-        let newTask2 = new Task("Bum", -1);
-        newTask.setState(false);
         super(props);
         this.state = {
-            selected: [],
-            data: [newTask, newTask2],
+            data: [],
+            weekData: [],
+            unassigned: [],
             open: false,
             descriptionName: "",
             descriptionStatus: "",
-            currentDate: 0,
-        }
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
+            currentDateTitle: 0,
+            currentDateObject: undefined,
+            loading: true,
+        };
+        this.getCurrentDate();
+        this.reloadPage = this.reloadPage.bind(this);
+
+
+    };
+    componentDidMount() {
+        window.addEventListener('load', this.reloadPage);
+
+    }
+    componentWillMount() {
+        this.reloadPage();
+
+    }
+
+    reloadPage() {
+        this.setState({loading: true});
+        let weeklyTasks =  getWeekTasks(this.state.currentDateTitle);
+
+        let unassignedTasks = getUnassignedTasks();
+        this.setState({
+            loading: true
+        }, function(){
+            setTimeout(function() {
+                this.setState({
+                    data: weeklyTasks,
+                    unassigned: unassignedTasks,
+                    loading: false
+                });
+            }.bind(this), 3000)
+        }.bind(this));
+
+    }
+    nextWeek() {
+        console.log("NEXT WEEK");
+        console.log(this.state.currentDateObject);
+        var newDate = this.state.currentDateObject;
+        newDate.setDate(newDate.getDate()+7);
+        console.log(newDate);
+        this.setState({
+            currentDateObject: newDate,
+            currentDateTitle: this.getDateDescription(newDate)
+        });
+    }
+    previousWeek() {
+        console.log("PREVIOUS WEEK");
+        console.log(this.state.currentDateObject);
+        var newDate = this.state.currentDateObject;
+        newDate.setDate(newDate.getDate()-7);
+        console.log(newDate);
+        this.setState({
+            currentDateObject: newDate,
+            currentDateTitle: this.getDateDescription(newDate)
+        });
+    }
+    getDateDescription(date){
+        var dd = date.getDate();
+        var mm = date.getMonth()+1; //January is 0!
+        var yyyy = date.getFullYear();
 
         if(dd<10) {
             dd = '0'+dd
@@ -57,9 +128,13 @@ class CalendarUI extends Component {
             mm = '0'+mm
         }
 
-        today = mm + '/' + dd + '/' + yyyy;
-        this.state.currentDate = today;
-    };
+        return dd + '-' + mm + '-' + yyyy;
+    }
+    getCurrentDate() {
+        var today = new Date();
+        this.state.currentDateObject = new Date();
+        this.state.currentDateTitle = this.getDateDescription(today);
+    }
 
     handleClose = () => {
         this.setState({open: false});
@@ -80,15 +155,44 @@ class CalendarUI extends Component {
     showDialog(index) {
         let name = this.state.data[index].getName();
         console.log(this.state.data[index]);
-        let status = this.state.data[index].getState() ? "done" : "undone";
+        let status = this.state.data[index].getState();
         this.setState({descriptionName: "Name: " + name});
         this.setState({descriptionStatus: "Status: " + status});
         this.setState({open: true});
     }
+    assignDate(index) {
+        let selectedTask = this.state.unassigned[index];
+        selectedTask.setDate(this.state.currentDateTitle);
+        assignToDate(selectedTask);
+        this.state.unassigned.splice(index, 1);
+        this.state.data.push(selectedTask);
+        this.reloadPage();
+
+    }
+    previousDay() {
+
+    }
+
+    nextDay() {
+
+    }
+
     render(){
         return(
             <div>
-                <h1 align="center" className="title"> {this.state.currentDate} </h1>
+                <div align="center">
+                <h1 className="title">
+                    <IconButton>
+                        <PreviousDayButton onClick={(e) => {this.previousDay()}}/>
+                    </IconButton>
+                    {this.state.currentDateTitle}
+                <IconButton>
+                    <NextDayButton onClick={(e) => {this.nextDay()}}/>
+                </IconButton>
+                </h1>
+                </div>
+
+                {this.state.loading? <Loader/> : <div></div>}
             <Table selectable={mainTableState.selectable} style={{ width: 400, margin: 'auto' }}>
                 <TableHeader displaySelectAll = {mainTableState.displaySelectAll}
                              adjustForCheckbox = {mainTableState.showCheckboxes}
@@ -104,7 +208,7 @@ class CalendarUI extends Component {
                             <TableRowColumn>{row.name}</TableRowColumn>
                             <TableRowColumn>
                                 <IconButton>
-                                    <Info onClick={(e) => { this.showDialog(index)}}/>
+                                    <InfoButton onClick={(e) => { this.showDialog(index)}}/>
                                 </IconButton>
                             </TableRowColumn>
                         </TableRow>
@@ -120,14 +224,40 @@ class CalendarUI extends Component {
                         {this.state.descriptionName} <br/> {this.state.descriptionStatus}
                     </Dialog>
 
-
-
                 </TableBody>
             </Table>
+            <h1 align="center" className="title"> Unassigned tasks
+            </h1>
+                <Table
+                       selectable={unassignedTableState.selectable}
+                       style={{ width: 400, margin: 'auto' }}>
+                <TableHeader displaySelectAll = {unassignedTableState.displaySelectAll}
+                             adjustForCheckbox = {unassignedTableState.showCheckboxes}
+                >
+                    <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                        <TableHeaderColumn>Name</TableHeaderColumn>
+                        <TableHeaderColumn>Assign to current date</TableHeaderColumn>
+                    </TableRow>
+                </TableHeader>
+                <TableBody displayRowCheckbox = {unassignedTableState.showCheckboxes}>
+                    {this.state.unassigned.map( (row, index) => (
+                        <TableRow
+                            key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getStripedStyle(index) }}>
+                            <TableRowColumn>{row.name}</TableRowColumn>
+                            <TableRowColumn>
+                                <IconButton>
+                                    <AssignButton onClick={(e) => {this.assignDate(index)}}/>
+                                </IconButton>
+                            </TableRowColumn>
+                        </TableRow>
 
+                    ))}
+                </TableBody>
+            </Table>
         </div>
         )
     }
+
 
 
 }
