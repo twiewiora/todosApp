@@ -9,6 +9,10 @@ import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 @RestController
 public class TaskController {
 
@@ -21,8 +25,12 @@ public class TaskController {
     private final String URL_TASK_GET_BY_ID = "/task/id/{id}";
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
+    private final String URL_TASK_GET_UNASSIGNED = "/task/unassigned";
     private final String URL_TASK_GET_ALL = "/task/getAll";
+    private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
+    private final String URL_TASK_GET_LAST_UNCHECKED_TASK = "/task/lastUnchecked";
     private final String URL_TASK_CREATE = "/task/create";
+    private final String URL_TASK_DROP = "/task/drop/{id}/{parent}";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";
     private final String URL_TASK_SET_CATEGORY = "/task/setCategory";
@@ -31,8 +39,11 @@ public class TaskController {
     private final String URL_CATEGORY_GET_BASE = "/category/getBase";
     private final String URL_CATEGORY_GET_ALL = "/category/getAll";
     private final String URL_CATEGORY_GET_BY_ID = "/category/id/{id}";
+    private final String URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT = "/category/subcategories/{id}";
     private final String URL_CATEGORY_CREATE = "/category/create";
     private final String FAIL_RETURN_VALUE = "false";
+
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
     public TaskController() {
     }
@@ -66,6 +77,24 @@ public class TaskController {
     }
 
     @RequestMapping(
+            value = URL_TASK_GET_LAST_WEEK,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getTaskFromLastWeek(@PathVariable String date){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Long time = dateFormatter.parse(date).getTime();
+            return objectMapper.writeValueAsString(taskService.getTasksFromLastWeek(time));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
             value = URL_TASK_GET_BY_CATEGORY,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
@@ -79,6 +108,22 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(
+            value = URL_TASK_GET_UNASSIGNED,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getUnassignedTasks(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(taskService.getUnassignedTasks());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+
+
     @RequestMapping(value = URL_TASK_GET_ALL,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
@@ -86,6 +131,19 @@ public class TaskController {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.writeValueAsString(taskService.getAllTasks());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(value =  URL_TASK_GET_LAST_UNCHECKED_TASK,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getLastUncheckedTask() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(taskService.getLastUncheckedTask());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
@@ -133,6 +191,19 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(value = URL_TASK_DROP,
+            method = RequestMethod.POST)
+    public void setTaskDoneAndDrop(@PathVariable String id, @PathVariable String parent) {
+        //long taskId = Long.decode(id);
+        if (taskService.getTaskById(Long.decode(id)).getDone()) {
+            taskService.setDone(Long.decode(id), false);
+        } else {
+            taskService.setDone(Long.decode(id), true);
+        }
+        moveTask(id, parent);
+    }
+
+
     @RequestMapping(value = URL_TASK_DELETE,
             method = RequestMethod.DELETE)
     public void deleteTask(@PathVariable String id) {
@@ -156,7 +227,11 @@ public class TaskController {
     public void assignDate
             (@RequestParam String taskID,
              @RequestParam String date) {
-        taskService.assignDate(Long.decode(taskID), Long.decode(date));
+        try {
+            taskService.assignDate(Long.decode(taskID), dateFormatter.parse(date).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping(value = URL_TASK_SET_CATEGORY,
@@ -210,6 +285,20 @@ public class TaskController {
     }
 
     @RequestMapping(
+            value = URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getChildren(@PathVariable String id) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(categoryService.getChildren(Long.decode(id)));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
             value =   URL_CATEGORY_CREATE,
             method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
@@ -233,6 +322,7 @@ public class TaskController {
             return FAIL_RETURN_VALUE;
         }
     }
+
 
 }
 

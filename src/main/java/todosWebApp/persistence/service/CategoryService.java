@@ -41,6 +41,13 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
     }
 
     @Override
+    public void deleteCategory(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+
+        categoryRepository.delete(category);
+    }
+
+    @Override
     public Category createRootCategoryIfNotExists() {
         Category root = getRootCategory();
 
@@ -67,6 +74,11 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
     @Override
     public Category getRootCategory() {
         return categoryRepository.getRootCategory();
+    }
+
+    @Override
+    public List<Category> getChildren(Long categoryId) {
+        return categoryRepository.getChildren(categoryId);
     }
 
     @Override

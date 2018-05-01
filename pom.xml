@@ -13,6 +13,8 @@
         <spring.version>4.0.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.7.1.RELEASE</spring.data.jpa.version>
         <hibernate.version>4.1.9.Final</hibernate.version>
+        <maven.test.skip>true</maven.test.skip>
+        <myTestSourceDirectory>src/test/todosWebApp</myTestSourceDirectory>
     </properties>
 
     <build>
@@ -29,6 +31,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.21.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.21.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -140,6 +154,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.5.0</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.springtestdbunit</groupId>
+            <artifactId>spring-test-dbunit</artifactId>
+            <version>1.2.1</version>
             <scope>test</scope>
         </dependency>
 
