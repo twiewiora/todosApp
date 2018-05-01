@@ -181,7 +181,11 @@ public class TaskController {
     public void assignDate
             (@RequestParam String taskID,
              @RequestParam String date) {
-        taskService.assignDate(Long.decode(taskID), Long.decode(date));
+        try {
+            taskService.assignDate(Long.decode(taskID), dateFormatter.parse(date).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping(value = URL_TASK_SET_CATEGORY,
