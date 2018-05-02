@@ -3,7 +3,8 @@ import './Styles/App.css';
 import {
     Dialog,
     FlatButton,
-    IconButton, RaisedButton,
+    IconButton,
+    RaisedButton,
     Table,
     TableBody,
     TableHeader,
