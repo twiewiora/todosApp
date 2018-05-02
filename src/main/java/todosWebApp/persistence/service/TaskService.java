@@ -107,6 +107,11 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         return taskRepository.getTasksByCategory(categoryId);
     }
 
+    @Override
+    public List<Task> getTasksForGivenDay(Long date) {
+        return taskRepository.getTasksForGivenDay(date);
+    }
+
     public List<Task> getTasksFromLastWeek(Long date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);

@@ -27,6 +27,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_UNASSIGNED = "/task/unassigned";
     private final String URL_TASK_GET_ALL = "/task/getAll";
+    private final String URL_TASK_GET_GIVEN_DAY = "/task/dailyTasks/date={date}";
     private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
     private final String URL_TASK_GET_LAST_UNCHECKED_TASK = "/task/lastUnchecked";
     private final String URL_TASK_CREATE = "/task/create";
@@ -71,6 +72,24 @@ public class TaskController {
         try {
             return objectMapper.writeValueAsString(taskService.getTaskByTitle(title));
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
+            value = URL_TASK_GET_GIVEN_DAY,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    public String getTaskForGivenDay(@PathVariable String date){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Long time = dateFormatter.parse(date).getTime();
+            return objectMapper.writeValueAsString(taskService.getTasksForGivenDay(time));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        } catch (ParseException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
         }
