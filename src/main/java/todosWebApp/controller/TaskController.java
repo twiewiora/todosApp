@@ -11,15 +11,12 @@ import todosWebApp.persistence.service.TaskService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 @RestController
 public class TaskController {
 
-    @Autowired
     private TaskService taskService;
 
-    @Autowired
     private CategoryService categoryService;
 
     private final String URL_TASK_GET_BY_ID = "/task/id/{id}";
@@ -45,7 +42,10 @@ public class TaskController {
 
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-    public TaskController() {
+    @Autowired
+    public TaskController(TaskService taskService, CategoryService categoryService) {
+        this.taskService = taskService;
+        this.categoryService = categoryService;
     }
 
     @RequestMapping(
