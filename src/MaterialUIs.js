@@ -13,24 +13,13 @@ import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
 import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {getMainStateTable} from "./Styles/TablesStates";
+import {removeIndex} from "./Utils/ArrayFunctions";
 
-
-const stateTable = {
-    fixedHeader: true,
-    fixedFooter: true,
-    stripedRows: false,
-    showRowHover: false,
-    selectable: true,
-    multiSelectable: true,
-    enableSelectAll: true,
-    deselectOnClickaway: false,
-    showCheckboxes: false,
-    height: '300px',
-};
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index) }}>
+              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, row.getState()) }}>
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
@@ -49,17 +38,17 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
 const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck}) => {
     return (
         <Table
-            fixedHeader={stateTable.fixedHeader}
-            fixedFooter={stateTable.fixedFooter}
-            selectable={stateTable.selectable}
-            multiSelectable={stateTable.multiSelectable}
+            fixedHeader={getMainStateTable().fixedHeader}
+            fixedFooter={getMainStateTable().fixedFooter}
+            selectable={getMainStateTable().selectable}
+            multiSelectable={getMainStateTable().multiSelectable}
             style={{ tableLayout: "auto" }}
         >
             <TableBody
-                displayRowCheckbox={stateTable.showCheckboxes}
-                deselectOnClickaway={stateTable.deselectOnClickaway}
-                showRowHover={stateTable.showRowHover}
-                stripedRows={stateTable.stripedRows}
+                displayRowCheckbox={getMainStateTable().showCheckboxes}
+                deselectOnClickaway={getMainStateTable().deselectOnClickaway}
+                showRowHover={getMainStateTable().showRowHover}
+                stripedRows={getMainStateTable().stripedRows}
             >
                 <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
                     <TableHeaderColumn>Status</TableHeaderColumn>
@@ -88,10 +77,6 @@ class MaterialUIs extends Component {
         this.handleKeyPress = this.handleKeyPress.bind(this)
     }
 
-    componentDidMount() {
-        window.addEventListener('load', this.reloadPage);
-
-    }
     componentWillMount() {
         this.reloadPage();
 
@@ -115,6 +100,7 @@ class MaterialUIs extends Component {
     }
 
 
+
     handleKeyPress(event) {
         if (event.key === 'Enter') {
             this.addTask();
@@ -126,13 +112,13 @@ class MaterialUIs extends Component {
 
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
+        markRequest(selectedTask);
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
-                color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
-        markRequest(selectedTask);
+
 
     }
 
@@ -143,7 +129,6 @@ class MaterialUIs extends Component {
         let temp = this.state.data;
         temp.unshift(newTask);
         this.setState({data : temp});
-        console.log(newTask);
         document.getElementById('taskName').value = "";
         document.getElementById('taskName').hintText = "name";
     };
@@ -161,7 +146,6 @@ class MaterialUIs extends Component {
 
     onSortEnd = ({oldIndex, newIndex}) => {
         if(oldIndex !== newIndex){
-            console.log(oldIndex + " " + newIndex);
             let taskID = this.state.data[oldIndex].getID();
             if(oldIndex > newIndex){
                 let newParentID = null;

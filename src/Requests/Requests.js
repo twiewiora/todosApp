@@ -13,9 +13,9 @@ function showRestartAlert(message) {
         window.location.reload();
     }
 }
-export function getWeekTasks(day){
+export function getDailyTasks(day){
     let tasks = [];
-    fetch('http://localhost:8080/task/weeklyTasks/date=' + day)
+    fetch('http://localhost:8080/task/dailyTasks/date=' + day)
         .then(res => {
 
             if (res.status !== 200){
@@ -24,7 +24,6 @@ export function getWeekTasks(day){
             return res.json();
         })
         .then(data => {
-            console.log(data);
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
@@ -51,12 +50,12 @@ export function getUnassignedTasks(){
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
-
                 tasks.push(newTask);
             }
         }).catch(function() {
         showRestartAlert("Oops! Problem with server. Cannot load tasks.");
     });
+
     return tasks;
 
 }
