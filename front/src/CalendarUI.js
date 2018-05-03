@@ -4,7 +4,6 @@ import {
     Dialog,
     FlatButton,
     IconButton,
-    RaisedButton,
     Table,
     TableBody,
     TableHeader,
@@ -13,7 +12,6 @@ import {
     TableRowColumn
 } from "material-ui";
 import {getStripedStyle} from "./Styles/Styling";
-import Task from "./Task/Task";
 
 import InfoButton from 'mui-icons/mdi/info_outline';
 import PreviousDayButton from 'mui-icons/mdi/fast_rewind';
@@ -51,6 +49,9 @@ const unassignedTableState = {
 class CalendarUI extends Component {
     constructor(props) {
         super(props);
+
+        const today = new Date();
+
         this.state = {
             data: [],
             weekData: [],
@@ -58,15 +59,11 @@ class CalendarUI extends Component {
             open: false,
             descriptionName: "",
             descriptionStatus: "",
-            currentDateTitle: 0,
-            currentDateObject: undefined,
             loading: true,
-            loadingAssign: false
+            loadingAssign: false,
+            currentDateObject: today,
+            currentDateTitle: this.getDateDescription(today),
         };
-        this.getCurrentDate();
-        this.reloadPage = this.reloadPage.bind(this);
-
-
     };
     componentDidMount() {
         window.addEventListener('load', this.reloadPage);
@@ -74,18 +71,17 @@ class CalendarUI extends Component {
     }
     componentWillMount() {
         this.reloadPage();
-
     }
 
-    reloadPage() {
+    reloadPage = () => {
         this.setState({loading: true});
         let weeklyTasks =  getWeekTasks(this.state.currentDateTitle);
         let dailyTasks = [];
         let unassignedTasks = getUnassignedTasks();
         this.setState({
             loading: true
-        }, function(){
-            setTimeout(function() {
+        },() => {
+            setTimeout(() => {
                 dailyTasks = this.getDailyTasks(weeklyTasks);
                 this.setState({
                     weekData: weeklyTasks,
@@ -93,10 +89,11 @@ class CalendarUI extends Component {
                     unassigned: unassignedTasks,
                     loading: false
                 });
-            }.bind(this), 3000)
-        }.bind(this));
+            }, 3000)
+        });
 
-    }
+    };
+
     nextWeek() {
         console.log("NEXT WEEK");
         console.log(this.state.currentDateObject);
@@ -120,9 +117,9 @@ class CalendarUI extends Component {
         });
     }
     getDateDescription(date){
-        var dd = date.getDate();
-        var mm = date.getMonth()+1; //January is 0!
-        var yyyy = date.getFullYear();
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1; //January is 0!
+        let yyyy = date.getFullYear();
 
         if(dd<10) {
             dd = '0'+dd
@@ -135,9 +132,9 @@ class CalendarUI extends Component {
         return dd + '-' + mm + '-' + yyyy;
     }
     getReversedDateDescription(date){
-        var dd = date.getDate();
-        var mm = date.getMonth()+1; //January is 0!
-        var yyyy = date.getFullYear();
+        let dd = date.getDate();
+        let mm = date.getMonth()+1; //January is 0!
+        let yyyy = date.getFullYear();
 
         if(dd<10) {
             dd = '0'+dd
@@ -148,11 +145,6 @@ class CalendarUI extends Component {
         }
 
         return yyyy + '-' + mm + '-' + dd;
-    }
-    getCurrentDate() {
-        var today = new Date();
-        this.state.currentDateObject = new Date();
-        this.state.currentDateTitle = this.getDateDescription(today);
     }
 
     handleClose = () => {
@@ -170,7 +162,8 @@ class CalendarUI extends Component {
             onClick={this.handleClose}
         />,
     ];
-    getDailyTasks(tasks){
+
+    getDailyTasks = (tasks) => {
         let dailyTasks = [];
         for (let i = 0; i < tasks.length; i++){
             if (this.getReversedDateDescription(this.state.currentDateObject) === tasks[i].getDate()){
@@ -178,23 +171,26 @@ class CalendarUI extends Component {
             }
         }
         return dailyTasks
-    }
-    showDialog(index) {
+    };
+
+    showDialog = (index) => {
         let name = this.state.data[index].getName();
         let status = this.state.data[index].getState();
-        this.setState({descriptionName: "Name: " + name});
-        this.setState({descriptionStatus: "Status: " + status});
-        this.setState({open: true});
-    }
-    assignDate(index) {
+        this.setState({
+            descriptionName: "Name: " + name,
+            descriptionStatus: "Status: " + status,
+            open: true
+        });
+    };
+
+    assignDate = (index) => {
         let selectedTask = this.state.unassigned[index];
         selectedTask.setDate(this.state.currentDateTitle);
         assignToDate(selectedTask);
         this.reloadPage();
+    };
 
-
-    }
-    previousDay() {
+    previousDay = () => {
         var newDate = this.state.currentDateObject;
         newDate.setDate(newDate.getDate()-1);
         this.setState({
@@ -202,9 +198,9 @@ class CalendarUI extends Component {
             currentDateTitle: this.getDateDescription(newDate),
             data: this.getDailyTasks(this.state.weekData),
         });
-    }
+    };
 
-    nextDay() {
+    nextDay = () => {
         var newDate = this.state.currentDateObject;
         newDate.setDate(newDate.getDate()+1);
         this.setState({
@@ -212,7 +208,7 @@ class CalendarUI extends Component {
             currentDateTitle: this.getDateDescription(newDate),
             data: this.getDailyTasks(this.state.weekData),
         });
-    }
+    };
 
     render(){
         return(
@@ -235,7 +231,7 @@ class CalendarUI extends Component {
                 </h1>
                 </div>
 
-                {this.state.loading? <Loader/> : <div></div>}
+                {this.state.loading && <Loader/>}
             <Table selectable={mainTableState.selectable} style={{ width: 400, margin: 'auto' }}>
                 <TableHeader displaySelectAll = {mainTableState.displaySelectAll}
                              adjustForCheckbox = {mainTableState.showCheckboxes}
@@ -297,7 +293,7 @@ class CalendarUI extends Component {
                     ))}
                 </TableBody>
             </Table>
-                {this.state.loadingAssign? <Loader/> : <div></div>}
+                {this.state.loadingAssign && <Loader/>}
         </div>
         )
     }
