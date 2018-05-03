@@ -211,10 +211,8 @@ class MaterialUIs extends Component {
                                    onSortEnd={this.onSortEnd}/>
                 <br/>
                 {this.state.loading? <Loader/> : <div></div>}
-
             </div>
         );
-
     }
 
 }
