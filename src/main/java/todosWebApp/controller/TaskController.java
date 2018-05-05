@@ -52,6 +52,7 @@ public class TaskController {
             value = URL_TASK_GET_BY_ID,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getTaskById(@PathVariable String id){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -66,6 +67,7 @@ public class TaskController {
             value = URL_TASK_GET_BY_TITLE,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getTaskByTitle(@PathVariable String title){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -80,6 +82,7 @@ public class TaskController {
             value = URL_TASK_GET_LAST_WEEK,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getTaskFromLastWeek(@PathVariable String date){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -98,6 +101,7 @@ public class TaskController {
             value = URL_TASK_GET_BY_CATEGORY,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getTaskByCategory(@PathVariable String id){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -112,6 +116,7 @@ public class TaskController {
             value = URL_TASK_GET_UNASSIGNED,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getUnassignedTasks(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -127,6 +132,7 @@ public class TaskController {
     @RequestMapping(value = URL_TASK_GET_ALL,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getAllTasks() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -140,6 +146,7 @@ public class TaskController {
     @RequestMapping(value =  URL_TASK_GET_LAST_UNCHECKED_TASK,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getLastUncheckedTask() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -154,6 +161,7 @@ public class TaskController {
             value = URL_TASK_CREATE,
             method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String createTask(@RequestParam String title,
                              @RequestParam(required = false) String date,
                              @RequestParam(required = false) String categoryID) {
@@ -183,6 +191,7 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_SET_DONE,
             method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void setTaskDone(@PathVariable String id) {
         if (taskService.getTaskById(Long.decode(id)).getDone()) {
             taskService.setDone(Long.decode(id), false);
@@ -193,6 +202,7 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_DROP,
             method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void setTaskDoneAndDrop(@PathVariable String id, @PathVariable String parent) {
         //long taskId = Long.decode(id);
         if (taskService.getTaskById(Long.decode(id)).getDone()) {
@@ -206,12 +216,14 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_DELETE,
             method = RequestMethod.DELETE)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void deleteTask(@PathVariable String id) {
         taskService.deleteTask(Long.decode(id));
     }
 
     @RequestMapping(value = URL_TASK_SET_ORDER,
             method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void moveTask
             (@RequestParam String taskID,
              @RequestParam(required = false) String newParentTaskId) {
@@ -224,6 +236,7 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_SET_DATE,
             method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void assignDate
             (@RequestParam String taskID,
              @RequestParam String date) {
@@ -236,6 +249,7 @@ public class TaskController {
 
     @RequestMapping(value = URL_TASK_SET_CATEGORY,
             method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
     public void assignCategory
             (@RequestParam String taskID,
              @RequestParam String categoryId) {
@@ -246,6 +260,7 @@ public class TaskController {
             value = URL_CATEGORY_GET_BASE,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getAllBaseCategories(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -260,6 +275,7 @@ public class TaskController {
             value = URL_CATEGORY_GET_ALL,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String  getAllCategories(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -274,6 +290,7 @@ public class TaskController {
             value = URL_CATEGORY_GET_BY_ID,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getCategoryById(@PathVariable String id) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -288,6 +305,7 @@ public class TaskController {
             value = URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getChildren(@PathVariable String id) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -302,6 +320,7 @@ public class TaskController {
             value =   URL_CATEGORY_CREATE,
             method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String createCategory(@RequestParam String name,
                                  @RequestParam(required = false) String parentCategoryId) {
         ObjectMapper objectMapper = new ObjectMapper();
