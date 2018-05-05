@@ -15,7 +15,7 @@ public class CategoryController {
 
     private CategoryService categoryService;
 
-    private final String crossOriginUrl = "http://localhost:3000";
+    private final String crossOriginUrl = "https://todos-managment.herokuapp.com";
 
     @Autowired
     public CategoryController(TaskService taskService, CategoryService categoryService) {

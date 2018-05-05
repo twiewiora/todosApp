@@ -15,12 +15,12 @@ public class Task {
 
     @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "PARENT_FOREIGN_KEY", referencedColumnName = "id")
+    @JoinColumn(name = "parent_foreign_key", referencedColumnName = "id")
     private Task parent;
 
     @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "CHILD_FOREIGN_KEY", referencedColumnName = "id")
+    @JoinColumn(name = "child_foreign_key", referencedColumnName = "id")
     private Task child;
 
 	private String title;
@@ -34,7 +34,7 @@ public class Task {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_FOREIGN_KEY")
+    @JoinColumn(name = "category_foreign_key")
     private Category category;
 
     public Task(){

@@ -2,3 +2,9 @@ language: java
 jdk: oraclejdk8
 
 script: mvn surefire:test
+
+deploy:
+  provider: heroku
+  api_key: a34540fd-b9ad-42ef-aea6-cf3c263f1519
+  app:
+    deployment: web-todos-app
