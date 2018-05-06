@@ -83,6 +83,7 @@ public class TaskController {
             value = URL_TASK_GET_GIVEN_DAY,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String getTaskForGivenDay(@PathVariable String date){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -188,11 +189,11 @@ public class TaskController {
         Task newTask;
         try {
             if (date != null && categoryID != null) {
-                Long dateTask = Long.decode(date);
+                Long dateTask = dateFormatter.parse(date).getTime();
                 Category category = categoryService.getCategoryById(Long.decode(categoryID));
                 newTask = taskService.createTask(title, dateTask, category);
             } else if (date != null) {
-                Long dateTask = Long.decode(date);
+                Long dateTask = dateFormatter.parse(date).getTime();
                 newTask = taskService.createTask(title, dateTask);
             } else {
                 newTask = taskService.createTask(title);
@@ -202,7 +203,7 @@ public class TaskController {
             } else {
                 return FAIL_RETURN_VALUE;
             }
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | ParseException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
         }
