@@ -1,8 +1,7 @@
 package todosWebApp.persistence.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 import todosWebApp.persistence.creators.TaskDataCreator;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.model.Task;
@@ -14,18 +13,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-@Component
-@Transactional
+@Service
 public class TaskService implements TaskDataQuery, TaskDataCreator {
 
-
-    @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
     private CategoryRepository categoryRepository;
 
-    public TaskService(){
+    @Autowired
+    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository) {
+        this.taskRepository = taskRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
