@@ -47,6 +47,7 @@ export function getUnassignedTasks(){
             return res.json();
         })
         .then(data => {
+            console.log(data);
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
@@ -108,6 +109,7 @@ export function addRequest(newTaskName) {
             return res.json();
         })
         .then(data => {
+            console.log(data);
             newTask.setID(data.id);
             newTask.setState(data.done);
 
@@ -126,6 +128,7 @@ export function getAllTasks() {
             return res.json();
         })
         .then(data => {
+            console.log(data);
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
