@@ -140,6 +140,8 @@ public class TaskController {
     public String getUnassignedTasks(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            System.out.println("TASKI:");
+            System.out.println(taskService.getUnassignedTasks());
             return objectMapper.writeValueAsString(taskService.getUnassignedTasks());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -187,6 +189,8 @@ public class TaskController {
                              @RequestParam(required = false) String categoryID) {
         ObjectMapper objectMapper = new ObjectMapper();
         Task newTask;
+        System.out.println("DATA");
+        System.out.println(date);
         try {
             if (date != null && categoryID != null) {
                 Long dateTask = dateFormatter.parse(date).getTime();
