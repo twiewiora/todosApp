@@ -145,12 +145,14 @@ class MaterialUIs extends Component {
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
-        let newTask = addRequest(name);
-        let temp = this.state.data;
-        temp.unshift(newTask);
-        this.setState({data : temp});
-        document.getElementById('taskName').value = "";
-        document.getElementById('taskName').hintText = "name";
+        if (name !== ""){
+            let newTask = addRequest(name);
+            let temp = this.state.data;
+            temp.unshift(newTask);
+            this.setState({data : temp});
+            document.getElementById('taskName').value = "";
+            document.getElementById('taskName').hintText = "name";
+        }
     };
 
 
