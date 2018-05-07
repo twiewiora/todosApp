@@ -107,6 +107,7 @@ class CalendarUI extends Component {
 
         let newUnassigned = this.state.unassigned.slice();
         newUnassigned = removeIndex(newUnassigned, index);
+        console.log(newUnassigned);
 
         let newData = this.state.data.slice();
         newData.push(selectedTask);
