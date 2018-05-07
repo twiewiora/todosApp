@@ -12,7 +12,7 @@ import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
-import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {removeIndex} from "./Utils/ArrayFunctions";
 
@@ -109,16 +109,36 @@ class MaterialUIs extends Component {
 
      handleCheck(i){
         let state = this.state.data[i].getState();
+        let firstDoneIndex = this.getFirstDoneTaskIndex();
 
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
-        markRequest(selectedTask);
+
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
+                color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
 
+         if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
+             if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
+                 && !(!this.state.data[i].getState() && i <= firstDoneIndex)) {
+                 if(i > firstDoneIndex){
+                     this.setState({
+                         data: arrayMove(this.state.data, i, firstDoneIndex),
+                     });
+                 } else {
+                     this.setState({
+                         data: arrayMove(this.state.data, i, firstDoneIndex - 1),
+                     });
+                 }
+                 console.log(firstDoneIndex-1);
+                 markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
+             } else {
+                 markRequest(selectedTask);
+             }
+         }
 
     }
 
@@ -176,6 +196,19 @@ class MaterialUIs extends Component {
                 return i;
             }
         }
+    };
+
+    getFirstDoneTaskIndex = function () {
+        let length = this.state.data.length;
+        let firstDoneTaskIndexAtTheBottom = length;
+        for (let i = length-1; i >= 0; i--){
+            if(this.state.data[i].getState() === false) {
+                break;
+            } else {
+                firstDoneTaskIndexAtTheBottom = i;
+            }
+        }
+        return firstDoneTaskIndexAtTheBottom;
     };
     render() {
         return (
