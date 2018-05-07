@@ -24,6 +24,7 @@ public class TaskController {
     private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
     private final String URL_TASK_GET_UNASSIGNED = "/task/unassigned";
     private final String URL_TASK_GET_ALL = "/task/getAll";
+    private final String URL_TASK_GET_GIVEN_DAY = "/task/dailyTasks/date={date}";
     private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
     private final String URL_TASK_GET_LAST_UNCHECKED_TASK = "/task/lastUnchecked";
     private final String URL_TASK_CREATE = "/task/create";
@@ -79,6 +80,25 @@ public class TaskController {
     }
 
     @RequestMapping(
+            value = URL_TASK_GET_GIVEN_DAY,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public String getTaskForGivenDay(@PathVariable String date){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Long time = dateFormatter.parse(date).getTime();
+            return objectMapper.writeValueAsString(taskService.getTasksForGivenDay(time));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
             value = URL_TASK_GET_LAST_WEEK,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")
@@ -120,6 +140,8 @@ public class TaskController {
     public String getUnassignedTasks(){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            System.out.println("TASKI:");
+            System.out.println(taskService.getUnassignedTasks());
             return objectMapper.writeValueAsString(taskService.getUnassignedTasks());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -167,13 +189,15 @@ public class TaskController {
                              @RequestParam(required = false) String categoryID) {
         ObjectMapper objectMapper = new ObjectMapper();
         Task newTask;
+        System.out.println("DATA");
+        System.out.println(date);
         try {
             if (date != null && categoryID != null) {
-                Long dateTask = Long.decode(date);
+                Long dateTask = dateFormatter.parse(date).getTime();
                 Category category = categoryService.getCategoryById(Long.decode(categoryID));
                 newTask = taskService.createTask(title, dateTask, category);
             } else if (date != null) {
-                Long dateTask = Long.decode(date);
+                Long dateTask = dateFormatter.parse(date).getTime();
                 newTask = taskService.createTask(title, dateTask);
             } else {
                 newTask = taskService.createTask(title);
@@ -183,7 +207,7 @@ public class TaskController {
             } else {
                 return FAIL_RETURN_VALUE;
             }
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | ParseException e) {
             e.printStackTrace();
             return FAIL_RETURN_VALUE;
         }

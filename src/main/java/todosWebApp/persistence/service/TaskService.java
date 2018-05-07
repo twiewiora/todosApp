@@ -105,12 +105,17 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         return taskRepository.getTasksByCategory(categoryId);
     }
 
+    @Override
+    public List<Task> getTasksForGivenDay(Long date) {
+        return taskRepository.getTasksForGivenDay(date);
+    }
+
     public List<Task> getTasksFromLastWeek(Long date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
         cal.add(Calendar.DAY_OF_WEEK, -cal.get(Calendar.DAY_OF_WEEK) + 2);
         Long start = cal.getTimeInMillis();
-        cal.add(Calendar.DAY_OF_WEEK, 7);
+        cal.add(Calendar.DAY_OF_WEEK, 1);
         Long end = cal.getTimeInMillis();
         return getTasksFromInterval(start, end);
     }

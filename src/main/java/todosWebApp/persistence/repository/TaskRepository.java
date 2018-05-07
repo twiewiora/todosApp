@@ -29,10 +29,14 @@ public interface TaskRepository extends JpaRepository<Task, Integer>, TaskDataQu
     List<Task> getTasksByCategory(@Param("categoryId") Long categoryId);
 
     @Override
+    @Query("select task from Task task where (not task.date = null) and task.date = :date")
+    List<Task> getTasksForGivenDay(@Param("date") Long date);
+
+    @Override
     @Query("select task from Task task where (not task.date = null) and task.date >= :startDate and task.date < :endDate ")
     List<Task> getTasksFromInterval(@Param("startDate") Long startDate, @Param("endDate") Long endDate);
 
-    @Query("select task from Task task where task.date = null and task.done = false")
+    @Query("select task from Task task where task.date = null")
     List<Task> getUnassignedTasks();
 
     @Override

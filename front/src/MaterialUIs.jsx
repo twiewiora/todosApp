@@ -12,31 +12,18 @@ import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
-import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {markRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
+import {getMainStateTable} from "./Styles/TablesStates";
+import {removeIndex} from "./Utils/ArrayFunctions";
 
-
-const stateTable = {
-    fixedHeader: true,
-    fixedFooter: true,
-    stripedRows: false,
-    showRowHover: false,
-    selectable: true,
-    multiSelectable: true,
-    enableSelectAll: true,
-    deselectOnClickaway: false,
-    showCheckboxes: false,
-    height: '300px',
-};
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25,
-                  background : getStripedStyle(getIndex(row.getID()), row.getState()) }}>
+              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, row.getState()) }}>
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
                 onCheck={() => handleCheck(getIndex(row.getID()))}
-                iconStyle={{fill: row.getState() ? 'black' : '#00bcd4'}}
             />
         </TableRowColumn>
         <TableRowColumn id="taskName">
@@ -51,17 +38,17 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
 const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck}) => {
     return (
         <Table
-            fixedHeader={stateTable.fixedHeader}
-            fixedFooter={stateTable.fixedFooter}
-            selectable={stateTable.selectable}
-            multiSelectable={stateTable.multiSelectable}
+            fixedHeader={getMainStateTable().fixedHeader}
+            fixedFooter={getMainStateTable().fixedFooter}
+            selectable={getMainStateTable().selectable}
+            multiSelectable={getMainStateTable().multiSelectable}
             style={{ tableLayout: "auto" }}
         >
             <TableBody
-                displayRowCheckbox={stateTable.showCheckboxes}
-                deselectOnClickaway={stateTable.deselectOnClickaway}
-                showRowHover={stateTable.showRowHover}
-                stripedRows={stateTable.stripedRows}
+                displayRowCheckbox={getMainStateTable().showCheckboxes}
+                deselectOnClickaway={getMainStateTable().deselectOnClickaway}
+                showRowHover={getMainStateTable().showRowHover}
+                stripedRows={getMainStateTable().stripedRows}
             >
                 <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
                     <TableHeaderColumn>Status</TableHeaderColumn>
@@ -90,9 +77,8 @@ class MaterialUIs extends Component {
         this.handleKeyPress = this.handleKeyPress.bind(this)
     }
 
-    componentDidMount() {
-        window.addEventListener('load', this.reloadPage);
-        this.setState({loading: false});
+    componentWillMount() {
+        this.reloadPage();
 
     }
 
@@ -110,7 +96,9 @@ class MaterialUIs extends Component {
                 });
             }.bind(this), 3000)
         }.bind(this));
+
     }
+
 
 
     handleKeyPress(event) {
@@ -121,34 +109,17 @@ class MaterialUIs extends Component {
 
      handleCheck(i){
         let state = this.state.data[i].getState();
-        let firstDoneIndex = this.getFirstDoneTaskIndex();
 
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
+        markRequest(selectedTask);
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
-                color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
 
-        if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
-            if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
-                && !(!this.state.data[i].getState() && i <= firstDoneIndex)) {
-                if(i > firstDoneIndex){
-                    this.setState({
-                        data: arrayMove(this.state.data, i, firstDoneIndex),
-                    });
-                } else {
-                    this.setState({
-                        data: arrayMove(this.state.data, i, firstDoneIndex - 1),
-                    });
-                }
-                markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
-            } else {
-                markRequest(selectedTask);
-            }
-        }
+
     }
 
 
@@ -158,10 +129,8 @@ class MaterialUIs extends Component {
         let temp = this.state.data;
         temp.unshift(newTask);
         this.setState({data : temp});
-        console.log(newTask);
         document.getElementById('taskName').value = "";
         document.getElementById('taskName').hintText = "name";
-
     };
 
 
@@ -174,23 +143,9 @@ class MaterialUIs extends Component {
         deleteRequest(selectedTask);
     };
 
-    getFirstDoneTaskIndex = function () {
-        let firstDoneTaskIndexAtTheBottom = null;
-        let length = this.state.data.length;
-        for (let i = length-1; i >= 0; i--){
-            if(this.state.data[i].getState() === false){
-                break;
-            } else {
-                firstDoneTaskIndexAtTheBottom = i;
-            }
-        }
-        return firstDoneTaskIndexAtTheBottom;
-    };
-
 
     onSortEnd = ({oldIndex, newIndex}) => {
         if(oldIndex !== newIndex){
-            console.log(oldIndex + " " + newIndex);
             let taskID = this.state.data[oldIndex].getID();
             if(oldIndex > newIndex){
                 let newParentID = null;
@@ -239,11 +194,9 @@ class MaterialUIs extends Component {
                                    removeTask={this.removeTask.bind(this)} handleCheck={this.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}/>
                 <br/>
-                {this.state.loading ? <Loader/> : <div></div>}
-
+                {this.state.loading? <Loader/> : <div></div>}
             </div>
         );
-
     }
 
 }

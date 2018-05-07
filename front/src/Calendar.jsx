@@ -1,21 +1,23 @@
-import * as React from "react/cjs/react.development";
+import React from "react";
 import './Styles/App.css';
-import {MuiThemeProvider, RaisedButton} from "material-ui";
+import {MuiThemeProvider} from "material-ui";
 import App from "./App";
 import CalendarUI from "./CalendarUI";
+import ModeButton from "./UI/ModeButton";
+
 class Calendar extends React.Component{
     render() {
         return (
             <div className="Calendar">
                 <MuiThemeProvider>
                     <div className="App">
-                        <RaisedButton className="homeButton"
-                                      target="_blank"
-                                      label="Home"
-                                      onClick={e=>this.props.pager.push(App)}
+                        <ModeButton
+                            label="Home"
+                            onClick={() => this.props.pager.push(App)}
+                            side="left"
                         />
+                        <CalendarUI/>
                     </div>
-                    <CalendarUI/>
                 </MuiThemeProvider>
             </div>
         );
