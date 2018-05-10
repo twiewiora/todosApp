@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import Pager from 'react-subpage';
 import './Styles/index.css';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component}  from 'react';
 import './Styles/App.css';
 import MaterialAll from './MaterialUIs';
 import MenuBase from './Menu'
@@ -6,16 +6,45 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Calendar from "./Calendar";
 import ModeButton from "./UI/ModeButton";
 
-const App = (props) =>
-    <div className="App">
-        <MuiThemeProvider>
+class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            zoomedIn: "zoomOut"
+        };
+
+        this.toggleZoom = this.toggleZoom.bind(this);
+    }
+
+    toggleZoom() {
+        if(this.state.zoomedIn === "zoomOut"){
+            this.setState({
+                zoomedIn: "zoomIn"
+            });
+        } else {
+            this.setState({
+                zoomedIn: "zoomOut"
+            });
+        }
+
+    }
+
+    render() {
+        return (
             <div className="App">
-                <MenuBase/>
-                <ModeButton label="Calendar Mode" onClick={() => props.pager.push(Calendar)} />
-                <MaterialAll/>
-            </div>
-        </MuiThemeProvider>
-    </div>
+                <MuiThemeProvider>
+                    <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}/>
+                    <div id="App1" className={this.state.zoomedIn}>
+                        <ModeButton label="Calendar Mode" onClick={() => this.toggleZoom()/*this.props.pager.push(Calendar)*/} />
+                        <MaterialAll/>
+                    </div>
+                </MuiThemeProvider>
+            </div>);
+    }
+
+
+}
 
 
 export default App;
