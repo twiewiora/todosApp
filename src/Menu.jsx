@@ -50,6 +50,7 @@ class MenuBase extends Component {
         this.setState({
             visible: !this.state.visible
         });
+        this.props.pageZoomedIn();
     }
 
     showMenu(e) {

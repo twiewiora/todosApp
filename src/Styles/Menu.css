@@ -1,5 +1,5 @@
 #flyoutMenu {
-    width: 30vw;
+    width: 20vw;
     height: 100vh;
     background-color: #9898c9;
     text-align: center;
@@ -13,7 +13,7 @@
 }
 
 #flyoutMenu.hide {
-    transform: translate3d(-30vw, 0, 0);
+    transform: translate3d(-20vw, 0, 0);
 }
 
 #flyoutMenu.show {

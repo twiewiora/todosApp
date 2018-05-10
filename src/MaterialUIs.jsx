@@ -14,7 +14,6 @@ import Loader from "./Loader/Loader"
 import {getStripedStyle} from "./Styles/Styling"
 import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
-import {removeIndex} from "./Utils/ArrayFunctions";
 
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
