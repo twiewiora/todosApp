@@ -36,7 +36,7 @@ class App extends Component {
                 <MuiThemeProvider>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
-                        <ModeButton label="Calendar Mode" onClick={() => this.toggleZoom()/*this.props.pager.push(Calendar)*/} />
+                        <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)} />
                         <MaterialAll/>
                     </div>
                 </MuiThemeProvider>
