@@ -14,7 +14,14 @@ class Menu extends Component {
 
     hideMenu(e){
         this.props.toggleMenu();
+        this.props.setDataWithCategory("root");
         e.stopPropagation();
+    }
+
+    filterCategories(e, i) {
+        console.log(this.state.data[i]);
+
+        this.props.setDataWithCategory(this.state.data[i])
     }
 
     render() {
@@ -28,7 +35,11 @@ class Menu extends Component {
             <div id="flyoutMenu"
                  className={visibility}> <br/>
                 <ArrowIcon className="BackIcon" onClick={(e) => {this.hideMenu(e)}}/>
-                {this.state.data.map((object, index) => <li key={`item-${index}`}><h2>{object.getName()}</h2></li>)}
+                {this.state.data.map((object, index) =>
+                    <li key={`item-${index}`}
+                        onClick={(e) => { this.filterCategories(e, index) }}>
+                        <h2>{object.getName()}</h2>
+                    </li>)}
             </div>
         );
     }
@@ -64,7 +75,8 @@ class MenuBase extends Component {
             <div className="MenuIcon">
                 <MenuIcon onClick={(e) => {this.showMenu(e)}}/>
                 <Menu menuVisibility={this.state.visible}
-                      toggleMenu={this.toggleMenu.bind(this)}/>
+                      toggleMenu={this.toggleMenu.bind(this)}
+                      setDataWithCategory={this.props.setDataWithCategory.bind(this)}/>
             </div>
         );
     }
