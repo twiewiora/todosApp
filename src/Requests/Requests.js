@@ -187,3 +187,26 @@ export function getAllCategories() {
     });
     return categories;
 }
+
+export function getAllTasksFromCategory(category) {
+    let tasks = [];
+    fetch('http://localhost:8080//task/categoryId' + category.getID())
+        .then(res => {
+            if (res.status !== 200){
+                showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+            }
+            return res.json();
+        })
+        .then(data => {
+            for (let i = 0; i < data.length; i++){
+                let newTask = new Task(data[i].title, data[i].id);
+                newTask.setState(data[i].done);
+                newTask.setDate(data[i].deadline);
+
+                tasks.push(newTask);
+            }
+        }).catch(function() {
+        showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+    });
+    return tasks;
+}
