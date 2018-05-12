@@ -100,21 +100,22 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         return taskRepository.getTaskById(taskId);
     }
 
-    private List<Task> getTasksFromSubcategories(Category currentCategory, List<Task> categoryTasks){
-        categoryTasks.addAll(taskRepository.getTasksByCategory(currentCategory.getId()));
-        List<Category> childCategories = categoryRepository.getChildren(currentCategory.getId());
-        if(childCategories == null)
-            return categoryTasks;
-        for(Category category : childCategories)
-            categoryTasks.addAll(getTasksFromSubcategories(category, categoryTasks));
-        return categoryTasks;
-    }
-
     @Override
     public List<Task> getTasksByCategory(Long categoryId) {
-        List<Task> categoryTasks = new ArrayList<>();
         Category category = categoryRepository.getCategoryById(categoryId);
-        return getTasksFromSubcategories(category, categoryTasks);
+        return getTasksFromSubcategories(category);
+    }
+
+    private List<Task> getTasksFromSubcategories(Category currentCategory){
+        List<Task> categoryTasks = new ArrayList<>(taskRepository.getTasksByCategory(currentCategory.getId()));
+        List<Category> childCategories = categoryRepository.getChildren(currentCategory.getId());
+//                Optional.ofNullable(categoryRepository.getChildren(currentCategory.getId()))
+//                .ifPresent(childCategories -> childCategories.forEach(category -> categoryTasks.addAll(getTasksFromSubcategories(category))));
+        if(childCategories != null) {
+            for (Category category : childCategories)
+                categoryTasks.addAll(getTasksFromSubcategories(category));
+        }
+        return categoryTasks;
     }
 
     @Override
