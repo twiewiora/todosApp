@@ -189,10 +189,12 @@ class App extends Component {
             loading: true
         }, function(){
             setTimeout(function() {
+                console.log(tasks);
                 for(let i = 0; i < this.state.data.length; i++){
                     for(let j = 0; j < tasks.length; j++){
                         if(this.state.data[i].getID() === tasks[j].getID()){
                             this.state.data[i].setVisible(true);
+                            console.log(this.state.data[i]);
                             ifFound = true;
                             break;
                         }
@@ -204,9 +206,10 @@ class App extends Component {
                     ifFound = false;
                 }
 
+                let ifSetDnD = category === "root";
                 this.setState({
                     loading: false,
-                    ifSetDragnDrop: !this.state.ifSetDragnDrop
+                    ifSetDragnDrop: ifSetDnD
                 });
             }.bind(this), 2000)
         }.bind(this));

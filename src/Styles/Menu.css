@@ -2,7 +2,6 @@
     width: 20vw;
     height: 100vh;
     background-color: #9898c9;
-    text-align: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -27,6 +26,11 @@
     text-decoration: none;
 }
 
+#flyoutMenu h1 {
+    font-size: 20px;
+    text-align: center;
+}
+
 #flyoutMenu h2 a:hover {
     text-decoration: underline;
 }
@@ -35,6 +39,7 @@
     color: #333;
     margin-left: 15px;
     text-decoration: none;
+    text-align: center;
     display: block;
 }
 
