@@ -199,6 +199,9 @@ public class TaskController {
             } else if (date != null) {
                 Long dateTask = dateFormatter.parse(date).getTime();
                 newTask = taskService.createTask(title, dateTask);
+            } else if(categoryID != null){
+                Category category = categoryService.getCategoryById(Long.decode(categoryID));
+                newTask = taskService.createTask(title, category);
             } else {
                 newTask = taskService.createTask(title);
             }
