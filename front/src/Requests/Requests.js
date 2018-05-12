@@ -125,6 +125,27 @@ export function addRequest(newTaskName) {
     });
     return newTask;
 }
+
+export function addCategoryRequest(newCategoryName, parentID) {
+    let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
+    let newCategory = new Category(newCategoryName, -1, parentID);
+    fetch('http://localhost:8080/category/create', { method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200){
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log(data);
+            newCategory.setID(data.id);
+
+        }).catch(function() {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
+    return newCategory;
+}
+
 export function getAllTasks() {
     let tasks = [];
     fetch('http://localhost:8080/task/getAll')

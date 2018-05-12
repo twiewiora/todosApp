@@ -3,13 +3,16 @@ import MenuIcon from "material-ui/svg-icons/navigation/menu"
 import ArrowIcon from "material-ui/svg-icons/navigation/arrow-back"
 import './Styles/App.css'
 import './Styles/Menu.css'
-import {getAllCategories, getSubcategories} from './Requests/Requests'
+import {addCategoryRequest, addRequest, getAllCategories, getSubcategories} from './Requests/Requests'
+import {RaisedButton, TextField} from "material-ui";
+import Category from "./Category/Category";
 
 class Menu extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            parentCategory: new Category("root", 1, null),
             data : getAllCategories(),
             menuTitle: "Categories"
         };
@@ -31,15 +34,37 @@ class Menu extends Component {
     filterCategories(e, i) {
         console.log(this.state.data[i]);
         let categories = getSubcategories(this.state.data[i]);
+        let parentCat = this.state.data[i];
 
         setTimeout(function() {
             this.setState({
                 data: categories,
+                parentCategory: parentCat,
                 menuTitle: this.state.data[i].getName()
             });
         }.bind(this), 1000);
 
         this.props.setDataWithCategory(this.state.data[i])
+    }
+
+    addCategory() {
+        let name = document.getElementById("categoryName").value;
+        console.log(name);
+
+        if (name !== ""){
+            let newTask = addCategoryRequest(name, this.state.parentCategory.getID());
+            let temp = this.state.data;
+            temp.push(newTask);
+            this.setState({data : temp});
+            document.getElementById('taskName').value = "";
+            document.getElementById('taskName').hintText = "Add a category";
+        }
+    }
+
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.addCategory();
+        }
     }
 
     render() {
@@ -59,6 +84,13 @@ class Menu extends Component {
                         onClick={(e) => { this.filterCategories(e, index) }}>
                         <h2>{object.getName()}</h2>
                     </li>)}
+                <TextField id="categoryName" hintText="Add a category" onKeyPress={this.handleKeyPress} /><br />
+                <RaisedButton
+                    label="Add Category"
+                    id="addButton"
+                    onClick={(e) => {
+                        this.addCategory(e)
+                    }} />
             </div>
         );
     }
