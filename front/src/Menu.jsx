@@ -61,12 +61,6 @@ class Menu extends Component {
         }
     }
 
-    handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            this.addCategory();
-        }
-    }
-
     render() {
         let visibility = "hide";
 
@@ -84,7 +78,7 @@ class Menu extends Component {
                         onClick={(e) => { this.filterCategories(e, index) }}>
                         <h2>{object.getName()}</h2>
                     </li>)}
-                <TextField id="categoryName" hintText="Add a category" onKeyPress={this.handleKeyPress} /><br />
+                <TextField id="categoryName" hintText="Add a category"/><br />
                 <RaisedButton
                     label="Add Category"
                     id="addButton"
