@@ -92,19 +92,7 @@ class MaterialUIs extends Component {
                 swapRequest(taskID, data[newIndex].getID());
             }
 
-            this.setState({
-                data: arrayMove(this.props.getData(), oldIndex, newIndex),
-            });
-        }
-    };
-
-    getIndex = (id) => {
-        let data = this.props.getData();
-        let length = data.length;
-        for (let i = 0; i < length; i++) {
-            if(data[i].getID() === id){
-                return i;
-            }
+            this.props.setData(arrayMove(this.props.getData(), oldIndex, newIndex));
         }
     };
 
@@ -122,7 +110,7 @@ class MaterialUIs extends Component {
                         }}
                     /><br/><br/>
 
-                    <SortableTable getData={this.props.getData.bind(this)} getIndex={this.getIndex.bind(this)}
+                    <SortableTable getData={this.props.getData.bind(this)} getIndex={this.props.getIndex.bind(this)}
                                    removeTask={this.props.removeTask.bind(this)} handleCheck={this.props.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}/>
                     <br/>
@@ -159,20 +147,20 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
-                            {this.props.getData().map((value, index) => (
+                            {this.props.getData().filter(task => task.visible).map((value, index) => (
                                 <TableRow key={index}
                                           style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState()) }}>
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <Checkbox id="taskStatus"
                                                   checked={value.getState()}
-                                                  onCheck={() => this.props.handleCheckWithNoDrop(index)}
+                                                  onCheck={() => this.props.handleCheck(value.getID())}
                                         />
                                     </TableRowColumn>
                                     <TableRowColumn id="taskName">
                                         {value.getName()}
                                     </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
-                                        <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, index) }}/>
+                                        <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
                                     </TableRowColumn>
                                 </TableRow>
                             ))}

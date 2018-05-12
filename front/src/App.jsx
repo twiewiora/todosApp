@@ -23,6 +23,7 @@ class App extends Component {
         this.reloadPage = this.reloadPage.bind(this);
 
         this.getData = this.getData.bind(this);
+        this.setData = this.setData.bind(this);
         this.addTask = this.addTask.bind(this);
         this.removeTask = this.removeTask.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
@@ -63,12 +64,26 @@ class App extends Component {
 
     }
 
-    handleCheck(i){
+    handleCheck(taskID){
+        let i = -1;
+        if(this.state.ifSetDragnDrop){
+            i = taskID;
+        } else {
+            for (let id = 0; id < this.state.data.length; id++) {
+                if(this.state.data[id].getID() === taskID){
+                    i = id;
+                    break;
+                }
+            }
+        }
+
         let state = this.state.data[i].getState();
         let firstDoneIndex = this.getFirstDoneTaskIndex();
 
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
+
+        console.log(selectedTask);
 
         this.setState((oldState) => {
             return {
@@ -76,6 +91,8 @@ class App extends Component {
                 color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
+
+        console.log(firstDoneIndex);
 
         if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
             if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
@@ -89,28 +106,14 @@ class App extends Component {
                         data: arrayMove(this.state.data, i, firstDoneIndex - 1),
                     });
                 }
-                markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
+                if(firstDoneIndex === 0)
+                    markAndDropRequest(selectedTask, null);
+                else
+                    markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
             } else {
                 markRequest(selectedTask);
             }
         }
-
-    }
-
-    handleCheckWithNoDrop(i){
-        let state = this.state.data[i].getState();
-
-        let selectedTask = this.state.data[i];
-        this.state.data[i].setState(!state);
-
-        this.setState((oldState) => {
-            return {
-                checked: !oldState.checked,
-                color: !oldState.checked === true ? 'grey' : 'white'
-            };
-        });
-
-        markRequest(selectedTask);
 
     }
 
@@ -129,7 +132,19 @@ class App extends Component {
 
 
 
-    removeTask = function (e, i) {
+    removeTask = function (e, taskID) {
+        let i = -1;
+        if(this.state.ifSetDragnDrop){
+            i = taskID;
+        } else {
+            for (let id = 0; id < this.state.data.length; id++) {
+                if(this.state.data[id].getID() === taskID){
+                    i = id;
+                    break;
+                }
+            }
+        }
+
         let selectedTask = this.state.data[i];
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
@@ -139,6 +154,12 @@ class App extends Component {
 
     getData = () => {
         return this.state.data;
+    };
+
+    setData = (newData) => {
+        this.setState({
+            data: newData,
+        });
     };
 
     getFirstDoneTaskIndex = function () {
@@ -157,6 +178,7 @@ class App extends Component {
     setDataWithCategory = function(category) {
         this.setState({loading: true});
         let tasks = [];
+        let ifFound = false;
         if(category === "root"){
             tasks = getAllTasks();
         }
@@ -167,13 +189,38 @@ class App extends Component {
             loading: true
         }, function(){
             setTimeout(function() {
+                for(let i = 0; i < this.state.data.length; i++){
+                    for(let j = 0; j < tasks.length; j++){
+                        if(this.state.data[i].getID() === tasks[j].getID()){
+                            this.state.data[i].setVisible(true);
+                            ifFound = true;
+                            break;
+                        }
+                    }
+
+                    if(!ifFound)
+                        this.state.data[i].setVisible(false);
+
+                    ifFound = false;
+                }
+
                 this.setState({
-                    data: tasks,
                     loading: false,
                     ifSetDragnDrop: !this.state.ifSetDragnDrop
                 });
-            }.bind(this), 3000)
+            }.bind(this), 2000)
         }.bind(this));
+
+    };
+
+    getIndex = (id) => {
+        let data = this.state.data;
+        let length = data.length;
+        for (let i = 0; i < length; i++) {
+            if(data[i].getID() === id){
+                return i;
+            }
+        }
     };
 
     render() {
@@ -187,8 +234,9 @@ class App extends Component {
                         <MaterialAll removeTask={this.removeTask.bind(this)}
                                      addTask={this.addTask.bind(this)}
                                      handleCheck={this.handleCheck.bind(this)}
-                                     handleCheckWithNoDrop={this.handleCheckWithNoDrop.bind(this)}
                                      getData={this.getData.bind(this)}
+                                     setData={this.setData.bind(this)}
+                                     getIndex={this.getIndex.bind(this)}
                                      appLoading={this.state.loading}
                                      ifSetDragnDrop={this.state.ifSetDragnDrop}/>
                     </div>

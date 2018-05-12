@@ -4,6 +4,7 @@ class Task {
         this.done = false;
         this.id = id;
         this.date = null;
+        this.visible = true;
     }
     getState = function () {
         return this.done
@@ -25,6 +26,9 @@ class Task {
     };
     setState = function (newState){
         this.done = newState;
+    };
+    setVisible = function (newVisible){
+        this.visible = newVisible;
     }
 
 }
