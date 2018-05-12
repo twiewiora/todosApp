@@ -87,7 +87,13 @@ export function assignToDate(selectedTask) {
 
 export function markAndDropRequest(selectedTask, newParentTask) {
     let data = new URLSearchParams("done="+ selectedTask.getState());
-    fetch('http://localhost:8080/task/drop/' + selectedTask.getID() + '/' + newParentTask.getID(), { method: 'POST', body: data})
+    let link = '';
+    if(newParentTask === null)
+        link = 'http://localhost:8080/task/drop/' + selectedTask.getID();
+    else
+        link = 'http://localhost:8080/task/drop/' + selectedTask.getID() + '/' + newParentTask.getID();
+
+    fetch(link, { method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200){
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -112,6 +118,7 @@ export function addRequest(newTaskName) {
             console.log(data);
             newTask.setID(data.id);
             newTask.setState(data.done);
+            newTask.setVisible(true);
 
         }).catch(function() {
             showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -132,6 +139,7 @@ export function getAllTasks() {
             for (let i = 0; i < data.length; i++){
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
+                newTask.setVisible(true);
 
                 tasks.push(newTask);
             }
@@ -202,6 +210,7 @@ export function getAllTasksFromCategory(category) {
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
                 newTask.setDate(data[i].deadline);
+                newTask.setVisible(true);
 
                 tasks.push(newTask);
             }
