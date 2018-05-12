@@ -3,23 +3,41 @@ import MenuIcon from "material-ui/svg-icons/navigation/menu"
 import ArrowIcon from "material-ui/svg-icons/navigation/arrow-back"
 import './Styles/App.css'
 import './Styles/Menu.css'
-import {getAllCategories} from './Requests/Requests'
+import {getAllCategories, getSubcategories} from './Requests/Requests'
 
 class Menu extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { data : getAllCategories() };
+        this.state = {
+            data : getAllCategories(),
+            menuTitle: "Categories"
+        };
     }
 
     hideMenu(e){
-        this.props.toggleMenu();
-        this.props.setDataWithCategory("root");
+        if(this.state.menuTitle === "Categories"){
+            this.props.toggleMenu();
+        } else {
+            this.setState({
+                menuTitle: "Categories"
+            });
+            this.props.setDataWithCategory("root");
+        }
+
         e.stopPropagation();
     }
 
     filterCategories(e, i) {
         console.log(this.state.data[i]);
+        let categories = getSubcategories(this.state.data[i]);
+
+        setTimeout(function() {
+            this.setState({
+                data: categories,
+                menuTitle: this.state.data[i].getName()
+            });
+        }.bind(this), 1000);
 
         this.props.setDataWithCategory(this.state.data[i])
     }
@@ -32,9 +50,10 @@ class Menu extends Component {
         }
 
         return (
-            <div id="flyoutMenu"
-                 className={visibility}> <br/>
-                <ArrowIcon className="BackIcon" onClick={(e) => {this.hideMenu(e)}}/>
+            <div id="flyoutMenu" className={visibility}> <br/>
+                <ArrowIcon style={{ padding: '0px 20px'}}
+                           className="BackIcon" onClick={(e) => {this.hideMenu(e)}}/>
+                <h1 className="title">{this.state.menuTitle}</h1>
                 {this.state.data.map((object, index) =>
                     <li key={`item-${index}`}
                         onClick={(e) => { this.filterCategories(e, index) }}>

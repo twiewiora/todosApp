@@ -196,9 +196,30 @@ export function getAllCategories() {
     return categories;
 }
 
+export function getSubcategories(parentCategory) {
+    let categories = [];
+    fetch('http://localhost:8080/category/subcategories/' + parentCategory.getID())
+        .then(res => {
+            if (res.status !== 200){
+                showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+            }
+            return res.json();
+        })
+        .then(data => {
+            for (let i = 0; i < data.length; i++){
+                let newCategory = new Category(data[i].name, data[i].id, data[i].parent_id);
+
+                categories.push(newCategory);
+            }
+        }).catch(function() {
+        showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+    });
+    return categories;
+}
+
 export function getAllTasksFromCategory(category) {
     let tasks = [];
-    fetch('http://localhost:8080//task/categoryId' + category.getID())
+    fetch('http://localhost:8080/task/categoryId' + category.getID())
         .then(res => {
             if (res.status !== 200){
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
