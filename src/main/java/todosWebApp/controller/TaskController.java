@@ -28,7 +28,7 @@ public class TaskController {
     private final String URL_TASK_GET_LAST_WEEK = "/task/weeklyTasks/date={date}";
     private final String URL_TASK_GET_LAST_UNCHECKED_TASK = "/task/lastUnchecked";
     private final String URL_TASK_CREATE = "/task/create";
-    private final String URL_TASK_DROP = "/task/drop/{id}/{parent}";
+    private final String URL_TASK_DROP = "/task/drop";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";
     private final String URL_TASK_SET_CATEGORY = "/task/setCategory";
@@ -230,7 +230,7 @@ public class TaskController {
     @RequestMapping(value = URL_TASK_DROP,
             method = RequestMethod.POST)
     @CrossOrigin(origins = "http://localhost:3000")
-    public void setTaskDoneAndDrop(@PathVariable String id, @PathVariable String parent) {
+    public void setTaskDoneAndDrop(@RequestParam String id, @RequestParam(required = false) String parent) {
         //long taskId = Long.decode(id);
         if (taskService.getTaskById(Long.decode(id)).getDone()) {
             taskService.setDone(Long.decode(id), false);
