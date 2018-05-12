@@ -86,13 +86,11 @@ export function assignToDate(selectedTask) {
 }
 
 export function markAndDropRequest(selectedTask, newParentTask) {
-    let data = new URLSearchParams("done="+ selectedTask.getState());
-    let link = '';
-    if(newParentTask === null)
-        link = 'http://localhost:8080/task/drop/' + selectedTask.getID();
-    else
-        link = 'http://localhost:8080/task/drop/' + selectedTask.getID() + '/' + newParentTask.getID();
-
+    let params;
+    if (newParentTask === null) params = "id=" + selectedTask.getID();
+    else params = "id=" + selectedTask.getID() + "&parent=" + (newParentTask.getID());
+    let data = new URLSearchParams(params);
+    let link = 'http://localhost:8080/task/drop';
     fetch(link, { method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200){
