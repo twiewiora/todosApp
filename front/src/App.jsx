@@ -7,6 +7,8 @@ import Calendar from "./Calendar";
 import ModeButton from "./UI/ModeButton";
 import {arrayMove} from "react-sortable-hoc";
 import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory} from "./Requests/Requests";
+import {muiTheme} from "./UI/Theme";
+
 
 class App extends Component {
     constructor(props) {
@@ -114,9 +116,7 @@ class App extends Component {
                 markRequest(selectedTask);
             }
         }
-
     }
-
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
@@ -129,8 +129,6 @@ class App extends Component {
             document.getElementById('taskName').hintText = "name";
         }
     };
-
-
 
     removeTask = function (e, taskID) {
         let i = -1;
@@ -202,7 +200,6 @@ class App extends Component {
 
                     if(!ifFound)
                         this.state.data[i].setVisible(false);
-
                     ifFound = false;
                 }
 
@@ -229,11 +226,11 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <MuiThemeProvider>
+                <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                               setDataWithCategory={this.setDataWithCategory.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
-                        <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)} />
+                        <ModeButton label="Calendar Mode" side="right" onClick={() => this.props.pager.push(Calendar)} />
                         <MaterialAll removeTask={this.removeTask.bind(this)}
                                      addTask={this.addTask.bind(this)}
                                      handleCheck={this.handleCheck.bind(this)}
@@ -247,8 +244,6 @@ class App extends Component {
             </div>);
     }
 
-
 }
-
 
 export default App;
