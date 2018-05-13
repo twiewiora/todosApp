@@ -2,75 +2,121 @@ package todosWebApp.persistence.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import todosWebApp.persistence.creators.TaskDataCreator;
 import todosWebApp.persistence.model.Category;
+import todosWebApp.persistence.model.OrderNode;
 import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.queries.TaskDataQuery;
 import todosWebApp.persistence.repository.CategoryRepository;
+import todosWebApp.persistence.repository.OrderNodeRepository;
 import todosWebApp.persistence.repository.TaskRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 @Service
+@Transactional
 public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     private TaskRepository taskRepository;
 
     private CategoryRepository categoryRepository;
 
+    private OrderNodeRepository orderRepository;
+
+    @PersistenceContext
+    private EntityManager em;
+
     @Autowired
-    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository) {
+    public TaskService(TaskRepository taskRepository, CategoryRepository categoryRepository, OrderNodeRepository orderRepository) {
         this.taskRepository = taskRepository;
         this.categoryRepository = categoryRepository;
+        this.orderRepository = orderRepository;
     }
+
+    private List<Task> sortByImportance(List<Task> tasks){
+        return sortByImportance(tasks, categoryRepository.getRootCategory());
+    }
+
+    private List<Task> sortByImportance(List<Task> tasks, Category category){
+
+        List<Task> orderedTasks = new ArrayList<>();
+
+        if(!tasks.isEmpty()) {
+            OrderNode node = getTopTaskForCategory(category.getId());
+            while(node != null){
+                orderedTasks.add(node.getTask());
+                node= node.getChild();
+            }
+        }
+        return orderedTasks;
+    }
+
 
     @Override
     public void moveTask(Long taskId, Long newParentTaskId) {
-        Task toMove = getTaskById(taskId);
+        moveTaskInSubcategory(taskId, newParentTaskId, categoryRepository.getRootCategory());
+    }
 
-        Task toMovePrev = toMove.getParent();
-        Task toMoveNext = toMove.getChild();
-        if(toMovePrev != null){
-            toMovePrev.setChild(toMoveNext);
-            taskRepository.save(toMovePrev);
+    @Override
+    public void moveTaskInSubcategory(Long taskId, Long newParentTaskId, Category category) {
+        if(!taskId.equals(newParentTaskId)) {
+            OrderNode node = orderRepository.getTaskCategoryNode(taskId, category.getId());
+            OrderNode parent = orderRepository.getTaskCategoryNode(newParentTaskId, category.getId());
+            repinOrderNode(node, parent);
         }
-        if(toMoveNext != null){
-            toMoveNext.setParent(toMovePrev);
-            taskRepository.save(toMoveNext);
+    }
+
+    private void repinOrderNode(OrderNode node, OrderNode parent){
+        unpinOrderNode(node);
+        pinOrderNode(node, parent);
+    }
+
+    private void pinOrderNode(OrderNode node, OrderNode parent){
+        OrderNode child;
+        if(parent != null)
+            child = parent.getChild();
+        else
+            child = getTopTaskForCategory(node.getCategoryId());
+        if(child != null){
+            child.setParent(node);
+            em.persist(child);
+        }
+        if(parent != null){
+            parent.setChild(node);
+            em.persist(parent);
         }
 
-        if(newParentTaskId == null && toMove.getParent() != null){
-            List<Task> orderedTasks = getAllTasks();
-            Task firstTask = orderedTasks.get(0);
-            firstTask.setParent(toMove);
+        node.setChild(child);
+        node.setParent(parent);
+        em.persist(node);
+    }
 
-            toMove.setParent(null);
-            toMove.setChild(firstTask);
 
-            taskRepository.save(toMove);
-            taskRepository.save(firstTask);
+    //does not persist node, only parent and child
+    private void unpinOrderNode(OrderNode node){
+
+        OrderNode parent = node.getParent();
+        OrderNode child = node.getChild();
+
+        if(parent != null){
+            parent.setChild(child);
+            em.persist(parent);
         }
-        else if (!taskId.equals(newParentTaskId)){
-            Task parentTask = getTaskById(newParentTaskId);
-            Task parentTaskChild = parentTask.getChild();
-            parentTask.setChild(toMove);
-            if(parentTaskChild != null)
-                parentTaskChild.setParent(toMove);
-            toMove.setParent(parentTask);
-            toMove.setChild(parentTaskChild);
-
-            taskRepository.save(toMove);
-            taskRepository.save(parentTask);
-            if(parentTaskChild != null)
-                taskRepository.save(parentTaskChild);
+        if(child != null){
+            child.setParent(parent);
+            em.persist(child);
         }
     }
 
     @Override
     public List<Task> getTaskByTitle(String title) {
-        return taskRepository.getTaskByTitle(title);
+
+        return sortByImportance(taskRepository.getTaskByTitle(title));
     }
 
     @Override
@@ -80,19 +126,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     private List<Task> getAllTasksByParent() {
         List<Task> allTasks = taskRepository.getAllTasks();
-        List<Task> orderedTasks = new ArrayList<>();
-
-        if(!allTasks.isEmpty()) {
-            Task firstTask = allTasks.stream().filter(task -> task.getParent() == null).findFirst().get();
-            orderedTasks.add(firstTask);
-
-            for(int i=0; i < allTasks.size() - 1; i++){
-                Task nextTask = firstTask.getChild();
-                orderedTasks.add(nextTask);
-                firstTask = nextTask;
-            }
-        }
-        return orderedTasks;
+        return sortByImportance(allTasks);
     }
 
     @Override
@@ -103,10 +137,11 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     @Override
     public List<Task> getTasksByCategory(Long categoryId) {
         Category category = categoryRepository.getCategoryById(categoryId);
-        return getTasksFromSubcategories(category);
+        return sortByImportance(getTasksFromSubcategories(category), category);
     }
 
     private List<Task> getTasksFromSubcategories(Category currentCategory){
+
         List<Task> categoryTasks = new ArrayList<>(taskRepository.getTasksByCategory(currentCategory.getId()));
         List<Category> childCategories = categoryRepository.getChildren(currentCategory.getId());
 //                Optional.ofNullable(categoryRepository.getChildren(currentCategory.getId()))
@@ -132,7 +167,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public List<Task> getTasksForGivenDay(Long date) {
-        return taskRepository.getTasksForGivenDay(date);
+        return sortByImportance(taskRepository.getTasksForGivenDay(date));
     }
 
     public List<Task> getTasksFromLastWeek(Long date) {
@@ -142,7 +177,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         Long start = cal.getTimeInMillis();
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Long end = cal.getTimeInMillis();
-        return getTasksFromInterval(start, end);
+        return sortByImportance(getTasksFromInterval(start, end));
     }
 
     @Override
@@ -151,7 +186,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public List<Task> getUnassignedTasks() { return taskRepository.getUnassignedTasks(); }
+    public List<Task> getUnassignedTasks() {
+        return sortByImportance(taskRepository.getUnassignedTasks());
+    }
 
     @Override
     public Task getLastUncheckedTask(){ return taskRepository.getLastUncheckedTask(); }
@@ -168,21 +205,42 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public Task createTask(String name, Long date, Category category) {
-        Task task = new Task(name, date);
-        setTaskCategoryRelation(task, category);
-        List<Task> orderedTasks = getAllTasksByParent();
 
-        if(!orderedTasks.isEmpty()) {
-            Task firstTask = orderedTasks.get(0);
-            firstTask.setParent(task);
-            task.setChild(firstTask);
-            taskRepository.save(task);
-            taskRepository.save(firstTask);
-        }
-        else {
-            taskRepository.save(task);
-        }
+        Task task = new Task(name, date);
+        em.persist(task);
+        setTaskCategoryRelation(task, category);
         return task;
+    }
+
+    private void deleteOldOrders(Task task){
+        for(OrderNode orderNode: task.getOrderList()){
+            unpinOrderNode(orderNode);
+        }
+    }
+
+
+    private void setTaskOrders(Task task, Category category){
+
+        deleteOldOrders(task);
+
+        while(category != null){
+            OrderNode orderNode = new OrderNode(category.getId(), null, null, task);
+            task.addOrderNode(orderNode);
+            OrderNode first = getTopTaskForCategory(category.getId());
+
+            if(first != null){
+                first.setParent(orderNode);
+                em.persist(first);
+            }
+
+            orderNode.setChild(first);
+            em.persist(orderNode);
+            category = category.getParent();
+        }
+    }
+
+    public OrderNode getTopTaskForCategory(Long categoryId) {
+        return orderRepository.getTopTaskForCategory(categoryId);
     }
 
     @Override
@@ -197,24 +255,13 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
 
     @Override
     public void deleteTask(Task task) {
-        List<Task> allTasks = taskRepository.findAll();
 
-        if(!allTasks.isEmpty()) {
-            Task parentTask = task.getParent();
-            Task childTask = task.getChild();
-
-            if(parentTask != null){
-                parentTask.setChild(childTask);
-                taskRepository.save(parentTask);
-            }
-
-            if(childTask != null){
-                childTask.setParent(parentTask);
-                taskRepository.save(childTask);
-            }
-
-            taskRepository.delete(task);
+        for(OrderNode node: task.getOrderList()){
+            unpinOrderNode(node);
+            em.remove(node);
         }
+        em.remove(task);
+
     }
 
 
@@ -222,7 +269,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public void assignDate(Long taskId, Long date) {
         Task task = getTaskById(taskId);
         task.setDate(date);
-        taskRepository.save(task);
+        em.persist(task);
     }
 
     @Override
@@ -237,17 +284,18 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         Task task = getTaskById(taskId);
         Category category = categoryRepository.getCategoryById(categoryId);
         setTaskCategoryRelation(task, category);
-        taskRepository.save(task);
+        em.persist(task);
     }
 
     @Override
     public void setDone(Long taskId, boolean isDone) {
         Task task = getTaskById(taskId);
         task.setDone(isDone);
-        taskRepository.save(task);
+        em.persist(task);
     }
 
     private void setTaskCategoryRelation(Task task, Category category){
         task.setCategory(category);
+        setTaskOrders(task, category);
     }
 }
