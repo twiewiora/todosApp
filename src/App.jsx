@@ -230,7 +230,7 @@ class App extends Component {
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                               setDataWithCategory={this.setDataWithCategory.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
-                        <ModeButton label="Calendar Mode" side="right" onClick={() => this.props.pager.push(Calendar)} />
+                        <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}  side="right" />
                         <MaterialAll removeTask={this.removeTask.bind(this)}
                                      addTask={this.addTask.bind(this)}
                                      handleCheck={this.handleCheck.bind(this)}
