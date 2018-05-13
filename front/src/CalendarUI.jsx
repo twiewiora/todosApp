@@ -218,7 +218,7 @@ class CalendarUI extends Component {
                              adjustForCheckbox = {getUnassignedStateTable().showCheckboxes}>
                     <TableRow style ={{background: '#354778', padding: '5px 20px', height: 10}} >
                         <TableHeaderColumn>Name</TableHeaderColumn>
-                        <TableHeaderColumn>Assign</TableHeaderColumn>
+                        <TableHeaderColumn style={{width:50}}>Assign</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getUnassignedStateTable().showCheckboxes}>
@@ -226,7 +226,7 @@ class CalendarUI extends Component {
                         <TableRow
                             key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
                             <TableRowColumn>{row.name}</TableRowColumn>
-                            <TableRowColumn>
+                            <TableRowColumn style={{width:50}}>
                                 <IconButton>
                                     <AssignButton onClick={(e) => {this.assignDate(index)}}/>
                                 </IconButton>
