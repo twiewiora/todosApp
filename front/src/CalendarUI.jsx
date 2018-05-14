@@ -124,9 +124,8 @@ class CalendarUI extends Component {
                 });
             }, 2000)
         });
-
-
     };
+
     handleCheck(i) {
         let state = this.state.data[i].getState();
 
@@ -181,49 +180,45 @@ class CalendarUI extends Component {
                 </h1>
                 </div>
 
-            <Table
-                selectable={getCalendarDayStateTable().selectable}
-                style={{ tableLayout: 'auto', width: 400, margin: 'auto' }}
-            >
+            <Table selectable={getCalendarDayStateTable().selectable}
+                style={{ tableLayout: 'auto', width: 400, margin: 'auto' }}>
                 <TableHeader displaySelectAll = {getCalendarDayStateTable().displaySelectAll}
-                             adjustForCheckbox = {getCalendarDayStateTable().showCheckboxes}
-                >
-                    <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
-                        <TableHeaderColumn>Status</TableHeaderColumn>
-                        <TableHeaderColumn>Name</TableHeaderColumn>
-                        <TableHeaderColumn>Delete</TableHeaderColumn>
+                             adjustForCheckbox = {getCalendarDayStateTable().showCheckboxes}>
+
+                    <TableRow style ={{ background: '#354778' ,padding: '5px 20px', height: 10}} >
+                        <TableHeaderColumn style={{width:50}}>Status</TableHeaderColumn>
+                        <TableHeaderColumn style={{width:150, textColor: '#fff'}}>Name</TableHeaderColumn>
+                        <TableHeaderColumn style={{ textColor: '#fff'}}>Delete</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getCalendarDayStateTable().showCheckboxes}>
                     {this.state.data.map( (row, index) => (
                         <TableRow key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.data) }}>
-                            <TableRowColumn>
+                            <TableRowColumn style={{width:50}}>
                                 <Checkbox id="taskStatus"
                                           checked={row.getState()}
                                           onCheck={() => this.handleCheck(this.getIndex(row.getID()))}
                                 />
                             </TableRowColumn>
-                            <TableRowColumn>{row.name}</TableRowColumn>
+                            <TableRowColumn style={{width:150}}>{row.name}</TableRowColumn>
                             <TableRowColumn>
                                 <TrashIcon id="trashIcon" onClick={(e) => { this.removeTask(e, this.getIndex(row.getID())) }}/>
                             </TableRowColumn>
                         </TableRow>
-
                     ))}
 
                 </TableBody>
             </Table>
-            <h1 align="center" className="title"> Unassigned tasks
-            </h1>
+            <h2 align="center" className="title"> Unassigned tasks
+            </h2>
                 <Table
                        selectable={getUnassignedStateTable().selectable}
                        style={{ width: 400, margin: 'auto'}}>
                 <TableHeader displaySelectAll = {getUnassignedStateTable().displaySelectAll}
-                             adjustForCheckbox = {getUnassignedStateTable().showCheckboxes}
-                >
-                    <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                             adjustForCheckbox = {getUnassignedStateTable().showCheckboxes}>
+                    <TableRow style ={{background: '#354778', padding: '5px 20px', height: 10}} >
                         <TableHeaderColumn>Name</TableHeaderColumn>
-                        <TableHeaderColumn>Assign</TableHeaderColumn>
+                        <TableHeaderColumn style={{width:50}}>Assign</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getUnassignedStateTable().showCheckboxes}>
@@ -231,7 +226,7 @@ class CalendarUI extends Component {
                         <TableRow
                             key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
                             <TableRowColumn>{row.name}</TableRowColumn>
-                            <TableRowColumn>
+                            <TableRowColumn style={{width:50}}>
                                 <IconButton>
                                     <AssignButton onClick={(e) => {this.assignDate(index)}}/>
                                 </IconButton>

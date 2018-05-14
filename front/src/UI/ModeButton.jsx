@@ -2,7 +2,6 @@ import React from 'react';
 import {RaisedButton} from "material-ui";
 
 const ModeButton = ({side = 'right', ...props}) => {
-    console.assert(side === 'left' || side === 'right', `expected "left" or "right", got ${side}`);
 
     return (
         <RaisedButton
@@ -16,5 +15,6 @@ const ModeButton = ({side = 'right', ...props}) => {
         />
     );
 };
+
 
 export default ModeButton;

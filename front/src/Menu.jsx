@@ -4,7 +4,7 @@ import ArrowIcon from "material-ui/svg-icons/navigation/arrow-back"
 import './Styles/App.css'
 import './Styles/Menu.css'
 import {addCategoryRequest, addRequest, getAllCategories, getSubcategories} from './Requests/Requests'
-import {RaisedButton, TextField} from "material-ui";
+import {FloatingActionButton, RaisedButton, TextField} from "material-ui";
 import Category from "./Category/Category";
 
 class Menu extends Component {
@@ -70,7 +70,7 @@ class Menu extends Component {
 
         return (
             <div id="flyoutMenu" className={visibility}> <br/>
-                <ArrowIcon style={{ padding: '0px 20px'}}
+                <ArrowIcon style={{ padding: '0px 20px', color: 'white'}}
                            className="BackIcon" onClick={(e) => {this.hideMenu(e)}}/>
                 <h1 className="title">{this.state.menuTitle}</h1>
                 {this.state.data.map((object, index) =>
@@ -78,9 +78,11 @@ class Menu extends Component {
                         onClick={(e) => { this.filterCategories(e, index) }}>
                         <h2>{object.getName()}</h2>
                     </li>)}
-                <TextField id="categoryName" hintText="Add a category"/><br />
+                <TextField id="categoryName" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}} inputStyle={{color: 'white'}} hintText="Add a category"/><br />
+                {/*TODO change to FloatingActionButton*/}
                 <RaisedButton
                     label="Add Category"
+                    style={{margin: '0 auto'}}
                     id="addButton"
                     onClick={(e) => {
                         this.addCategory(e)
