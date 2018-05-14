@@ -3,6 +3,8 @@
 import Task from "../Task/Task";
 import Category from "../Category/Category"
 
+let host = 'http://localhost:8080';
+
 function showRestartAlert(message) {
     let restartMessage = "\nDo you want to refresh page?";
     let finalMessage = message + restartMessage;
@@ -16,7 +18,7 @@ function showRestartAlert(message) {
 
 export function getDailyTasks(day) {
     let tasks = [];
-    fetch('http://localhost:8080/task/dailyTasks/date=' + day)
+    fetch(host + '/task/dailyTasks/date=' + day)
         .then(res => {
 
             if (res.status !== 200) {
@@ -42,7 +44,7 @@ export function getDailyTasks(day) {
 
 export function getUnassignedTasks() {
     let tasks = [];
-    fetch('http://localhost:8080/task/unassigned')
+    fetch(host + '/task/unassigned')
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
@@ -67,7 +69,7 @@ export function getUnassignedTasks() {
 
 export function markRequest(selectedTask) {
     let data = new URLSearchParams("title=" + selectedTask.getName() + "&done=" + selectedTask.getState());
-    fetch('http://localhost:8080/task/setDone' + selectedTask.getID(), {method: 'POST', body: data})
+    fetch(host + '/task/setDone' + selectedTask.getID(), {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -80,7 +82,7 @@ export function markRequest(selectedTask) {
 
 export function assignToDate(selectedTask) {
     let data = new URLSearchParams("taskID=" + selectedTask.getID() + "&date=" + selectedTask.getDate());
-    fetch('http://localhost:8080/task/setDate', {method: 'POST', body: data})
+    fetch(host + '/task/setDate', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -96,7 +98,7 @@ export function markAndDropRequest(selectedTask, newParentTask) {
     if (newParentTask === null) params = "id=" + selectedTask.getID();
     else params = "id=" + selectedTask.getID() + "&parent=" + (newParentTask.getID());
     let data = new URLSearchParams(params);
-    let link = 'http://localhost:8080/task/drop';
+    let link = host + '/task/drop';
     fetch(link, {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
@@ -111,7 +113,7 @@ export function markAndDropRequest(selectedTask, newParentTask) {
 export function addRequest(newTaskName) {
     let data = new URLSearchParams("title=" + newTaskName);
     let newTask = new Task(newTaskName, -1);
-    fetch('http://localhost:8080/task/create', {method: 'POST', body: data})
+    fetch(host + '/task/create', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -134,7 +136,7 @@ export function addRequest(newTaskName) {
 export function addCategoryRequest(newCategoryName, parentID) {
     let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
     let newCategory = new Category(newCategoryName, -1, parentID);
-    fetch('http://localhost:8080/category/create', {method: 'POST', body: data})
+    fetch(host + '/category/create', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -154,8 +156,8 @@ export function addCategoryRequest(newCategoryName, parentID) {
 export function getAllTasks() {
     let tasks = [];
     Promise.all([
-        fetch('http://localhost:8080/task/getAll'),
-        fetch('http://localhost:8080/category/getAll')
+        fetch(host + '/task/getAll'),
+        fetch(host + '/category/getAll')
     ])
         .then(([taskResult, categoryResult]) => {
             if (taskResult.status !== 200 && categoryResult.status !== 200) {
@@ -191,7 +193,7 @@ export function getAllTasks() {
 }
 
 export function deleteRequest(selectedTask) {
-    fetch('http://localhost:8080/task/delete' + selectedTask.getID(), {method: 'DELETE'})
+    fetch(host + '/task/delete' + selectedTask.getID(), {method: 'DELETE'})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -206,7 +208,7 @@ export function swapRequest(oldIndex, newIndex) {
     if (newIndex === null) params = "taskID=" + oldIndex;
     else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex);
     let data = new URLSearchParams(params);
-    fetch('http://localhost:8080/task/move', {method: 'POST', body: data})
+    fetch(host + '/task/move', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -218,7 +220,7 @@ export function swapRequest(oldIndex, newIndex) {
 
 export function getAllCategories() {
     let categories = [];
-    fetch('http://localhost:8080/category/getBase')
+    fetch(host + '/category/getBase')
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
@@ -240,7 +242,7 @@ export function getAllCategories() {
 
 export function getSubcategories(parentCategory) {
     let categories = [];
-    fetch('http://localhost:8080/category/subcategories/' + parentCategory.getID())
+    fetch(host + '/category/subcategories/' + parentCategory.getID())
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
@@ -261,7 +263,7 @@ export function getSubcategories(parentCategory) {
 
 export function getAllTasksFromCategory(category) {
     let tasks = [];
-    fetch('http://localhost:8080/task/category' + category.getID())
+    fetch(host + '/task/category' + category.getID())
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
