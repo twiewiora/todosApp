@@ -8,7 +8,7 @@ flex flex-wrap content-center justify-center w-100 h-100 bg-transparent`
 
 const Loader = () => (
     <Section>
-        <ReactLoading type="spinningBubbles" color="#9999ff" />
+        <ReactLoading type="spinningBubbles" color="#354778" />
     </Section>
 );
 

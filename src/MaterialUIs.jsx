@@ -11,7 +11,7 @@ import TrashIcon from "material-ui/svg-icons/action/delete";
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
-import {getStripedStyle, setTextColorDoneTasks} from "./Styles/Styling"
+import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 
@@ -33,7 +33,8 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
             { row.getCategoryName()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
-            <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
+            <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
+            style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
         </TableRowColumn>
     </TableRow>);
 
