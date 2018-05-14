@@ -12,6 +12,12 @@ export function setTextColorDoneTasks(index, done) {
     return color;
 }
 
+export function setTrashIconColor(index, done) {
+    let color = '000';
+    color = done ? "#aaa" : color;
+    return color;
+}
+
 export function getRowStatusStyle(index, array){
     let task = array[index];
     if (task.getState()){
