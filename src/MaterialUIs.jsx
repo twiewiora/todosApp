@@ -106,7 +106,7 @@ class MaterialUIs extends Component {
         if(this.props.ifSetDragnDrop){
             return (
                 <div>
-                    <h1 className="title"> New task </h1>
+                    <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
                     <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
                     <RaisedButton
                         label="Add task"
