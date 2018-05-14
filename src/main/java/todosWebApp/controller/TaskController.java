@@ -21,7 +21,7 @@ public class TaskController {
 
     private final String URL_TASK_GET_BY_ID = "/task/id/{id}";
     private final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
-    private final String URL_TASK_GET_BY_CATEGORY = "/task/categoryId{id}";
+    private final String URL_TASK_GET_BY_CATEGORY = "/task/category{id}";
     private final String URL_TASK_GET_UNASSIGNED = "/task/unassigned";
     private final String URL_TASK_GET_ALL = "/task/getAll";
     private final String URL_TASK_GET_GIVEN_DAY = "/task/dailyTasks/date={date}";
