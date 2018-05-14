@@ -6,6 +6,8 @@ import CalendarUI from "./CalendarUI";
 import ModeButton from "./UI/ModeButton";
 import MenuBase from "./Menu";
 import {getAllTasks, getAllTasksFromCategory} from "./Requests/Requests";
+import {muiTheme} from "./UI/Theme";
+
 
 class Calendar extends React.Component{
     constructor(props) {
@@ -79,10 +81,8 @@ class Calendar extends React.Component{
                             break;
                         }
                     }
-
                     if(!ifFound)
                         this.state.data[i].setVisible(false);
-
                     ifFound = false;
                 }
 
@@ -99,7 +99,7 @@ class Calendar extends React.Component{
     render() {
         return (
             <div className="Calendar">
-                <MuiThemeProvider>
+                <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                               setDataWithCategory={this.setDataWithCategory.bind(this)}/>
                     <div className="App">

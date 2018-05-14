@@ -11,14 +11,15 @@ import TrashIcon from "material-ui/svg-icons/action/delete";
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
-import {getStripedStyle} from "./Styles/Styling"
+import {getStripedStyle, setTextColorDoneTasks} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(getIndex(row.getID()), row.getState()) }}>
+              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(getIndex(row.getID()), row.getState()),
+              color: setTextColorDoneTasks(getIndex(row.getID()), row.getState())}}>
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
@@ -27,6 +28,9 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
         </TableRowColumn>
         <TableRowColumn id="taskName">
             {row.getName()}
+        </TableRowColumn>
+        <TableRowColumn style={{ width: "10%" }}>
+            { row.getCategoryName()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
             <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}/>
@@ -49,9 +53,10 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                 showRowHover={getMainStateTable().showRowHover}
                 stripedRows={getMainStateTable().stripedRows}
             >
-                <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                <TableRow style ={{ background: '#354778' , padding: '5px 20px', height: 10}} >
                     <TableHeaderColumn>Status</TableHeaderColumn>
                     <TableHeaderColumn>Name</TableHeaderColumn>
+                    <TableHeaderColumn>Category</TableHeaderColumn>
                     <TableHeaderColumn>Delete</TableHeaderColumn>
                 </TableRow>
                     {getData().map((value, index) => (
@@ -145,11 +150,12 @@ class MaterialUIs extends Component {
                             <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
                                 <TableHeaderColumn>Status</TableHeaderColumn>
                                 <TableHeaderColumn>Name</TableHeaderColumn>
+                                <TableHeaderColumn>Category</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
                             {this.props.getData().filter(task => task.visible).map((value, index) => (
                                 <TableRow key={index}
-                                          style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState()) }}>
+                                          style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState())}}>
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <Checkbox id="taskStatus"
                                                   checked={value.getState()}
@@ -159,6 +165,11 @@ class MaterialUIs extends Component {
                                     <TableRowColumn id="taskName">
                                         {value.getName()}
                                     </TableRowColumn>
+
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        {value.getCategoryName()}
+                                    </TableRowColumn>
+
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
                                     </TableRowColumn>
