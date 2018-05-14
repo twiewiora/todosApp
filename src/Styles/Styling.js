@@ -7,7 +7,7 @@ export function getStripedStyle(index, done) {
 }
 
 export function setTextColorDoneTasks(index, done) {
-    let color = 'fff';
+    let color = 'black';
     color = done ? "#aaa" : color;
     return color;
 }
