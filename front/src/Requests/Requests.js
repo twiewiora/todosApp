@@ -220,7 +220,7 @@ export function swapRequest(oldIndex, newIndex) {
 
 export function getAllCategories() {
     let categories = [];
-    fetch(host + '/category/getBase')
+    fetch(host + '/category/getAll')
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
