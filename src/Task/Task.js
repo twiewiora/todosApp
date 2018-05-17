@@ -41,9 +41,6 @@ class Task {
     setState = function (newState) {
         this.done = newState;
     };
-    setVisible = function (newVisible) {
-        this.visible = newVisible;
-    };
 }
 
 export default Task;

@@ -8,6 +8,7 @@ import ModeButton from "./UI/ModeButton";
 import {arrayMove} from "react-sortable-hoc";
 import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory} from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
+import Category from "./Category/Category";
 
 
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
         this.state = {
             zoomedIn: "zoomOut",
             data: [],
+            categoriesToDisplay: [],
             loading: true,
             ifSetDragnDrop: true
         };
@@ -173,43 +175,15 @@ class App extends Component {
         return firstDoneTaskIndexAtTheBottom;
     };
 
-    setDataWithCategory = function(category) {
-        this.setState({loading: true});
-        let tasks = [];
-        let ifFound = false;
-        if(category === "root"){
-            tasks = getAllTasks();
-        }
-        else
-            tasks = getAllTasksFromCategory(category);
+    setCurrentCategories = function(categories) {
+        console.log(categories);
+        let ifSetDnD = categories[0].getName() === "None";
+
 
         this.setState({
-            loading: true
-        }, function(){
-            setTimeout(function() {
-                console.log(tasks);
-                for(let i = 0; i < this.state.data.length; i++){
-                    for(let j = 0; j < tasks.length; j++){
-                        if(this.state.data[i].getID() === tasks[j].getID()){
-                            this.state.data[i].setVisible(true);
-                            console.log(this.state.data[i]);
-                            ifFound = true;
-                            break;
-                        }
-                    }
-
-                    if(!ifFound)
-                        this.state.data[i].setVisible(false);
-                    ifFound = false;
-                }
-
-                let ifSetDnD = category === "root";
-                this.setState({
-                    loading: false,
-                    ifSetDragnDrop: ifSetDnD
-                });
-            }.bind(this), 2000)
-        }.bind(this));
+            categoriesToDisplay: categories,
+            ifSetDragnDrop: ifSetDnD
+        });
 
     };
 
@@ -228,7 +202,7 @@ class App extends Component {
             <div className="App">
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
-                              setDataWithCategory={this.setDataWithCategory.bind(this)}/>
+                              setCurrentCategories={this.setCurrentCategories.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
                         <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}  side="right" />
                         <MaterialAll removeTask={this.removeTask.bind(this)}
@@ -238,7 +212,8 @@ class App extends Component {
                                      setData={this.setData.bind(this)}
                                      getIndex={this.getIndex.bind(this)}
                                      appLoading={this.state.loading}
-                                     ifSetDragnDrop={this.state.ifSetDragnDrop}/>
+                                     ifSetDragnDrop={this.state.ifSetDragnDrop}
+                                     categoriesToDisplay={this.state.categoriesToDisplay}/>
                     </div>
                 </MuiThemeProvider>
             </div>);

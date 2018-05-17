@@ -21,43 +21,79 @@ class Menu extends Component {
     filterBackwards(e){
         let currentCategoryID = this.state.currentCategory.getParentID();
         let currentCategory = new Category("Base categories", 1, null);
+        let temp = new Category("None", 1, null);
+        let categoriesToDisplayInTasks = [];
+
         if(currentCategoryID !== 1){
             for(let i = 0; i < this.state.data.length; i++){
                 if(this.state.data[i].getID() === currentCategoryID){
                     currentCategory = this.state.data[i];
+                    temp = this.state.data[i];
                     break;
                 }
             }
         }
+        categoriesToDisplayInTasks.push(temp);
 
-        let categories = [];
-        for(let i = 0; i < this.state.data.length; i++){
-            if(this.state.data[i].getParentID() === currentCategoryID){
-                categories.push(this.state.data[i]);
-                console.log(this.state.data[i])
+        if (currentCategoryID === null){
+            this.props.toggleMenu();
+        } else {
+            let categories = [];
+            for(let i = 0; i < this.state.data.length; i++){
+                if(this.state.data[i].getParentID() === currentCategoryID){
+                    categories.push(this.state.data[i]);
+                    categoriesToDisplayInTasks.push(this.state.data[i]);
+                }
             }
+
+            let j = 1;
+            while(j !== categoriesToDisplayInTasks.length){
+                let cID = categoriesToDisplayInTasks[j].getID();
+
+                for(let k = 0; k < this.state.data.length; k++){
+                    if(this.state.data[k].getParentID() === cID){
+                        categoriesToDisplayInTasks.push(this.state.data[k]);
+                    }
+                }
+                j += 1;
+            }
+
+            this.setState({
+                currentCategory: currentCategory,
+                childrenCurrentCategory: categories
+            });
+
+            this.props.setCurrentCategories(categoriesToDisplayInTasks);
+
         }
-
-        this.setState({
-            currentCategory: currentCategory,
-            childrenCurrentCategory: categories
-        });
-
-        //this.props.setDataWithCategory(this.state.data[i])
+        e.stopPropagation();
     }
 
     filterCategories(e, i) {
-        console.log(this.state.childrenCurrentCategory[i]);
         let categories = [];
+        let categoriesToDisplayInTasks = [];
         let length = this.state.data.length;
         let currentCategory = this.state.childrenCurrentCategory[i];
         let currentCategoryID = currentCategory.getID();
+        categoriesToDisplayInTasks.push(currentCategory);
 
         for(let j = 0; j < length; j++){
             if(this.state.data[j].getParentID() === currentCategoryID){
                 categories.push(this.state.data[j]);
-                console.log(this.state.data[j])
+                categoriesToDisplayInTasks.push(this.state.data[j]);
             }
+        }
+
+        let j = 1;
+        while(j !== categoriesToDisplayInTasks.length){
+            let cID = categoriesToDisplayInTasks[j].getID();
+
+            for(let k = 0; k < length; k++){
+                if(this.state.data[k].getParentID() === cID){
+                    categoriesToDisplayInTasks.push(this.state.data[k]);
+                }
+            }
+            j += 1;
         }
 
         this.setState({
@@ -65,7 +101,7 @@ class Menu extends Component {
             childrenCurrentCategory: categories
         });
 
-        //this.props.setDataWithCategory(this.state.data[i])
+        this.props.setCurrentCategories(categoriesToDisplayInTasks);
     }
 
     addCategory() {
@@ -144,7 +180,7 @@ class MenuBase extends Component {
                 <MenuIcon onClick={(e) => {this.showMenu(e)}}/>
                 <Menu menuVisibility={this.state.visible}
                       toggleMenu={this.toggleMenu.bind(this)}
-                      setDataWithCategory={this.props.setDataWithCategory.bind(this)}/>
+                      setCurrentCategories={this.props.setCurrentCategories.bind(this)}/>
             </div>
         );
     }

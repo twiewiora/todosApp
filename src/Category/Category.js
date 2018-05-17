@@ -20,6 +20,9 @@ class Category {
         this.parent_id = newParent
     }
 
+    setName = function (newName){
+        this.name = newName
+    }
 }
 
 export default Category;
