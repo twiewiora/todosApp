@@ -6,7 +6,6 @@ class Task {
         this.date = null;
         this.categoryId = null;
         this.categoryName = null;
-        this.visible = true;
     }
 
     getState = function () {

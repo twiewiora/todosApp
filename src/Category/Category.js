@@ -4,7 +4,7 @@ class Category {
         this.id = id;
         this.parent_id = parent_id;
     }
-    getParent = function () {
+    getParentID = function () {
         return this.parent_id
     };
     getName = function () {
@@ -16,7 +16,7 @@ class Category {
     setID = function (id) {
         this.id = id;
     };
-    setParent = function (newParent){
+    setParentID = function (newParent){
         this.parent_id = newParent
     }
 

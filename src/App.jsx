@@ -61,7 +61,7 @@ class App extends Component {
                     data: tasks,
                     loading: false
                 });
-            }.bind(this), 3000)
+            }.bind(this), 1000)
         }.bind(this));
 
     }
