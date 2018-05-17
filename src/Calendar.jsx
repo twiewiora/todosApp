@@ -5,7 +5,7 @@ import App from "./App";
 import CalendarUI from "./CalendarUI";
 import ModeButton from "./UI/ModeButton";
 import MenuBase from "./Menu";
-import {getAllTasks, getAllTasksFromCategory} from "./Requests/Requests";
+import {getAllTasks} from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 
 
@@ -16,7 +16,7 @@ class Calendar extends React.Component{
         this.state = {
             zoomedIn: "zoomOut",
             loading: true,
-            ifSetDragnDrop: true
+            categoriesToDisplay: []
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -57,42 +57,12 @@ class Calendar extends React.Component{
 
     }
 
-    setDataWithCategory = function(category) { //TODO: change how this behaves in Calendar
-        this.setState({loading: true});
-        let tasks = [];
-        let ifFound = false;
-        if(category === "root"){
-            tasks = getAllTasks();
-        }
-        else
-            tasks = getAllTasksFromCategory(category);
+    setCurrentCategories = function(categories) {
+        console.log(categories);
 
         this.setState({
-            loading: true
-        }, function(){
-            setTimeout(function() {
-                console.log(tasks);
-                for(let i = 0; i < this.state.data.length; i++){
-                    for(let j = 0; j < tasks.length; j++){
-                        if(this.state.data[i].getID() === tasks[j].getID()){
-                            this.state.data[i].setVisible(true);
-                            console.log(this.state.data[i]);
-                            ifFound = true;
-                            break;
-                        }
-                    }
-                    if(!ifFound)
-                        this.state.data[i].setVisible(false);
-                    ifFound = false;
-                }
-
-                let ifSetDnD = category === "root";
-                this.setState({
-                    loading: false,
-                    ifSetDragnDrop: ifSetDnD
-                });
-            }.bind(this), 2000)
-        }.bind(this));
+            categoriesToDisplay: categories,
+        });
 
     };
 
@@ -101,14 +71,14 @@ class Calendar extends React.Component{
             <div className="Calendar">
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
-                              setDataWithCategory={this.setDataWithCategory.bind(this)}/>
-                    <div className="App">
+                              setCurrentCategories={this.setCurrentCategories.bind(this)}/>
+                    <div id="App1" className={this.state.zoomedIn}>
                         <ModeButton
                             label="Home"
                             onClick={() => this.props.pager.push(App)}
                             side="right"
                         />
-                        <CalendarUI/>
+                        <CalendarUI categoriesToDisplay={this.state.categoriesToDisplay}/>
                     </div>
                 </MuiThemeProvider>
             </div>
