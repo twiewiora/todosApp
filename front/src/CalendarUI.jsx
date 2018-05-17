@@ -159,6 +159,15 @@ class CalendarUI extends Component {
         }
     };
 
+    containsCategoryToDisplay(categoryID) {
+        for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
+            if(this.props.categoriesToDisplay[i].getID() === categoryID){
+                return true;
+            }
+        }
+        return false;
+    }
+
     render(){
         return(
             <div>
@@ -192,7 +201,7 @@ class CalendarUI extends Component {
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getCalendarDayStateTable().showCheckboxes}>
-                    {this.state.data.map( (row, index) => (
+                    {this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryID())).map( (row, index) => (
                         <TableRow key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.data) }}>
                             <TableRowColumn style={{width:50}}>
                                 <Checkbox id="taskStatus"
@@ -222,7 +231,7 @@ class CalendarUI extends Component {
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getUnassignedStateTable().showCheckboxes}>
-                    {this.state.unassigned.map( (row, index) => (
+                    {this.state.unassigned.filter(task => this.containsCategoryToDisplay(task.getCategoryID())).map( (row, index) => (
                         <TableRow
                             key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
                             <TableRowColumn>{row.name}</TableRowColumn>

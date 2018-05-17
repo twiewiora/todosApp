@@ -17,7 +17,7 @@ class Task {
     getID = function () {
         return this.id
     };
-    getCategory = function () {
+    getCategoryID = function () {
         return this.categoryId;
     };
     getCategoryName = function () {

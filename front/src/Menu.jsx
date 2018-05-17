@@ -16,6 +16,13 @@ class Menu extends Component {
             currentCategory: new Category("Base categories", 1, null),
             childrenCurrentCategory: getSubcategories(new Category("root", 1, null))
         };
+
+        setTimeout(function() {
+            let temp = this.state.data;
+            temp.unshift(new Category("None", 1, null));
+            this.props.setCurrentCategories(temp);
+        }.bind(this), 1000);
+
     }
 
     filterBackwards(e){
