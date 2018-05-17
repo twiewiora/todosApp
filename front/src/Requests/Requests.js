@@ -125,7 +125,6 @@ export function addRequest(newTaskName) {
             newTask.setID(data.id);
             newTask.setCategory(data.categoryId);
             newTask.setState(data.done);
-            newTask.setVisible(true);
 
         }).catch(function () {
         showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
@@ -169,7 +168,7 @@ export function getAllTasks() {
             taskData.then(data => {
                 categoryData.then(categories => {
                     let categoryIdToNameMap = categories.reduce((result, category) => {
-                        result[category.id] = category.name
+                        result[category.id] = category.name;
                         return result
                     },{});
 
@@ -177,8 +176,7 @@ export function getAllTasks() {
                         let newTask = new Task(data[i].title, data[i].id);
                         newTask.setState(data[i].done);
                         newTask.setCategory(data[i].categoryId);
-                        newTask.setCategoryName(categoryIdToNameMap[data[i].categoryId])
-                        newTask.setVisible(true);
+                        newTask.setCategoryName(categoryIdToNameMap[data[i].categoryId]);
 
                         tasks.push(newTask);
                     }
@@ -274,7 +272,6 @@ export function getAllTasksFromCategory(category) {
                 newTask.setState(data[i].done);
                 newTask.setDate(data[i].deadline);
                 newTask.setCategory(data[i].categoryId);
-                newTask.setVisible(true);
 
                 tasks.push(newTask);
             }

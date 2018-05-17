@@ -84,6 +84,15 @@ class MaterialUIs extends Component {
         }
     }
 
+    containsCategoryToDisplay(categoryName) {
+        for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
+            if(this.props.categoriesToDisplay[i].getName() === categoryName){
+                return true;
+            }
+        }
+        return false;
+    }
+
     onSortEnd = ({oldIndex, newIndex}) => {
         let data = this.props.getData();
         if(oldIndex !== newIndex){
@@ -154,7 +163,7 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Category</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
-                            {this.props.getData().filter(task => task.visible).map((value, index) => (
+                            {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => (
                                 <TableRow key={index}
                                           style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState())}}>
                                     <TableRowColumn style={{ width: "10%" }}>
