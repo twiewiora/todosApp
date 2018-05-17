@@ -230,8 +230,7 @@ export function getAllCategories() {
         .then(data => {
             console.log(data);
             for (let i = 0; i < data.length; i++) {
-                let newCategory = new Category(data[i].name, data[i].id, data[i].parent_id);
-
+                let newCategory = new Category(data[i].name, data[i].id, data[i].parentCategoryId);
                 categories.push(newCategory);
             }
         }).catch(function () {
@@ -251,8 +250,7 @@ export function getSubcategories(parentCategory) {
         })
         .then(data => {
             for (let i = 0; i < data.length; i++) {
-                let newCategory = new Category(data[i].name, data[i].id, data[i].parent_id);
-
+                let newCategory = new Category(data[i].name, data[i].id, data[i].parentCategoryId);
                 categories.push(newCategory);
             }
         }).catch(function () {
