@@ -6,7 +6,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Calendar from "./Calendar";
 import ModeButton from "./UI/ModeButton";
 import {arrayMove} from "react-sortable-hoc";
-import {markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory} from "./Requests/Requests";
+import {
+    markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory,
+    addWithCategoryRequest
+} from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 import Category from "./Category/Category";
 
@@ -20,7 +23,8 @@ class App extends Component {
             data: [],
             categoriesToDisplay: [],
             loading: true,
-            ifSetDragnDrop: true
+            ifSetDragnDrop: true,
+            currentCategoryId: 1
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -29,6 +33,7 @@ class App extends Component {
         this.getData = this.getData.bind(this);
         this.setData = this.setData.bind(this);
         this.addTask = this.addTask.bind(this);
+        this.addTaskWithCategory = this.addTaskWithCategory.bind(this);
         this.removeTask = this.removeTask.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
     }
@@ -132,6 +137,18 @@ class App extends Component {
         }
     };
 
+    addTaskWithCategory = function (e, categoryId) {
+        let name = document.getElementById("taskName").value;
+        if (name !== ""){
+            let newTask = addWithCategoryRequest(name, categoryId);
+            let temp = this.state.data;
+            temp.unshift(newTask);
+            this.setState({data : temp});
+            document.getElementById('taskName').value = "";
+            document.getElementById('taskName').hintText = "name";
+        }
+    };
+
     removeTask = function (e, taskID) {
         let i = -1;
         if(this.state.ifSetDragnDrop){
@@ -187,6 +204,14 @@ class App extends Component {
 
     };
 
+    setSelectedCategory = function(categoryId){
+        console.log(categoryId);
+
+        this.setState({
+            currentCategoryId: categoryId
+        });
+    };
+
     getIndex = (id) => {
         let data = this.state.data;
         let length = data.length;
@@ -202,18 +227,21 @@ class App extends Component {
             <div className="App">
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
+                              setSelectedCategory={this.setSelectedCategory.bind(this)}
                               setCurrentCategories={this.setCurrentCategories.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
                         <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}  side="right" />
                         <MaterialAll removeTask={this.removeTask.bind(this)}
                                      addTask={this.addTask.bind(this)}
+                                     addTaskWithCategory={this.addTaskWithCategory.bind(this)}
                                      handleCheck={this.handleCheck.bind(this)}
                                      getData={this.getData.bind(this)}
                                      setData={this.setData.bind(this)}
                                      getIndex={this.getIndex.bind(this)}
                                      appLoading={this.state.loading}
                                      ifSetDragnDrop={this.state.ifSetDragnDrop}
-                                     categoriesToDisplay={this.state.categoriesToDisplay}/>
+                                     categoriesToDisplay={this.state.categoriesToDisplay}
+                                     currentCategoryId={this.state.currentCategoryId}/>
                     </div>
                 </MuiThemeProvider>
             </div>);
