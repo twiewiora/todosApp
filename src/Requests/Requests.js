@@ -132,6 +132,28 @@ export function addRequest(newTaskName) {
     return newTask;
 }
 
+export function addWithCategoryRequest(newTaskName, categoryId) {
+    let data = new URLSearchParams("title=" + newTaskName + "&categoryID=" + categoryId);
+    let newTask = new Task(newTaskName, -1);
+    fetch(host + '/task/create', {method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log(data);
+            newTask.setID(data.id);
+            newTask.setCategory(data.categoryId);
+            newTask.setState(data.done);
+
+        }).catch(function () {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
+    return newTask;
+}
+
 export function addCategoryRequest(newCategoryName, parentID) {
     let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
     let newCategory = new Category(newCategoryName, -1, parentID);
@@ -170,7 +192,7 @@ export function getAllTasks() {
                     let categoryIdToNameMap = categories.reduce((result, category) => {
                         result[category.id] = category.name;
                         return result
-                    },{});
+                    }, {});
 
                     for (let i = 0; i < data.length; i++) {
                         let newTask = new Task(data[i].title, data[i].id);
