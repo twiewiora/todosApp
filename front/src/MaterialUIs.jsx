@@ -141,7 +141,7 @@ class MaterialUIs extends Component {
                         label="Add task"
                         id="addButton"
                         onClick={(e) => {
-                            this.props.addTask(e)
+                            this.props.addTaskWithCategory(e, this.props.currentCategoryId)
                         }}
                     /><br/><br/>
                     <Table
