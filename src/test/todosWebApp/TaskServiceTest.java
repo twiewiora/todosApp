@@ -1,70 +1,75 @@
 package todosWebApp;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.model.Task;
+import todosWebApp.persistence.repository.CategoryRepository;
+import todosWebApp.persistence.repository.TaskRepository;
 import todosWebApp.persistence.service.CategoryService;
 import todosWebApp.persistence.service.TaskService;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TodosApplication.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TaskServiceTest {
 
-    @Autowired
     private TaskService taskService;
 
-    @Autowired
+    @Mock
+    private TaskRepository taskRepository;
+
     private CategoryService categoryService;
 
-    @Before
-    public void initDatabase(){
-        categoryService.createRootCategoryIfNotExists();
+    @Mock
+    private CategoryRepository categoryRepository;
 
+    public TaskServiceTest() {
+        MockitoAnnotations.initMocks(this);
 
-        taskService.createTask("TitleTask_1", 1000L);
-        taskService.createTask("TitleTask_2", 1000L);
+        Category root = new Category("root");
+        root.setId(1L);
+        Category house = new Category("house");
+        house.setParent(root);
+        house.setId(2L);
+        Category tidying = new Category("tidying");
+        tidying.setParent(house);
+        tidying.setId(3L);
 
-        Category house = categoryService.createCategory("house");
-        Category tidying = categoryService.createCategory("tidying", house.getId());
+        Task task1 = new Task("TitleTask_1", 1000L);
+        task1.setId(1L);
+        task1.setDate(1000L);
+        Task task2 = new Task("TitleTask_2", 1000L);
+        task2.setId(2L);
+        task2.setDate(2000L);
+        Task task3 = new Task("cleaning room 1", 1000L);
+        task3.setId(3L);
+        task3.setCategory(tidying);
 
-        taskService.createTask("cleaning room 1", tidying);
+        task1.setChild(task2);
+        task2.setParent(task1);
+        task2.setChild(task3);
+        task3.setParent(task2);
 
-    }
+        Mockito.when(categoryRepository.getRootCategory()).thenReturn(root);
+        Mockito.when(categoryRepository.getCategoryById(1L)).thenReturn(root);
 
-    @After
-    public void cleanDatabase() {
-        for( Task task : taskService.getAllTasks()){
-            taskService.deleteTask(task.getId());
-        }
+        Mockito.when(taskRepository.getAllTasks()).thenReturn(Arrays.asList(task1, task2, task3));
+        Mockito.when(taskRepository.getTaskByTitle("TitleTask_1")).thenReturn(Collections.singletonList(task1));
+        Mockito.when(taskRepository.getTaskById(1L)).thenReturn(task1);
+        Mockito.when(taskRepository.getTasksByCategory(root.getId())).thenReturn(Arrays.asList(task1, task2));
+        Mockito.when(taskRepository.getTasksForGivenDay(1000L)).thenReturn(Collections.singletonList(task1));
+        Mockito.when(taskRepository.getTasksFromInterval(500L, 2500L)).thenReturn(Arrays.asList(task1, task2));
+        Mockito.when(taskRepository.getTasksFromInterval(500L, 2500L)).thenReturn(Arrays.asList(task1, task2));
 
-        deleteCategory(categoryService.getRootCategory());
-
-        for(Category category : categoryService.getAllCategories()){
-
-            categoryService.deleteCategory(category.getId());
-        }
-        categoryService.createRootCategoryIfNotExists();
-    }
-
-    private void deleteCategory(Category category){
-        for(Category child: categoryService.getChildren(category.getId())){
-            deleteCategory(child);
-        }
-
-        categoryService.deleteCategory(category.getId());
+        taskService = new TaskService(taskRepository, categoryRepository);
+        categoryService = new CategoryService(categoryRepository);
     }
 
     @Test
@@ -75,9 +80,9 @@ public class TaskServiceTest {
 
     @Test
     public void getTaskByIdTest() {
-        Task inserted = taskService.createTask("work");
-        Task task = taskService.getTaskById(inserted.getId());
-        assertEquals(inserted.getId(), task.getId());
+        Task task = taskService.getTaskById(1L);
+        assertEquals(task.getTitle(), "TitleTask_1");
+        assertEquals(task.getChild().getId(), Long.valueOf(2L));
     }
 
     @Test
@@ -94,64 +99,19 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void createTaskTest(){
+    public void getTasksForGivenDayTest(){
+        List<Task> tasks = taskService.getTasksForGivenDay(1000L);
 
-        Task t1 = taskService.createTask("work", 1000L);
-
-        assertEquals(t1.getCategory().getName(), "root");
-        assertEquals(t1.getDate(), Long.valueOf(1000L));
-        assertEquals(t1.getTitle(), "work");
-
+        assertEquals(tasks.get(0).getTitle(), "TitleTask_1");
     }
 
     @Test
-    public void setTaskDoneTest(){
+    public void getTasksFromIntervalTest(){
+        List<Task> tasks = taskService.getTasksFromInterval(500L, 2500L);
 
-        Task t1 = taskService.createTask("work", 1000L);
-        assertEquals(t1.getDone(), false);
-
-        taskService.setDone(t1.getId(), true);
-        assertEquals(taskService.getTaskById(t1.getId()).getDone(), true);
-
-
+        assertEquals(true, tasks.stream().anyMatch(task -> task.getTitle().equals("TitleTask_1")));
+        assertEquals(true, tasks.stream().anyMatch(task -> task.getTitle().equals("TitleTask_2")));
+        assertEquals(2, tasks.size());
     }
 
-    @Test
-    public void deleteTaskTest(){
-        Task t1 = taskService.createTask("work", 1000L);
-
-        taskService.deleteTask(t1.getId());
-        assertEquals(taskService.getTaskById(t1.getId()), null);
-
-    }
-
-    @Test
-    public void moveTaskTest(){
-        //TODO implement test
-    }
-
-    @Test
-    public void assignDateTest(){
-
-        Task t1 = taskService.createTask("work", 1000L);
-
-        assertEquals(t1.getDate(), Long.valueOf(1000L));
-
-        taskService.assignDate(t1.getId(), 2000L);
-
-        assertEquals(taskService.getTaskById(t1.getId()).getDate(), Long.valueOf(2000L));
-
-
-    }
-
-    @Test
-    public void assignCategoryTest(){
-        Task t1 = taskService.createTask("work", 1000L);
-        Category c1 = categoryService.createCategory("job");
-
-        taskService.assignCategory(t1.getId(), c1.getId());
-
-        assertEquals(taskService.getTaskById(t1.getId()).getCategory().getName(), "job");
-
-    }
 }

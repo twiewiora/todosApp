@@ -1,75 +1,57 @@
 package todosWebApp;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import todosWebApp.persistence.model.Category;
+import todosWebApp.persistence.repository.CategoryRepository;
 import todosWebApp.persistence.service.CategoryService;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TodosApplication.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class CategoryServiceTest {
 
-    @Autowired
     private CategoryService categoryService;
 
-    @Before
-    public void initDatabase(){
-        Category category = categoryService.createCategory("house");
-        categoryService.createCategory("tidying", category.getId());
-    }
+    @Mock
+    private CategoryRepository categoryRepository;
 
-    @After
-    public void cleanDatabase(){
-        for(Category category : categoryService.getAllBaseCategories()){
-            if (category.getParent() != null) {
-                deleteCategory(category);
-            }
-        }
-    }
+    public CategoryServiceTest() {
+        MockitoAnnotations.initMocks(this);
 
-    private void deleteCategory(Category category){
-        for(Category child: categoryService.getChildren(category.getId())){
-            deleteCategory(child);
-        }
-        categoryService.deleteCategory(category.getId());
-    }
+        Category root = new Category("root");
+        root.setId(1L);
+        Category house = new Category("house");
+        house.setParent(root);
+        house.setId(2L);
+        Category tidying = new Category("tidying");
+        tidying.setParent(house);
+        tidying.setId(3L);
 
-    @Test
-    public void createCategoryTest(){
-        Category c = categoryService.createCategory("homework");
+        Mockito.when(categoryRepository.getRootCategory()).thenReturn(root);
+        Mockito.when(categoryRepository.getAllCategories()).thenReturn(Arrays.asList(house, tidying));
+        Mockito.when(categoryRepository.getCategoryById(1L)).thenReturn(root);
+        Mockito.when(categoryRepository.getCategoryById(2L)).thenReturn(house);
+        Mockito.when(categoryRepository.getCategoryById(3L)).thenReturn(tidying);
+        Mockito.when(categoryRepository.getChildren(1L)).thenReturn(Collections.singletonList(house));
+        Mockito.when(categoryRepository.getChildren(2L)).thenReturn(Collections.singletonList(tidying));
+        Mockito.when(categoryRepository.getAllBaseCategories()).thenReturn(Collections.singletonList(house));
 
-        assertEquals(c.getName(), "homework");
-        assertEquals(c.getParent().getId(), categoryService.getRootCategory().getId());
-    }
-
-    @Test
-    public void deleteCategoryTest(){
-        Category c = categoryService.createCategory("homework");
-        deleteCategory(c);
-
-        assertEquals(categoryService.getCategoryById(c.getId()), null);
+        categoryService = new CategoryService(categoryRepository);
     }
 
     @Test
     public void createRootCategoryIfNotExistsTest(){
-        deleteCategory(categoryService.getRootCategory());
+        Category c = categoryService.createRootCategoryIfNotExists();
 
-        categoryService.createRootCategoryIfNotExists();
-
-        assertEquals(categoryService.getRootCategory().getName(), "root");
-        assertEquals(categoryService.getRootCategory().getParent(), null);
+        assertEquals(c.getName(), "root");
+        assertEquals(c.getParent(), null);
     }
 
     @Test
@@ -82,10 +64,10 @@ public class CategoryServiceTest {
 
     @Test
     public void getCategoryByIdTest(){
-        Category inserted = categoryService.createCategory("homework");
-        Category category = categoryService.getCategoryById(inserted.getId());
+        Category root = categoryService.getRootCategory();
+        Category category = categoryService.getCategoryById(root.getId());
 
-        assertEquals(inserted.getId(), category.getId());
+        assertEquals(root.getId(), category.getId());
     }
 
     @Test
