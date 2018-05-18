@@ -20,6 +20,8 @@ public interface TaskDataCreator {
 
    void assignDate(Long taskId, Long date);
 
+   void unassignDate(Long taskId);
+
    void assignCategory(Long taskId, Long categoryId);
 
    void moveTask(Long taskId, Long newParentTaskId);

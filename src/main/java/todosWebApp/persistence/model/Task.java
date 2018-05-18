@@ -81,6 +81,8 @@ public class Task {
         return date;
     }
 
+    public void setDate(Long date) { this.date = date; }
+
     public Task getParent() {
         return parent;
     }
@@ -106,10 +108,6 @@ public class Task {
         } else {
             return "";
         }
-    }
-
-    public void setDate(Long date) {
-        this.date = date;
     }
 
 }
