@@ -12,11 +12,12 @@ import {
 } from "material-ui";
 
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import PreviousDayButton from 'mui-icons/mdi/fast_rewind';
-import NextDayButton from 'mui-icons/mdi/fast_forward';
-import NextWeekButton from 'mui-icons/mdi/skip_next';
-import PreviousWeekButton from 'mui-icons/mdi/skip_previous';
-import AssignButton from 'mui-icons/mdi/call_made';
+import PreviousDayIcon from "material-ui/svg-icons/av/fast-rewind";
+import NextDayIcon from "material-ui/svg-icons/av/fast-forward";
+import NextWeekIcon from "material-ui/svg-icons/av/skip-next";
+import PreviousWeekIcon from "material-ui/svg-icons/av/skip-previous";
+import AssignIcon from "material-ui/svg-icons/communication/call-made";
+import UnassignIcon from "material-ui/svg-icons/communication/call-received";
 import {assignToDate, getUnassignedTasks, getDailyTasks, markRequest, deleteRequest} from "./Requests/Requests";
 import Loader from "./Loader/Loader";
 import {getRowStatusStyle} from "./Styles/Styling";
@@ -125,7 +126,30 @@ class CalendarUI extends Component {
             }, 2000)
         });
     };
+    unassignDate(index) {
+        let selectedTask = this.state.data[index];
+        selectedTask.setDate(null);
 
+        let newData = this.state.data.slice();
+        newData = removeIndex(newData, index);
+        console.log(newData);
+
+        let newUnassigned = this.state.unassigned.slice();
+        newUnassigned.push(selectedTask);
+        assignToDate(selectedTask);
+
+        this.setState({
+            loading: true,
+        },() => {
+            setTimeout(() => {
+                this.setState({
+                    data: newData,
+                    unassigned: newUnassigned,
+                    loading: false
+                });
+            }, 2000)
+        });
+    }
     handleCheck(i) {
         let state = this.state.data[i].getState();
 
@@ -173,19 +197,11 @@ class CalendarUI extends Component {
             <div>
                 <div align="center">
                 <h1 className="title">
-                    <IconButton>
-                        <PreviousWeekButton onClick={(e) => {this.previousWeek()}}/>
-                    </IconButton>
-                    <IconButton>
-                        <PreviousDayButton onClick={(e) => {this.previousDay()}}/>
-                    </IconButton>
+                    <PreviousWeekIcon id={"prevWeekIcon"} onClick={(e) => {this.previousWeek()}}/>
+                    <PreviousDayIcon id={"prevDayIcon"} onClick={(e) => {this.previousDay()}}/>
                     {this.state.currentDateTitle}
-                <IconButton>
-                    <NextDayButton onClick={(e) => {this.nextDay()}}/>
-                </IconButton>
-                <IconButton>
-                    <NextWeekButton onClick={(e) => {this.nextWeek()}}/>
-                </IconButton>
+                    <NextDayIcon id={"nextDayIcon"} onClick={(e) => {this.nextDay()}}/>
+                    <NextWeekIcon id={"nextWeekIcon"} onClick={(e) => {this.nextWeek()}}/>
                 </h1>
                 </div>
 
@@ -198,6 +214,7 @@ class CalendarUI extends Component {
                         <TableHeaderColumn style={{width:50}}>Status</TableHeaderColumn>
                         <TableHeaderColumn style={{width:150, textColor: '#fff'}}>Name</TableHeaderColumn>
                         <TableHeaderColumn style={{ textColor: '#fff'}}>Delete</TableHeaderColumn>
+                        <TableHeaderColumn style={{ textColor: '#fff'}}>Unassign</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getCalendarDayStateTable().showCheckboxes}>
@@ -212,6 +229,9 @@ class CalendarUI extends Component {
                             <TableRowColumn style={{width:150}}>{row.name}</TableRowColumn>
                             <TableRowColumn>
                                 <TrashIcon id="trashIcon" onClick={(e) => { this.removeTask(e, this.getIndex(row.getID())) }}/>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <UnassignIcon id="assignIcon" onClick={(e) => {this.unassignDate(index)}}/>
                             </TableRowColumn>
                         </TableRow>
                     ))}
@@ -236,9 +256,7 @@ class CalendarUI extends Component {
                             key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
                             <TableRowColumn>{row.name}</TableRowColumn>
                             <TableRowColumn style={{width:50}}>
-                                <IconButton>
-                                    <AssignButton onClick={(e) => {this.assignDate(index)}}/>
-                                </IconButton>
+                                <AssignIcon id="assignIcon" onClick={(e) => {this.assignDate(index)}}/>
                             </TableRowColumn>
                         </TableRow>
 
