@@ -16,7 +16,8 @@ class Calendar extends React.Component{
         this.state = {
             zoomedIn: "zoomOut",
             loading: true,
-            categoriesToDisplay: []
+            categoriesToDisplay: [],
+            currentCategoryId: 1
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -66,11 +67,20 @@ class Calendar extends React.Component{
 
     };
 
+    setSelectedCategory = function(categoryId){
+        console.log(categoryId);
+
+        this.setState({
+            currentCategoryId: categoryId
+        });
+    };
+
     render() {
         return (
             <div className="Calendar">
                 <MuiThemeProvider muiTheme={muiTheme}>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
+                              setSelectedCategory={this.setSelectedCategory.bind(this)}
                               setCurrentCategories={this.setCurrentCategories.bind(this)}/>
                     <div id="App1" className={this.state.zoomedIn}>
                         <ModeButton
