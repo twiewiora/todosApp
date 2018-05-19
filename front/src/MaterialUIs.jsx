@@ -80,11 +80,18 @@ class MaterialUIs extends Component {
         super(props);
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleKeyPressAtCategory = this.handleKeyPressAtCategory.bind(this);
     }
 
     handleKeyPress(event) {
         if (event.key === 'Enter') {
             this.props.addTask();
+        }
+    }
+
+    handleKeyPressAtCategory(event, categoryId) {
+        if (event.key === 'Enter') {
+            this.props.addTaskWithCategory(event, categoryId);
         }
     }
 
@@ -140,7 +147,7 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title"> New task </h1>
-                    <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
+                    <TextField id="taskName" hintText="name" onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}} /><br />
                     <RaisedButton
                         label="Add task"
                         id="addButton"
