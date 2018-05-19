@@ -129,6 +129,7 @@ class App extends Component {
         let name = document.getElementById("taskName").value;
         if (name !== ""){
             let newTask = addRequest(name);
+            console.log(newTask);
             let temp = this.state.data;
             temp.unshift(newTask);
             this.setState({data : temp});
