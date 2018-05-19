@@ -124,7 +124,9 @@ export function addRequest(newTaskName) {
             console.log(data);
             newTask.setID(data.id);
             newTask.setCategory(data.categoryId);
+            newTask.setCategoryName(null);
             newTask.setState(data.done);
+            newTask.setDate(null);
 
         }).catch(function () {
         showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
