@@ -37,8 +37,15 @@ public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
 
     @Override
     public void deleteCategory(Long categoryId) {
-        Category category = getCategoryById(categoryId);
+        deleteSubcategories(categoryId);
+    }
 
+    public void deleteSubcategories(Long categoryId){
+        List<Category> subcategories = categoryRepository.getChildren(categoryId);
+        if(subcategories.size() != 0)
+            for(Category subcategory : subcategories)
+                deleteSubcategories(subcategory.getId());
+        Category category = categoryRepository.getCategoryById(categoryId);
         categoryRepository.delete(category);
     }
 
