@@ -18,7 +18,14 @@ import NextWeekIcon from "material-ui/svg-icons/av/skip-next";
 import PreviousWeekIcon from "material-ui/svg-icons/av/skip-previous";
 import AssignIcon from "material-ui/svg-icons/communication/call-made";
 import UnassignIcon from "material-ui/svg-icons/communication/call-received";
-import {assignToDate, getUnassignedTasks, getDailyTasks, markRequest, deleteRequest} from "./Requests/Requests";
+import {
+    assignToDate,
+    getUnassignedTasks,
+    getDailyTasks,
+    markRequest,
+    deleteRequest,
+    unassignFromDate
+} from "./Requests/Requests";
 import Loader from "./Loader/Loader";
 import {getRowStatusStyle} from "./Styles/Styling";
 import {removeIndex} from "./Utils/ArrayFunctions";
@@ -113,7 +120,7 @@ class CalendarUI extends Component {
         let newData = this.state.data.slice();
         newData.push(selectedTask);
         assignToDate(selectedTask);
-
+        console.log(newData);
         this.setState({
             loading: true,
         },() => {
@@ -136,7 +143,7 @@ class CalendarUI extends Component {
 
         let newUnassigned = this.state.unassigned.slice();
         newUnassigned.push(selectedTask);
-        assignToDate(selectedTask);
+        unassignFromDate(selectedTask);
 
         this.setState({
             loading: true,
@@ -206,32 +213,32 @@ class CalendarUI extends Component {
                 </div>
 
             <Table selectable={getCalendarDayStateTable().selectable}
-                style={{ tableLayout: 'auto', width: 400, margin: 'auto' }}>
+                style={{ tableLayout: 'auto', width: 600, margin: 'auto' }}>
                 <TableHeader displaySelectAll = {getCalendarDayStateTable().displaySelectAll}
                              adjustForCheckbox = {getCalendarDayStateTable().showCheckboxes}>
 
-                    <TableRow style ={{ background: '#354778' ,padding: '5px 20px', height: 10}} >
-                        <TableHeaderColumn style={{width:50}}>Status</TableHeaderColumn>
+                    <TableRow style ={{ width: 600, background: '#354778' ,padding: '5px 20px', height: 10}} >
+                        <TableHeaderColumn style={{width:60}}>Status</TableHeaderColumn>
                         <TableHeaderColumn style={{width:150, textColor: '#fff'}}>Name</TableHeaderColumn>
-                        <TableHeaderColumn style={{ textColor: '#fff'}}>Delete</TableHeaderColumn>
-                        <TableHeaderColumn style={{ textColor: '#fff'}}>Unassign</TableHeaderColumn>
+                        <TableHeaderColumn style={{width:60, textColor: '#fff'}}>Delete</TableHeaderColumn>
+                        <TableHeaderColumn style={{width:60, textColor: '#fff'}}>Unassign</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox = {getCalendarDayStateTable().showCheckboxes}>
                     {this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryID())).map( (row, index) => (
                         <TableRow key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.data) }}>
-                            <TableRowColumn style={{width:50}}>
+                            <TableRowColumn style={{width:60}}>
                                 <Checkbox id="taskStatus"
                                           checked={row.getState()}
                                           onCheck={() => this.handleCheck(this.getIndex(row.getID()))}
                                 />
                             </TableRowColumn>
                             <TableRowColumn style={{width:150}}>{row.name}</TableRowColumn>
-                            <TableRowColumn>
+                            <TableRowColumn style={{width:60}}>
                                 <TrashIcon id="trashIcon" onClick={(e) => { this.removeTask(e, this.getIndex(row.getID())) }}/>
                             </TableRowColumn>
-                            <TableRowColumn>
-                                <UnassignIcon id="assignIcon" onClick={(e) => {this.unassignDate(index)}}/>
+                            <TableRowColumn style={{width:60}}>
+                                <UnassignIcon id="unassignIcon" onClick={(e) => {this.unassignDate(index)}}/>
                             </TableRowColumn>
                         </TableRow>
                     ))}

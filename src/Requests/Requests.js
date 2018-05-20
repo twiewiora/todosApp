@@ -92,6 +92,18 @@ export function assignToDate(selectedTask) {
     });
 
 }
+export function unassignFromDate(selectedTask) {
+    let data = new URLSearchParams("taskID=" + selectedTask.getID());
+    fetch(host + '/task/unsetDate', {method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+        }).catch(function () {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
+
+}
 
 export function markAndDropRequest(selectedTask, newParentTask) {
     let params;

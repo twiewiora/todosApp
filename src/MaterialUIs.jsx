@@ -33,7 +33,7 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
             { row.getCategoryName()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
-            {row.getDate() == null ? "Unassigned" : row.getDate()}
+            { row.getDate() == null ? "Unassigned" : row.getDate()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
             <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
@@ -191,7 +191,7 @@ class MaterialUIs extends Component {
                                         {value.getCategoryName()}
                                     </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
-                                        {value.getDate()}
+                                        { value.getDate() == null ? "Unassigned" : value.getDate()}
                                     </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
