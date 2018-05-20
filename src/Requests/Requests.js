@@ -188,6 +188,24 @@ export function addCategoryRequest(newCategoryName, parentID) {
     return newCategory;
 }
 
+export function deleteCategoryRequest(selectedCategory) {
+    return fetch(
+        `${host}/category/delete${selectedCategory.getID()}`,
+        {method: 'DELETE'}
+    )
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+                throw new Error();
+            }
+        })
+        .catch(() => {
+            showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            throw new Error();
+        });
+}
+
+
 export function getAllTasks() {
     let tasks = [];
     Promise.all([
@@ -253,29 +271,29 @@ export function swapRequest(oldIndex, newIndex) {
 }
 
 export function getAllCategories() {
-    let categories = [];
-    fetch(host + '/category/getAll')
+    return fetch(host + '/category/getAll')
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
             }
             return res.json();
         })
+        .then(data =>
+            data.map(cat =>
+                new Category(cat.name, cat.id, cat.parentCategoryId)
+            )
+        )
         .then(data => {
-            console.log(data);
-            for (let i = 0; i < data.length; i++) {
-                let newCategory = new Category(data[i].name, data[i].id, data[i].parentCategoryId);
-                categories.push(newCategory);
-            }
-        }).catch(function () {
-        showRestartAlert("Oops! Problem with server. Cannot load tasks.");
-    });
-    return categories;
+            console.log('getAllCategories', data);
+            return data;
+        })
+        .catch(() => {
+            showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+        });
 }
 
 export function getSubcategories(parentCategory) {
-    let categories = [];
-    fetch(host + '/category/subcategories/' + parentCategory.getID())
+    return fetch(host + '/category/subcategories/' + parentCategory.getID())
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
@@ -283,14 +301,15 @@ export function getSubcategories(parentCategory) {
             return res.json();
         })
         .then(data => {
+            const categories = [];
             for (let i = 0; i < data.length; i++) {
                 let newCategory = new Category(data[i].name, data[i].id, data[i].parentCategoryId);
                 categories.push(newCategory);
             }
+            return categories;
         }).catch(function () {
         showRestartAlert("Oops! Problem with server. Cannot load tasks.");
     });
-    return categories;
 }
 
 export function getAllTasksFromCategory(category) {
