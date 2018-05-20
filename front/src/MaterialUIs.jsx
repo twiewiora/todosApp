@@ -33,6 +33,9 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
             { row.getCategoryName()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
+            {row.getDate() == null ? "Unassigned" : row.getDate()}
+        </TableRowColumn>
+        <TableRowColumn style={{ width: "10%" }}>
             <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
             style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
         </TableRowColumn>
@@ -58,6 +61,7 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                     <TableHeaderColumn>Status</TableHeaderColumn>
                     <TableHeaderColumn>Name</TableHeaderColumn>
                     <TableHeaderColumn>Category</TableHeaderColumn>
+                    <TableHeaderColumn>Date</TableHeaderColumn>
                     <TableHeaderColumn>Delete</TableHeaderColumn>
                 </TableRow>
                     {getData().map((value, index) => (
@@ -76,11 +80,18 @@ class MaterialUIs extends Component {
         super(props);
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleKeyPressAtCategory = this.handleKeyPressAtCategory.bind(this);
     }
 
     handleKeyPress(event) {
         if (event.key === 'Enter') {
             this.props.addTask();
+        }
+    }
+
+    handleKeyPressAtCategory(event, categoryId) {
+        if (event.key === 'Enter') {
+            this.props.addTaskWithCategory(event, categoryId);
         }
     }
 
@@ -136,12 +147,12 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title"> New task </h1>
-                    <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
+                    <TextField id="taskName" hintText="name" onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}} /><br />
                     <RaisedButton
                         label="Add task"
                         id="addButton"
                         onClick={(e) => {
-                            this.props.addTask(e)
+                            this.props.addTaskWithCategory(e, this.props.currentCategoryId)
                         }}
                     /><br/><br/>
                     <Table
@@ -161,6 +172,7 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Status</TableHeaderColumn>
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Category</TableHeaderColumn>
+                                <TableHeaderColumn>Date</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
                             {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => (
@@ -175,11 +187,12 @@ class MaterialUIs extends Component {
                                     <TableRowColumn id="taskName">
                                         {value.getName()}
                                     </TableRowColumn>
-
                                     <TableRowColumn style={{ width: "10%" }}>
                                         {value.getCategoryName()}
                                     </TableRowColumn>
-
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        {value.getDate()}
+                                    </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
                                     </TableRowColumn>

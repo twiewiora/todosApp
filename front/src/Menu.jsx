@@ -71,6 +71,8 @@ class Menu extends Component {
             });
 
             this.props.setCurrentCategories(categoriesToDisplayInTasks);
+            this.props.setSelectedCategory(currentCategoryID);
+
 
         }
         e.stopPropagation();
@@ -109,6 +111,7 @@ class Menu extends Component {
         });
 
         this.props.setCurrentCategories(categoriesToDisplayInTasks);
+        this.props.setSelectedCategory(currentCategoryID);
     }
 
     addCategory() {
@@ -187,7 +190,8 @@ class MenuBase extends Component {
                 <MenuIcon onClick={(e) => {this.showMenu(e)}}/>
                 <Menu menuVisibility={this.state.visible}
                       toggleMenu={this.toggleMenu.bind(this)}
-                      setCurrentCategories={this.props.setCurrentCategories.bind(this)}/>
+                      setCurrentCategories={this.props.setCurrentCategories.bind(this)}
+                      setSelectedCategory={this.props.setSelectedCategory.bind(this)}/>
             </div>
         );
     }

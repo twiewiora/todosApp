@@ -226,6 +226,13 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
+    public void unassignDate(Long taskId) {
+        Task task = getTaskById(taskId);
+        task.setDate(null);
+        taskRepository.save(task);
+    }
+
+    @Override
     public void assignCategory(Long taskId, Long categoryId) {
         Task task = getTaskById(taskId);
         Category category = categoryRepository.getCategoryById(categoryId);

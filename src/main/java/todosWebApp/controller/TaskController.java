@@ -31,6 +31,7 @@ public class TaskController {
     private final String URL_TASK_DROP = "/task/drop";
     private final String URL_TASK_SET_DONE = "/task/setDone{id}";
     private final String URL_TASK_SET_DATE = "/task/setDate";
+    private final String URL_TASK_UNSET_DATE = "/task/unsetDate";
     private final String URL_TASK_SET_CATEGORY = "/task/setCategory";
     private final String URL_TASK_SET_ORDER = "/task/move";
     private final String URL_TASK_DELETE = "/task/delete{id}";
@@ -271,6 +272,18 @@ public class TaskController {
         try {
             taskService.assignDate(Long.decode(taskID), dateFormatter.parse(date).getTime());
         } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = URL_TASK_UNSET_DATE,
+            method = RequestMethod.POST)
+    @CrossOrigin(origins = "http://localhost:3000")
+    public void unassignDate
+            (@RequestParam String taskID) {
+        try {
+            taskService.unassignDate(Long.decode(taskID));
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }
