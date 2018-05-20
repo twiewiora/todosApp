@@ -119,6 +119,18 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
+    public void moveTasksToParentCategory(Long categoryId){
+        Category parentCategory = categoryRepository.getCategoryById(categoryId).getParent();
+        List<Task> categoryTasks = getTasksByCategory(categoryId);
+        if(categoryTasks.size() != 0){
+            for(Task task : categoryTasks){
+                task.setCategory(parentCategory);
+                taskRepository.save(task);
+            }
+        }
+    }
+
+    @Override
     public List<Task> getTasksForGivenDay(Long date) {
         return taskRepository.getTasksForGivenDay(date);
     }

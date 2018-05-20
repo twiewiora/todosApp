@@ -39,6 +39,7 @@ public class TaskController {
     private final String URL_CATEGORY_GET_BY_ID = "/category/id/{id}";
     private final String URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT = "/category/subcategories/{id}";
     private final String URL_CATEGORY_CREATE = "/category/create";
+    private final String URL_CATEGORY_DELETE = "/category/delete{id}";
     private final String FAIL_RETURN_VALUE = "false";
 
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -369,6 +370,12 @@ public class TaskController {
         }
     }
 
-
+    @RequestMapping(value = URL_CATEGORY_DELETE,
+            method = RequestMethod.DELETE)
+    @CrossOrigin(origins = "http://localhost:3000")
+    public void deleteCategory(@PathVariable String id) {
+        taskService.moveTasksToParentCategory(Long.decode(id));
+        categoryService.deleteCategory(Long.decode(id));
+    }
 }
 

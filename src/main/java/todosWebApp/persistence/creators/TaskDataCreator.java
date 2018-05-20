@@ -25,5 +25,7 @@ public interface TaskDataCreator {
    void moveTask(Long taskId, Long newParentTaskId);
 
    void setDone(Long taskId, boolean isDone);
-   
+
+   void moveTasksToParentCategory(Long categoryId);
+
 }
