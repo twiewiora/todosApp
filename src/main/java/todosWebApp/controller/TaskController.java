@@ -234,7 +234,7 @@ public class TaskController {
             taskService.moveTask(Long.decode(taskID), Long.decode(newParentTaskId));
     }
 
-    @RequestMapping(value = URL_TASK_SET_ORDER_IN_SUBCATEGORY,
+    @RequestMapping(value = UrlRequest.URL_TASK_SET_ORDER_IN_SUBCATEGORY,
             method = RequestMethod.POST)
     @CrossOrigin(origins = crossOriginUrl)
     public void moveTaskInSubcategory
@@ -248,7 +248,7 @@ public class TaskController {
         taskService.moveTaskInSubcategory(Long.decode(taskID), parentId, category);
     }
 
-    @RequestMapping(value = URL_TASK_SET_DATE,
+    @RequestMapping(value = UrlRequest.URL_TASK_SET_DATE,
             method = RequestMethod.POST)
     @CrossOrigin(origins = crossOriginUrl)
     public void assignDate
