@@ -98,3 +98,6 @@ table.mini {
   margin-right:auto;
 }
 
+.weekTable {
+  display: none;
+}

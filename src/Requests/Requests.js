@@ -41,7 +41,29 @@ export function getDailyTasks(day) {
     });
     return tasks;
 }
+export function getWeeklyTasks(day) {
+    let tasks = [];
+    fetch(host + '/task/weeklyTasks/date=' + day)
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+            }
+            return res.json();
+        })
+        .then(data => {
+            for (let i = 0; i < data.length; i++) {
+                let newTask = new Task(data[i].title, data[i].id);
+                newTask.setState(data[i].done);
+                newTask.setState(data[i].deadline);
 
+                tasks.push(newTask);
+            }
+
+        }).catch(function () {
+        showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+    });
+    return tasks;
+}
 export function getUnassignedTasks() {
     let tasks = [];
     fetch(host + '/task/unassigned')
@@ -52,7 +74,6 @@ export function getUnassignedTasks() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             for (let i = 0; i < data.length; i++) {
                 let newTask = new Task(data[i].title, data[i].id);
                 newTask.setState(data[i].done);
@@ -133,7 +154,6 @@ export function addRequest(newTaskName) {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             newTask.setID(data.id);
             newTask.setCategory(data.categoryId);
             newTask.setCategoryName(null);
@@ -157,7 +177,6 @@ export function addWithCategoryRequest(newTaskName, categoryId) {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             newTask.setID(data.id);
             newTask.setCategory(data.categoryId);
             newTask.setState(data.done);
@@ -179,7 +198,6 @@ export function addCategoryRequest(newCategoryName, parentID) {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             newCategory.setID(data.id);
 
         }).catch(function () {
@@ -218,8 +236,6 @@ export function getAllTasks() {
                     }
                 })
             })
-            console.log(taskData);
-            console.log(categoryData);
         }).catch(function () {
         showRestartAlert("Oops! Problem with server. Cannot load tasks.");
     });
@@ -262,7 +278,6 @@ export function getAllCategories() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             for (let i = 0; i < data.length; i++) {
                 let newCategory = new Category(data[i].name, data[i].id, data[i].parentCategoryId);
                 categories.push(newCategory);
