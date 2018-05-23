@@ -213,7 +213,7 @@ export function getAllTasks() {
                         newTask.setState(data[i].done);
                         newTask.setCategory(data[i].categoryId);
                         newTask.setCategoryName(categoryIdToNameMap[data[i].categoryId]);
-
+                        newTask.setDate(data[i].deadline);
                         tasks.push(newTask);
                     }
                 })
