@@ -34,7 +34,7 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
             { row.getCategoryName()}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
-            { row.getDate() == "" ? "Unassigned" : singleDate(row.getDate())}
+            { row.getDate() == "" || row.getDate() == null ? "Unassigned" : singleDate(row.getDate())}
         </TableRowColumn>
         <TableRowColumn style={{ width: "10%" }}>
             <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
