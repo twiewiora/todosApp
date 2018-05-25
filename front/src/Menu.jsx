@@ -22,6 +22,7 @@ class Menu extends Component {
     componentDidMount() {
         getAllCategories()
             .then(childrenCurrentCategory => {
+                childrenCurrentCategory.unshift(new Category("None", 1, null));     //to display also tasks without assigned category
                 console.log('Show categories', childrenCurrentCategory);
                 this.setState({childrenCurrentCategory});
                 this.props.setCurrentCategories(childrenCurrentCategory);
