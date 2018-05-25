@@ -94,5 +94,9 @@ class Calendar extends React.Component{
             </div>
         );
     }
+
+    showWeeklyView() {
+        return undefined;
+    }
 }
 export default Calendar
