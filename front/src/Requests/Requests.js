@@ -66,7 +66,6 @@ export function getWeeklyTasks(day) {
     return tasks;
 }
 export function getUnassignedTasks() {
-    let tasks = [];
     return fetch(host + '/task/unassigned')
         .then(res => {
             if (res.status !== 200) {
@@ -75,7 +74,6 @@ export function getUnassignedTasks() {
             return res.json();
         })
         .then(data => {
-            console.log(data);
             return data.map(task => {
                 let newTask = new Task(task.title, task.id);
                 newTask.setState(task.done);
