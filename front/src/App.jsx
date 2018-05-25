@@ -1,4 +1,4 @@
-import React, {Component}  from 'react';
+import React, {Component} from 'react';
 import './Styles/App.css';
 import MaterialAll from './MaterialUIs';
 import MenuBase from './Menu'
@@ -7,11 +7,14 @@ import Calendar from "./Calendar";
 import ModeButton from "./UI/ModeButton";
 import {arrayMove} from "react-sortable-hoc";
 import {
-    markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory,
-    addWithCategoryRequest
+    addRequest,
+    addWithCategoryRequest,
+    deleteRequest,
+    getAllTasks,
+    markAndDropRequest,
+    markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
-import Category from "./Category/Category";
 
 
 class App extends Component {
@@ -30,8 +33,6 @@ class App extends Component {
         this.toggleZoom = this.toggleZoom.bind(this);
         this.reloadPage = this.reloadPage.bind(this);
 
-        this.getData = this.getData.bind(this);
-        this.setData = this.setData.bind(this);
         this.addTask = this.addTask.bind(this);
         this.addTaskWithCategory = this.addTaskWithCategory.bind(this);
         this.removeTask = this.removeTask.bind(this);
@@ -48,29 +49,22 @@ class App extends Component {
                 zoomedIn: "zoomOut"
             });
         }
-
     }
 
     componentWillMount() {
+        //invoke before render method
         this.reloadPage();
-
     }
 
     reloadPage() {
         this.setState({loading: true});
-        let tasks = getAllTasks();
-
-        this.setState({
-            loading: true
-        }, function(){
-            setTimeout(function() {
+        getAllTasks()
+            .then(data => {
                 this.setState({
-                    data: tasks,
-                    loading: false
-                });
-            }.bind(this), 1000)
-        }.bind(this));
-
+                    data,
+                    loading: false,
+                })
+            })
     }
 
     handleCheck(taskID){
@@ -227,22 +221,25 @@ class App extends Component {
         return (
             <div className="App">
                 <MuiThemeProvider muiTheme={muiTheme}>
-                    <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
-                              setSelectedCategory={this.setSelectedCategory.bind(this)}
-                              setCurrentCategories={this.setCurrentCategories.bind(this)}/>
-                    <div id="App1" className={this.state.zoomedIn}>
-                        <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}  side="right" />
-                        <MaterialAll removeTask={this.removeTask.bind(this)}
-                                     addTask={this.addTask.bind(this)}
-                                     addTaskWithCategory={this.addTaskWithCategory.bind(this)}
-                                     handleCheck={this.handleCheck.bind(this)}
-                                     getData={this.getData.bind(this)}
-                                     setData={this.setData.bind(this)}
-                                     getIndex={this.getIndex.bind(this)}
-                                     appLoading={this.state.loading}
-                                     ifSetDragnDrop={this.state.ifSetDragnDrop}
-                                     categoriesToDisplay={this.state.categoriesToDisplay}
-                                     currentCategoryId={this.state.currentCategoryId}/>
+                    <div>
+                        <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
+                                  setSelectedCategory={this.setSelectedCategory.bind(this)}
+                                  setCurrentCategories={this.setCurrentCategories.bind(this)}/>
+                        <div id="App1" className={this.state.zoomedIn}>
+                            <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}
+                                        side="right"/>
+                            <MaterialAll removeTask={this.removeTask.bind(this)}
+                                         addTask={this.addTask.bind(this)}
+                                         addTaskWithCategory={this.addTaskWithCategory.bind(this)}
+                                         handleCheck={this.handleCheck.bind(this)}
+                                         getData={this.getData.bind(this)}
+                                         setData={this.setData.bind(this)}
+                                         getIndex={this.getIndex.bind(this)}
+                                         appLoading={this.state.loading}
+                                         ifSetDragnDrop={this.state.ifSetDragnDrop}
+                                         categoriesToDisplay={this.state.categoriesToDisplay}
+                                         currentCategoryId={this.state.currentCategoryId}/>
+                        </div>
                     </div>
                 </MuiThemeProvider>
             </div>);
