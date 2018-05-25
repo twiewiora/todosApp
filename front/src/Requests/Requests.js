@@ -42,9 +42,10 @@ export function getDailyTasks(day) {
             showRestartAlert("Oops! Problem with server. Cannot load tasks.");
         });
 }
+
 export function getWeeklyTasks(day) {
     let tasks = [];
-    fetch(host + '/task/weeklyTasks/date=' + day)
+    return fetch(host + '/task/weeklyTasks/date=' + day)
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
@@ -59,11 +60,11 @@ export function getWeeklyTasks(day) {
 
                 tasks.push(newTask);
             }
+            return tasks;
 
         }).catch(function () {
         showRestartAlert("Oops! Problem with server. Cannot load tasks.");
     });
-    return tasks;
 }
 export function getUnassignedTasks() {
     return fetch(host + '/task/unassigned')
