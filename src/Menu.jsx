@@ -138,19 +138,6 @@ class Menu extends Component {
     }
 
     deleteCategory(object, index) {
-        //let name = document.getElementById("categoryName").value;
-
-        //TODO
-        //if (name !== "") {
-
-        //let taskToDelete = deleteCategoryRequest(name, this.state.name.getID());
-        //let temp = this.state.data;
-        //temp.push(newTask);
-        //this.setState({data : temp});
-        //document.getElementById('taskName').value = "";
-        //document.getElementById('taskName').hintText = "Add a category";
-        //}
-
         deleteCategoryRequest(this.state.childrenCurrentCategory[index])
             .then(() => getSubcategories(this.state.currentCategory))
             .then(childrenCurrentCategory => {
