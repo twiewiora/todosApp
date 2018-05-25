@@ -24,7 +24,6 @@ class Task {
         return this.categoryName;
     };
     getDate = function () {
-        console.log("DATA " + this.date);
         return this.date;
     };
     setID = function (id) {

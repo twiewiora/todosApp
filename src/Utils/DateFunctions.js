@@ -4,5 +4,9 @@ export function dateFormat(day) {
         dateDescription = "0" + dateDescription;
 
     }
-    return dateDescription.substr(0, 10).replace(/\./g, '-');
+    return singleDate(dateDescription);
+}
+
+export function singleDate(date){
+    return date.substr(0, 10).replace(/\.| /g, '-');
 }
