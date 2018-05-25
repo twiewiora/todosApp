@@ -79,6 +79,7 @@ class Calendar extends React.Component{
         return (
             <div className="Calendar">
                 <MuiThemeProvider muiTheme={muiTheme}>
+                    <div>
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                               setSelectedCategory={this.setSelectedCategory.bind(this)}
                               setCurrentCategories={this.setCurrentCategories.bind(this)}/>
@@ -89,6 +90,7 @@ class Calendar extends React.Component{
                             side="right"
                         />
                         <CalendarUI categoriesToDisplay={this.state.categoriesToDisplay}/>
+                    </div>
                     </div>
                 </MuiThemeProvider>
             </div>
