@@ -165,6 +165,7 @@ class App extends Component {
     };
 
     getData = () => {
+        console.log('getData', this.state.data)
         return this.state.data;
     };
 
@@ -187,16 +188,10 @@ class App extends Component {
         return firstDoneTaskIndexAtTheBottom;
     };
 
-    setCurrentCategories = function(categories) {
-        console.log(categories);
-        let ifSetDnD = categories[0].getName() === "None";
-
-
-        this.setState({
-            categoriesToDisplay: categories,
-            ifSetDragnDrop: ifSetDnD
-        });
-
+    setCurrentCategories = (categoriesToDisplay) => {
+        console.log('setCurrentCategories', categoriesToDisplay);
+        const ifSetDragnDrop = categoriesToDisplay[0].getName() === "None";
+        this.setState({categoriesToDisplay, ifSetDragnDrop});
     };
 
     setSelectedCategory = function(categoryId){
@@ -224,7 +219,7 @@ class App extends Component {
                     <div>
                         <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                                   setSelectedCategory={this.setSelectedCategory.bind(this)}
-                                  setCurrentCategories={this.setCurrentCategories.bind(this)}/>
+                                  setCurrentCategories={this.setCurrentCategories}/>
                         <div id="App1" className={this.state.zoomedIn}>
                             <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}
                                         side="right"/>

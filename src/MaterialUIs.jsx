@@ -97,12 +97,8 @@ class MaterialUIs extends Component {
     }
 
     containsCategoryToDisplay(categoryName) {
-        for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
-            if(this.props.categoriesToDisplay[i].getName() === categoryName){
-                return true;
-            }
-        }
-        return false;
+        const { categoriesToDisplay } = this.props;
+        return categoriesToDisplay.some(category => category.getName() === categoryName);
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {

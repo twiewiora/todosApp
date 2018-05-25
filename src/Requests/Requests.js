@@ -249,7 +249,7 @@ export function getAllTasks() {
             })
         })
         .then(taskData => {
-            console.log('getAllTasks'+taskData);
+            console.log('getAllTasks', taskData);
             return taskData})
         .catch(()=> {
             showRestartAlert("Oops! Problem with server. Cannot load tasks. 2");
