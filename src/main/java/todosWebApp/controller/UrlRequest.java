@@ -38,6 +38,8 @@ public class UrlRequest {
 
     public static final String URL_CATEGORY_GET_ALL = "/category/getAll";
 
+    public static final String URL_CATEGORY_GET_ROOT = "/category/getRoot";
+
     public static final String URL_CATEGORY_GET_BY_ID = "/category/id/{id}";
 
     public static final String URL_CATEGORY_GET_SUBCATEGORIES_BY_PARENT = "/category/subcategories/{id}";

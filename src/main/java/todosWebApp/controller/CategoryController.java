@@ -33,6 +33,21 @@ public class CategoryController {
     }
 
     @RequestMapping(
+            value = UrlRequest.URL_CATEGORY_GET_ROOT,
+            method = RequestMethod.GET,
+            produces = "application/json; charset=UTF-8")
+    @CrossOrigin(origins = crossOriginUrl)
+    public String getRootCategory(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(categoryService.getRootCategory());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return UrlRequest.FAIL_RETURN_VALUE;
+        }
+    }
+
+    @RequestMapping(
             value = UrlRequest.URL_CATEGORY_GET_BASE,
             method = RequestMethod.GET,
             produces = "application/json; charset=UTF-8")

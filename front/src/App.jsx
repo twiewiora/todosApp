@@ -10,11 +10,12 @@ import {
     addRequest,
     addWithCategoryRequest,
     deleteRequest,
-    getAllTasks,
+    getAllTasks, getRootCategory,
     markAndDropRequest,
     markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
+import Category from "./Category/Category";
 
 
 class App extends Component {
