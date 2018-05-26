@@ -13,6 +13,7 @@ class Menu extends Component {
         super(props);
 
         this.state = {
+            data: [],
             currentCategory: new Category("Base categories", 1, null),
             childrenCurrentCategory: [],
             trashesVisibility: false
@@ -21,17 +22,23 @@ class Menu extends Component {
     }
 
     componentDidMount() {
-        getRootCategory().then(root => {
-            return root.getID()
-        }).then( (rootId) =>
+        getAllCategories()
+            .then(allCategories =>
             {
-                console.log('Menu, didmount, root', rootId);
-
-                console.log('currentCateogry',this.state.currentCategory)
-                return rootId
-            }
-        )
-            .then(()=> getAllCategories())
+                this.setState({data: allCategories});
+            }).then(
+            () => getRootCategory()
+            )
+            .then(root => {
+            return root.getID()
+            }).then( (rootId) =>
+                {
+                    console.log('Menu, didMount, root', rootId);
+                    console.log('currentCategory',this.state.currentCategory)
+                    return rootId
+                }
+            )
+            .then((rootId)=> getSubcategories(new Category("root", rootId, null)))
             .then(childrenCurrentCategory => {
                 childrenCurrentCategory.unshift(new Category("None", 0, null));     //to display also tasks without assigned category
                 console.log('Show categories', childrenCurrentCategory);
@@ -51,7 +58,7 @@ class Menu extends Component {
 
             if (currentCategoryID !== 1) {
                 for (let i = 0; i < data.length; i++) {
-                    if (data[i].getID() === currentCategoryID) {
+                    if (this.state.data[i].getID() === currentCategoryID) {
                         currentCategory = data[i];
                         temp = data[i];
                         break;
