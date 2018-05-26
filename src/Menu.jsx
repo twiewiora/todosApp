@@ -128,12 +128,20 @@ class Menu extends Component {
         console.log(name);
 
         if (name !== ""){
-            let newTask = addCategoryRequest(name, this.state.currentCategory.getID());
-            this.setState({
-                childrenCurrentCategory: [...this.state.childrenCurrentCategory, newTask]
-            });
-            document.getElementById('taskName').value = "";
-            document.getElementById('taskName').hintText = "Add a category";
+            let newCategory = addCategoryRequest(name, this.state.currentCategory.getID())
+                .then( newCategory =>
+                this.setState({
+                    childrenCurrentCategory: [...this.state.childrenCurrentCategory, newCategory]
+                }))
+                .then(()=> {
+                        document.getElementById("categoryName").value = "";
+                        document.getElementById("categoryName").hintText = "Add a category"
+                    }
+                )
+
+            //document.getElementById('taskName').value = "";
+            //document.getElementById('taskName').hintText = "Add a category";
+
         }
 
     }

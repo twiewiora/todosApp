@@ -121,14 +121,28 @@ class App extends Component {
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
+        console.log('addTask', name)
         if (name !== ""){
-            let newTask = addRequest(name);
-            console.log(newTask);
-            let temp = this.state.data;
-            temp.unshift(newTask);
-            this.setState({data : temp});
-            document.getElementById('taskName').value = "";
-            document.getElementById('taskName').hintText = "name";
+            addRequest(name)
+                .then((newTask)=>{
+                    console.log('nowezadanko', newTask);
+                    let temp = this.state.data;
+                    console.log('addTask, temp', temp);
+                    temp.unshift(newTask);
+                    console.log('addTask, temp after adding', temp);
+                    return temp
+                }
+                ).then(temp=> {
+                    this.setState({data: temp});
+                    let test = document.getElementById("taskName");
+                    console.log('addTask', test);
+                    let test2 = document.getElementById("taskName").value;
+                    console.log('addTask', test2);
+                    document.getElementById("taskName").value = "";
+                    document.getElementById('taskName').hintText = "name";
+                }
+            )
+
         }
     };
 
