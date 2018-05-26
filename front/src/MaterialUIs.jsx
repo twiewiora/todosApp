@@ -133,8 +133,10 @@ class MaterialUIs extends Component {
                         }}
                     /><br/><br/>
 
-                    <SortableTable getData={this.props.getData.bind(this)} getIndex={this.props.getIndex.bind(this)}
-                                   removeTask={this.props.removeTask.bind(this)} handleCheck={this.props.handleCheck.bind(this)}
+                    <SortableTable getData={this.props.getData.bind(this)}
+                                   getIndex={this.props.getIndex.bind(this)}
+                                   removeTask={this.props.removeTask.bind(this)}
+                                   handleCheck={this.props.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}/>
                     <br/>
                     {this.props.appLoading? <Loader/> : <div></div>}

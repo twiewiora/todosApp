@@ -105,7 +105,7 @@ class CalendarUI extends Component {
         });
         getWeeklyTasks(this.state.currentDateTitle).then(w => {
             this.setState({
-                //why here was -> weekly: this.state.data,
+                //why there was -> weekly: this.state.data, w ?
                 weekly: w,
                 loading: false,
                 weekLoading: false

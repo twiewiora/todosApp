@@ -186,6 +186,7 @@ export function addWithCategoryRequest(newTaskName, categoryId) {
 export function addCategoryRequest(newCategoryName, parentID) {
     let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
     let newCategory = new Category(newCategoryName, -1, parentID);
+    console.log('addCategoryRequest',newCategory)
     return fetch(host + '/category/create', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
@@ -226,7 +227,7 @@ export function getAllTasks() {
     ])
         .then(([taskResult, categoryResult]) => {
             if (taskResult.status !== 200 || categoryResult.status !== 200) {
-                showRestartAlert("Oops! Problem with server. Cannot load tasks 1.");
+                showRestartAlert("Oops! Problem with server. Cannot load tasks.");
             }
             return [taskResult.json(), categoryResult.json()];
         })
@@ -253,7 +254,7 @@ export function getAllTasks() {
             console.log('getAllTasks', taskData);
             return taskData})
         .catch(()=> {
-            showRestartAlert("Oops! Problem with server. Cannot load tasks. 2");
+            showRestartAlert("Oops! Problem with server. Cannot load tasks.");
         });
 }
 
@@ -301,7 +302,7 @@ export function getAllCategories() {
             return data;
         })
         .catch(() => {
-            showRestartAlert("Oops! Problem with server. Cannot load categories 1 .");
+            showRestartAlert("Oops! Problem with server. Cannot load categories.");
         });
 }
 

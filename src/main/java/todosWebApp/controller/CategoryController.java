@@ -102,6 +102,7 @@ public class CategoryController {
         ObjectMapper objectMapper = new ObjectMapper();
         Category newCategory;
         try {
+            System.out.println("PARENT CATEGORY"+parentCategoryId);
             if (parentCategoryId != null) {
                 newCategory = categoryService.createCategory(name, Long.decode(parentCategoryId));
             } else {
