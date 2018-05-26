@@ -286,6 +286,22 @@ export function swapRequest(oldIndex, newIndex) {
     });
 }
 
+export function swapFilteredRequest(oldIndex, newIndex, categoryID) {
+    let params;
+    if (newIndex === null) params = "taskID=" + oldIndex+ "&categoryId=" + (categoryID);
+    else params = "taskID=" + oldIndex + "&newParentTaskId=" + (newIndex) + "&categoryId=" + (categoryID) ;
+    console.log(params);
+    let data = new URLSearchParams(params);
+    fetch(host + '/task/moveInCategory', {method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+        }).catch(function () {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
+}
+
 export function getAllCategories() {
     return fetch(host + '/category/getAll')
         .then(res => {

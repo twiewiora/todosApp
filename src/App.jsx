@@ -174,6 +174,10 @@ class App extends Component {
         return this.state.data;
     };
 
+    getFilteredData = () => {
+        return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
+    };
+
     setData = (newData) => {
         this.setState({
             data: newData,
@@ -223,6 +227,25 @@ class App extends Component {
         }
     };
 
+    getFilteredIndex = (id) => {
+        let data = this.getFilteredData();
+        let length = data.length;
+        for (let i = 0; i < length; i++) {
+            if(data[i].getID() === id){
+                return i;
+            }
+        }
+    };
+
+    containsCategoryToDisplay(categoryName) {
+        for(let i = 0; i < this.state.categoriesToDisplay.length; i++){
+            if(this.state.categoriesToDisplay[i].getName() === categoryName){
+                return true;
+            }
+        }
+        return false;
+    }
+
     render() {
         return (
             <div className="App">
@@ -239,9 +262,10 @@ class App extends Component {
                                      getData={this.getData.bind(this)}
                                      setData={this.setData.bind(this)}
                                      getIndex={this.getIndex.bind(this)}
+                                     getFilteredData={this.getFilteredData.bind(this)}
+                                     getFilteredIndex={this.getFilteredIndex.bind(this)}
                                      appLoading={this.state.loading}
                                      ifSetDragnDrop={this.state.ifSetDragnDrop}
-                                     categoriesToDisplay={this.state.categoriesToDisplay}
                                      currentCategoryId={this.state.currentCategoryId}/>
                     </div>
                 </MuiThemeProvider>
