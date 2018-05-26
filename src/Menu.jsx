@@ -4,7 +4,7 @@ import ArrowIcon from "material-ui/svg-icons/navigation/arrow-back"
 import './Styles/App.css'
 import './Styles/Menu.css'
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories} from './Requests/Requests'
+import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories, getRootCategory} from './Requests/Requests'
 import {RaisedButton, TextField} from "material-ui";
 import Category from "./Category/Category";
 
@@ -17,12 +17,23 @@ class Menu extends Component {
             childrenCurrentCategory: [],
             trashesVisibility: false
         };
+
     }
 
     componentDidMount() {
-        getAllCategories()
+        getRootCategory().then(root => {
+            return root.getID()
+        }).then( (rootId) =>
+            {
+                console.log('Menu, didmount, root', rootId);
+
+                console.log('currentCateogry',this.state.currentCategory)
+                return rootId
+            }
+        )
+            .then(()=> getAllCategories())
             .then(childrenCurrentCategory => {
-                childrenCurrentCategory.unshift(new Category("None", 1, null));     //to display also tasks without assigned category
+                childrenCurrentCategory.unshift(new Category("None", 0, null));     //to display also tasks without assigned category
                 console.log('Show categories', childrenCurrentCategory);
                 this.setState({childrenCurrentCategory});
                 this.props.setCurrentCategories(childrenCurrentCategory);
@@ -125,15 +136,18 @@ class Menu extends Component {
 
     addCategory() {
         let name = document.getElementById("categoryName").value;
-        console.log(name);
+        console.log('addCategory, name',name);
 
         if (name !== ""){
-            let newCategory = addCategoryRequest(name, this.state.currentCategory.getID())
+            //let newCategory =
+                //if(this.state.currentCategory === 'root')
+                addCategoryRequest(name, this.state.currentCategory.getID())
                 .then( newCategory =>
                 this.setState({
                     childrenCurrentCategory: [...this.state.childrenCurrentCategory, newCategory]
                 }))
                 .then(()=> {
+                        console.log('addCategory, childrenCurrentCategory',this.state.childrenCurrentCategory);
                         document.getElementById("categoryName").value = "";
                         document.getElementById("categoryName").hintText = "Add a category"
                     }

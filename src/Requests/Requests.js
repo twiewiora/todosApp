@@ -183,6 +183,26 @@ export function addWithCategoryRequest(newTaskName, categoryId) {
         });
 }
 
+export function getRootCategory() {
+    return(
+        fetch(host + '/category/getRoot')
+    )
+        .then((categoryResult) => {
+            if (categoryResult.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+            }
+            return categoryResult.json();
+        })
+        .then((root) => {
+            let newCategory = new Category(root.title, root.id, root.parentCategoryId)
+            console.log('getRootCategory, rootCategory', newCategory);
+            return newCategory;
+        })
+        .catch(()=> {
+            showRestartAlert("Oops! Problem with server. Cannot load tasks.");
+        });
+}
+
 export function addCategoryRequest(newCategoryName, parentID) {
     let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
     let newCategory = new Category(newCategoryName, -1, parentID);
