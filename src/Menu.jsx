@@ -49,6 +49,7 @@ class Menu extends Component {
             categoriesToDisplayInTasks.push(temp);
 
             if (currentCategoryID === null) {
+                this.props.moveMenuIcon();
                 this.props.toggleMenu();
             } else {
                 let categories = [];
@@ -226,8 +227,9 @@ class MenuBase extends Component {
             visible: false
         };
 
-        this.showMenu = this.showMenu.bind(this);
+        this.changeMenuVisibility = this.changeMenuVisibility.bind(this);
         this.toggleMenu = this.toggleMenu.bind(this);
+        this.moveMenuIcon = this.moveMenuIcon.bind(this);
     }
 
     toggleMenu() {
@@ -237,18 +239,26 @@ class MenuBase extends Component {
         this.props.pageZoomedIn();
     }
 
-    showMenu(e) {
+    changeMenuVisibility(e) {
+        this.moveMenuIcon();
         this.toggleMenu();
-
         e.stopPropagation();
     };
+
+    moveMenuIcon() {
+        if (!this.state.visible)
+            document.getElementById("menuIcon").style.padding = "0px 0px 0px 270px";
+        else
+            document.getElementById("menuIcon").style.padding = "0px 0px 0px 0px";
+    }
 
     render() {
         return (
             <div className="MenuIcon">
-                <MenuIcon onClick={(e) => {this.showMenu(e)}}/>
+                <MenuIcon id="menuIcon" onClick={(e) => {this.changeMenuVisibility(e)}}/>
                 <Menu menuVisibility={this.state.visible}
                       toggleMenu={this.toggleMenu.bind(this)}
+                      moveMenuIcon={this.moveMenuIcon.bind(this)}
                       setCurrentCategories={this.props.setCurrentCategories.bind(this)}
                       setSelectedCategory={this.props.setSelectedCategory.bind(this)}/>
             </div>
