@@ -8,6 +8,7 @@ import {
 from 'material-ui/Table';
 import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
+import EditIcon from "material-ui/svg-icons/image/edit"
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
@@ -17,10 +18,17 @@ import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
 
 
-const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck}) =>
+const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck, getEditVisibility}) =>
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25, background : getStripedStyle(getIndex(row.getID()), row.getState()),
               color: setTextColorDoneTasks(getIndex(row.getID()), row.getState())}}>
+        {
+            getEditVisibility()
+                ? (<TableRowColumn style={{ width: "10%" }}>
+                    <EditIcon id="editTaskIcon"/>
+                </TableRowColumn>)
+                : null
+        }
         <TableRowColumn style={{ width: "10%" }}>
             <Checkbox id="taskStatus"
                 checked={row.getState()}
@@ -43,7 +51,7 @@ const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleC
     </TableRow>);
 
 
-const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck}) => {
+const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck, getEditVisibility}) => {
     return (
         <Table
             fixedHeader={getMainStateTable().fixedHeader}
@@ -59,6 +67,11 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                 stripedRows={getMainStateTable().stripedRows}
             >
                 <TableRow style ={{ background: '#354778' , padding: '5px 20px', height: 10}} >
+                    {
+                        getEditVisibility()
+                            ? (<TableHeaderColumn>Edit</TableHeaderColumn>)
+                            : null
+                    }
                     <TableHeaderColumn>Status</TableHeaderColumn>
                     <TableHeaderColumn>Name</TableHeaderColumn>
                     <TableHeaderColumn>Category</TableHeaderColumn>
@@ -67,7 +80,8 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                 </TableRow>
                     {getData().map((value, index) => (
                         <SortableItem key={`item-${index}`} index={index} row={value}
-                                      getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}/>
+                                      getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}
+                                      getEditVisibility={getEditVisibility}/>
                     ))}
             </TableBody>
         </Table>
@@ -125,19 +139,31 @@ class MaterialUIs extends Component {
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
                     <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
-                    <RaisedButton
-                        label="Add task"
-                        id="addButton"
-                        onClick={(e) => {
-                            this.props.addTask(e)
-                        }}
-                    /><br/><br/>
-
+                    <div className="topBarMenu">
+                        <RaisedButton
+                            label="Add task"
+                            id="addButton"
+                            className="addButton"
+                            onClick={(e) => {
+                                this.props.addTask(e)
+                            }}
+                        />
+                        <RaisedButton
+                            label="Edit tasks"
+                            id="editButton"
+                            className="editButton"
+                            onClick={(e) => {
+                                this.props.toggleEditTask(e)
+                            }}
+                            side="right"
+                        />
+                    </div><br/><br/>
                     <SortableTable getData={this.props.getData.bind(this)}
                                    getIndex={this.props.getIndex.bind(this)}
                                    removeTask={this.props.removeTask.bind(this)}
                                    handleCheck={this.props.handleCheck.bind(this)}
-                                   onSortEnd={this.onSortEnd}/>
+                                   onSortEnd={this.onSortEnd}
+                                   getEditVisibility={this.props.getEditVisibility.bind(this)}/>
                     <br/>
                     {this.props.appLoading? <Loader/> : <div></div>}
                 </div>

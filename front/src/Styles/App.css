@@ -40,6 +40,23 @@
   position: absolute;
 }
 
+.topBarMenu {
+  display: block;
+  margin: auto;
+  align-content: center;
+  height: auto;
+}
+
+.editButton {
+  display:inline-block;
+    margin-left: 1%;
+
+}
+
+.addButton {
+  display: inline-block;
+}
+
 
 input[type=text], input[type=date], select, textarea {
   padding: 12px;
