@@ -105,7 +105,12 @@ class Menu extends Component {
             let categories = [];
             let categoriesToDisplayInTasks = [];
             let length = data.length;
-            let currentCategory = this.state.childrenCurrentCategory[i];
+            let currentCategory;
+            if(this.state.childrenCurrentCategory[0].getName() === "None"){
+                currentCategory = this.state.childrenCurrentCategory[i+1];
+            } else{
+                currentCategory = this.state.childrenCurrentCategory[i];
+            }
             let currentCategoryID = currentCategory.getID();
             categoriesToDisplayInTasks.push(currentCategory);
 
@@ -185,7 +190,7 @@ class Menu extends Component {
                 <ArrowIcon style={{ padding: '0px 20px', color: 'white'}}
                            className="BackIcon" onClick={(e) => { this.filterBackwards(e)}}/>
                 <h1 className="title">{this.state.currentCategory.getName()}</h1>
-                {this.state.childrenCurrentCategory.map((object, index) =>
+                {this.state.childrenCurrentCategory.filter(cat => cat.getName() !== "None").map((object, index) =>
                     <li key={`item-${index}`}>
                         {
                             this.state.trashesVisibility

@@ -16,6 +16,7 @@ import {
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 import Category from "./Category/Category";
+import {RaisedButton} from "material-ui";
 
 
 class App extends Component {
@@ -28,6 +29,7 @@ class App extends Component {
             categoriesToDisplay: [],
             loading: true,
             ifSetDragnDrop: true,
+            editVisibility: false,
             currentCategoryId: 1
         };
 
@@ -177,6 +179,16 @@ class App extends Component {
         });
     };
 
+    getEditVisibility = () => {
+        return this.state.editVisibility;
+    };
+
+    toggleEditTask = () => {
+        this.setState({
+            editVisibility: !this.state.editVisibility
+        });
+    };
+
     getFirstDoneTaskIndex = function () {
         let length = this.state.data.length;
         let firstDoneTaskIndexAtTheBottom = length;
@@ -232,6 +244,9 @@ class App extends Component {
                                          getData={this.getData.bind(this)}
                                          setData={this.setData.bind(this)}
                                          getIndex={this.getIndex.bind(this)}
+                                         editVisibility={this.state.editVisibility}
+                                         getEditVisibility={this.getEditVisibility.bind(this)}
+                                         toggleEditTask={this.toggleEditTask.bind(this)}
                                          appLoading={this.state.loading}
                                          ifSetDragnDrop={this.state.ifSetDragnDrop}
                                          categoriesToDisplay={this.state.categoriesToDisplay}
