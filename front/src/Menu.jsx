@@ -33,8 +33,6 @@ class Menu extends Component {
             return root.getID()
             }).then( (rootId) =>
                 {
-                    console.log('Menu, didMount, root', rootId);
-                    console.log('currentCategory',this.state.currentCategory)
                     return rootId
                 }
             )
@@ -146,8 +144,6 @@ class Menu extends Component {
         console.log('addCategory, name',name);
 
         if (name !== ""){
-            //let newCategory =
-                //if(this.state.currentCategory === 'root')
                 addCategoryRequest(name, this.state.currentCategory.getID())
                 .then( newCategory =>
                 this.setState({
@@ -159,10 +155,6 @@ class Menu extends Component {
                         document.getElementById("categoryName").hintText = "Add a category"
                     }
                 )
-
-            //document.getElementById('taskName').value = "";
-            //document.getElementById('taskName').hintText = "Add a category";
-
         }
 
     }

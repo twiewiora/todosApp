@@ -195,7 +195,6 @@ export function getRootCategory() {
         })
         .then((root) => {
             let newCategory = new Category(root.title, root.id, root.parentCategoryId)
-            console.log('getRootCategory, rootCategory', newCategory);
             return newCategory;
         })
         .catch(()=> {
@@ -253,7 +252,6 @@ export function getAllTasks() {
         })
         .then(([taskData, categoryData]) => {
             return taskData.then(data => {
-                console.log(categoryData);
                 return categoryData.then(categories => {
                     let categoryIdToNameMap = categories.reduce((result, category) => {
                         result[category.id] = category.name;
@@ -271,7 +269,6 @@ export function getAllTasks() {
             })
         })
         .then(taskData => {
-            console.log('getAllTasks', taskData);
             return taskData})
         .catch(()=> {
             showRestartAlert("Oops! Problem with server. Cannot load tasks.");
