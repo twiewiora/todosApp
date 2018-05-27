@@ -87,16 +87,12 @@ class App extends Component {
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
 
-        console.log(selectedTask);
-
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
                 color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
-
-        console.log(firstDoneIndex);
 
         if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
             if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
@@ -122,28 +118,20 @@ class App extends Component {
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
-        console.log('addTask', name)
+
         if (name !== ""){
             addRequest(name)
                 .then((newTask)=>{
-                    console.log('nowezadanko', newTask);
                     let temp = this.state.data;
-                    console.log('addTask, temp', temp);
                     temp.unshift(newTask);
-                    console.log('addTask, temp after adding', temp);
                     return temp
                 }
                 ).then(temp=> {
                     this.setState({data: temp});
-                    let test = document.getElementById("taskName");
-                    console.log('addTask', test);
-                    let test2 = document.getElementById("taskName").value;
-                    console.log('addTask', test2);
                     document.getElementById("taskName").value = "";
                     document.getElementById('taskName').hintText = "name";
                 }
             )
-
         }
     };
 
@@ -180,7 +168,6 @@ class App extends Component {
     };
 
     getData = () => {
-        console.log('getData', this.state.data)
         return this.state.data;
     };
 
