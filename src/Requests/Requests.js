@@ -4,7 +4,7 @@ import Task from "../Task/Task";
 import Category from "../Category/Category"
 import {reverseDate, singleDate} from "../Utils/DateFunctions";
 
-let host = 'http://localhost:8080';
+let host = 'https://web-todos-app.herokuapp.com';
 
 function showRestartAlert(message) {
     let restartMessage = "\nDo you want to refresh page?";

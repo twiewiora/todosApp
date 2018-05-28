@@ -1,0 +1,14 @@
+language: node_js
+sudo: false
+
+node_js:
+  - "8.11.1"
+
+install:
+  - npm install
+
+deploy:
+  provider: heroku
+  api_key: a34540fd-b9ad-42ef-aea6-cf3c263f1519
+  app:
+    deployment_front: todos-managment
