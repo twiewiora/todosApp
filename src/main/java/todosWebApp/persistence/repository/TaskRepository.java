@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import todosWebApp.persistence.model.OrderNode;
 import todosWebApp.persistence.model.Task;
 import todosWebApp.persistence.queries.TaskDataQuery;
 
@@ -40,12 +39,8 @@ public interface TaskRepository extends JpaRepository<Task, Integer>, TaskDataQu
     @Query("select task from Task task where task.date = null")
     List<Task> getUnassignedTasks();
 
-// This method is most propably not needed
-//    @Override
-//    @Query("select task from Task task where task.done = false and task.child.done = true")
-//    Task getLastUncheckedTask();
     @Override
-    @Query("select task from Task task where task.done = false")
+    @Query("select task from Task task where task.done = false and task.child.done = true")
     Task getLastUncheckedTask();
 
 }
