@@ -2,6 +2,7 @@ package todosWebApp.persistence.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import todosWebApp.persistence.creators.CategoryDataCreator;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.queries.CategoryDataQuery;
@@ -10,6 +11,7 @@ import todosWebApp.persistence.repository.CategoryRepository;
 import java.util.List;
 
 @Service
+@Transactional
 public class CategoryService implements CategoryDataCreator, CategoryDataQuery {
 
     private CategoryRepository categoryRepository;

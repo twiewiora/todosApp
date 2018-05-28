@@ -26,6 +26,8 @@ public interface TaskDataCreator {
 
    void moveTask(Long taskId, Long newParentTaskId);
 
+   void moveTaskInSubcategory(Long taskId, Long newParentTaskId, Category category);
+
    void setDone(Long taskId, boolean isDone);
 
    void moveTasksToParentCategory(Long categoryId);

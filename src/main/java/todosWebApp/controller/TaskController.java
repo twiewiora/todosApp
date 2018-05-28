@@ -3,6 +3,7 @@ package todosWebApp.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import todosWebApp.persistence.model.Category;
 import todosWebApp.persistence.model.Task;
@@ -13,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 @RestController
+@Transactional
 public class TaskController {
 
     private TaskService taskService;
@@ -230,6 +232,20 @@ public class TaskController {
             taskService.moveTask(Long.decode(taskID), null);
         else
             taskService.moveTask(Long.decode(taskID), Long.decode(newParentTaskId));
+    }
+
+    @RequestMapping(value = UrlRequest.URL_TASK_SET_ORDER_IN_SUBCATEGORY,
+            method = RequestMethod.POST)
+    @CrossOrigin(origins = crossOriginUrl)
+    public void moveTaskInSubcategory
+            (@RequestParam String taskID,
+             @RequestParam(required = false) String newParentTaskId,
+             @RequestParam(required = false) String categoryId) {
+
+        Long parentId = newParentTaskId == null ? null : Long.decode(newParentTaskId);
+        Category category = categoryId == null ? null : categoryService.getCategoryById(Long.decode(categoryId));
+
+        taskService.moveTaskInSubcategory(Long.decode(taskID), parentId, category);
     }
 
     @RequestMapping(value = UrlRequest.URL_TASK_SET_DATE,

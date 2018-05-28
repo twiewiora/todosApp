@@ -2,6 +2,10 @@ package todosWebApp.controller;
 
 public class UrlRequest {
 
+    private UrlRequest(){
+
+    }
+
     public static final String URL_TASK_GET_BY_ID = "/task/id/{id}";
 
     public static final String URL_TASK_GET_BY_TITLE = "/task/title/{title}";
@@ -29,6 +33,8 @@ public class UrlRequest {
     public static final String URL_TASK_UNSET_DATE = "/task/unsetDate";
 
     public static final String URL_TASK_SET_CATEGORY = "/task/setCategory";
+
+    public static final String URL_TASK_SET_ORDER_IN_SUBCATEGORY = "/task/moveInCategory";
 
     public static final String URL_TASK_SET_ORDER = "/task/move";
 
