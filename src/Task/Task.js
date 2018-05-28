@@ -6,6 +6,7 @@ class Task {
         this.date = null;
         this.categoryId = null;
         this.categoryName = null;
+        this.deadline = null;
     }
 
     getState = function () {

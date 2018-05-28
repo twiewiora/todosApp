@@ -2,10 +2,10 @@ class Category {
     constructor(title, id, parent_id) {
         this.name = title;
         this.id = id;
-        this.parent_id = parent_id;
+        this.parentCategoryId = parent_id;
     }
     getParentID = function () {
-        return this.parent_id
+        return this.parentCategoryId
     };
     getName = function () {
         return this.name
@@ -17,7 +17,7 @@ class Category {
         this.id = id;
     };
     setParentID = function (newParent){
-        this.parent_id = newParent
+        this.parentCategoryId = newParent
     }
 
     setName = function (newName){

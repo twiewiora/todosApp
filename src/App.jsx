@@ -1,4 +1,4 @@
-import React, {Component}  from 'react';
+import React, {Component} from 'react';
 import './Styles/App.css';
 import MaterialAll from './MaterialUIs';
 import MenuBase from './Menu'
@@ -7,11 +7,16 @@ import Calendar from "./Calendar";
 import ModeButton from "./UI/ModeButton";
 import {arrayMove} from "react-sortable-hoc";
 import {
-    markRequest, markAndDropRequest, addRequest, getAllTasks, deleteRequest, getAllTasksFromCategory,
-    addWithCategoryRequest
+    addRequest,
+    addWithCategoryRequest,
+    deleteRequest,
+    getAllTasks, getRootCategory,
+    markAndDropRequest,
+    markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 import Category from "./Category/Category";
+import {RaisedButton} from "material-ui";
 
 
 class App extends Component {
@@ -24,14 +29,13 @@ class App extends Component {
             categoriesToDisplay: [],
             loading: true,
             ifSetDragnDrop: true,
+            editVisibility: false,
             currentCategoryId: 1
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
         this.reloadPage = this.reloadPage.bind(this);
 
-        this.getData = this.getData.bind(this);
-        this.setData = this.setData.bind(this);
         this.addTask = this.addTask.bind(this);
         this.addTaskWithCategory = this.addTaskWithCategory.bind(this);
         this.removeTask = this.removeTask.bind(this);
@@ -48,29 +52,22 @@ class App extends Component {
                 zoomedIn: "zoomOut"
             });
         }
-
     }
 
     componentWillMount() {
+        //invoke before render method
         this.reloadPage();
-
     }
 
     reloadPage() {
         this.setState({loading: true});
-        let tasks = getAllTasks();
-
-        this.setState({
-            loading: true
-        }, function(){
-            setTimeout(function() {
+        getAllTasks()
+            .then(data => {
                 this.setState({
-                    data: tasks,
-                    loading: false
-                });
-            }.bind(this), 1000)
-        }.bind(this));
-
+                    data,
+                    loading: false,
+                })
+            })
     }
 
     handleCheck(taskID){
@@ -92,16 +89,12 @@ class App extends Component {
         let selectedTask = this.state.data[i];
         this.state.data[i].setState(!state);
 
-        console.log(selectedTask);
-
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
                 color: !oldState.checked === true ? 'grey' : 'white'
             };
         });
-
-        console.log(firstDoneIndex);
 
         if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
             if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
@@ -127,14 +120,20 @@ class App extends Component {
 
     addTask = function () {
         let name = document.getElementById("taskName").value;
+
         if (name !== ""){
-            let newTask = addRequest(name);
-            console.log(newTask);
-            let temp = this.state.data;
-            temp.unshift(newTask);
-            this.setState({data : temp});
-            document.getElementById('taskName').value = "";
-            document.getElementById('taskName').hintText = "name";
+            addRequest(name)
+                .then((newTask)=>{
+                    let temp = this.state.data;
+                    temp.unshift(newTask);
+                    return temp
+                }
+                ).then(temp=> {
+                    this.setState({data: temp});
+                    document.getElementById("taskName").value = "";
+                    document.getElementById('taskName').hintText = "name";
+                }
+            )
         }
     };
 
@@ -175,12 +174,24 @@ class App extends Component {
     };
 
     getFilteredData = () => {
-        return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
+        return this.state.data.filter(task => this.
+                                      
+                                      sCategoryToDisplay(task.getCategoryName()));
     };
 
     setData = (newData) => {
         this.setState({
             data: newData,
+        });
+    };
+
+    getEditVisibility = () => {
+        return this.state.editVisibility;
+    };
+
+    toggleEditTask = () => {
+        this.setState({
+            editVisibility: !this.state.editVisibility
         });
     };
 
@@ -197,16 +208,10 @@ class App extends Component {
         return firstDoneTaskIndexAtTheBottom;
     };
 
-    setCurrentCategories = function(categories) {
-        console.log(categories);
-        let ifSetDnD = categories[0].getName() === "None";
-
-
-        this.setState({
-            categoriesToDisplay: categories,
-            ifSetDragnDrop: ifSetDnD
-        });
-
+    setCurrentCategories = (categoriesToDisplay) => {
+        console.log('setCurrentCategories', categoriesToDisplay);
+        const ifSetDragnDrop = categoriesToDisplay[0].getName() === "None";
+        this.setState({categoriesToDisplay, ifSetDragnDrop});
     };
 
     setSelectedCategory = function(categoryId){
@@ -250,23 +255,28 @@ class App extends Component {
         return (
             <div className="App">
                 <MuiThemeProvider muiTheme={muiTheme}>
-                    <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
-                              setSelectedCategory={this.setSelectedCategory.bind(this)}
-                              setCurrentCategories={this.setCurrentCategories.bind(this)}/>
-                    <div id="App1" className={this.state.zoomedIn}>
-                        <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}  side="right" />
-                        <MaterialAll removeTask={this.removeTask.bind(this)}
-                                     addTask={this.addTask.bind(this)}
-                                     addTaskWithCategory={this.addTaskWithCategory.bind(this)}
-                                     handleCheck={this.handleCheck.bind(this)}
-                                     getData={this.getData.bind(this)}
-                                     setData={this.setData.bind(this)}
-                                     getIndex={this.getIndex.bind(this)}
-                                     getFilteredData={this.getFilteredData.bind(this)}
-                                     getFilteredIndex={this.getFilteredIndex.bind(this)}
-                                     appLoading={this.state.loading}
-                                     ifSetDragnDrop={this.state.ifSetDragnDrop}
-                                     currentCategoryId={this.state.currentCategoryId}/>
+                    <div>
+                        <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
+                                  setSelectedCategory={this.setSelectedCategory.bind(this)}
+                                  setCurrentCategories={this.setCurrentCategories}/>
+                        <div id="App1" className={this.state.zoomedIn}>
+                            <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}
+                                        side="right"/>
+                            <MaterialAll removeTask={this.removeTask.bind(this)}
+                                         addTask={this.addTask.bind(this)}
+                                         addTaskWithCategory={this.addTaskWithCategory.bind(this)}
+                                         handleCheck={this.handleCheck.bind(this)}
+                                         getData={this.getData.bind(this)}
+                                         setData={this.setData.bind(this)}
+                                         getIndex={this.getIndex.bind(this)}
+                                         editVisibility={this.state.editVisibility}
+                                         getEditVisibility={this.getEditVisibility.bind(this)}
+                                         toggleEditTask={this.toggleEditTask.bind(this)}
+                                         appLoading={this.state.loading}
+                                         ifSetDragnDrop={this.state.ifSetDragnDrop}
+                                         categoriesToDisplay={this.state.categoriesToDisplay}
+                                         currentCategoryId={this.state.currentCategoryId}/>
+                        </div>
                     </div>
                 </MuiThemeProvider>
             </div>);

@@ -4,7 +4,7 @@ import ArrowIcon from "material-ui/svg-icons/navigation/arrow-back"
 import './Styles/App.css'
 import './Styles/Menu.css'
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories} from './Requests/Requests'
+import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories, getRootCategory} from './Requests/Requests'
 import {RaisedButton, TextField} from "material-ui";
 import Category from "./Category/Category";
 
@@ -13,15 +13,32 @@ class Menu extends Component {
         super(props);
 
         this.state = {
+            data: [],
             currentCategory: new Category("Base categories", 1, null),
             childrenCurrentCategory: [],
             trashesVisibility: false
         };
+
     }
 
     componentDidMount() {
         getAllCategories()
+            .then(allCategories =>
+            {
+                this.setState({data: allCategories});
+            }).then(
+            () => getRootCategory()
+            )
+            .then(root => {
+            return root.getID()
+            }).then( (rootId) =>
+                {
+                    return rootId
+                }
+            )
+            .then((rootId)=> getSubcategories(new Category("root", rootId, null)))
             .then(childrenCurrentCategory => {
+                childrenCurrentCategory.unshift(new Category("None", 0, null));     //to display also tasks without assigned category
                 console.log('Show categories', childrenCurrentCategory);
                 this.setState({childrenCurrentCategory});
                 this.props.setCurrentCategories(childrenCurrentCategory);
@@ -39,7 +56,7 @@ class Menu extends Component {
 
             if (currentCategoryID !== 1) {
                 for (let i = 0; i < data.length; i++) {
-                    if (data[i].getID() === currentCategoryID) {
+                    if (this.state.data[i].getID() === currentCategoryID) {
                         currentCategory = data[i];
                         temp = data[i];
                         break;
@@ -88,7 +105,12 @@ class Menu extends Component {
             let categories = [];
             let categoriesToDisplayInTasks = [];
             let length = data.length;
-            let currentCategory = this.state.childrenCurrentCategory[i];
+            let currentCategory;
+            if(this.state.childrenCurrentCategory[0].getName() === "None"){
+                currentCategory = this.state.childrenCurrentCategory[i+1];
+            } else{
+                currentCategory = this.state.childrenCurrentCategory[i];
+            }
             let currentCategoryID = currentCategory.getID();
             categoriesToDisplayInTasks.push(currentCategory);
 
@@ -124,33 +146,25 @@ class Menu extends Component {
 
     addCategory() {
         let name = document.getElementById("categoryName").value;
-        console.log(name);
+        console.log('addCategory, name',name);
 
         if (name !== ""){
-            let newTask = addCategoryRequest(name, this.state.currentCategory.getID());
-            this.setState({
-                childrenCurrentCategory: [...this.state.childrenCurrentCategory, newTask]
-            });
-            document.getElementById('taskName').value = "";
-            document.getElementById('taskName').hintText = "Add a category";
+                addCategoryRequest(name, this.state.currentCategory.getID())
+                .then( newCategory =>
+                this.setState({
+                    childrenCurrentCategory: [...this.state.childrenCurrentCategory, newCategory]
+                }))
+                .then(()=> {
+                        console.log('addCategory, childrenCurrentCategory',this.state.childrenCurrentCategory);
+                        document.getElementById("categoryName").value = "";
+                        document.getElementById("categoryName").hintText = "Add a category"
+                    }
+                )
         }
 
     }
 
     deleteCategory(object, index) {
-        //let name = document.getElementById("categoryName").value;
-
-        //TODO
-        //if (name !== "") {
-
-        //let taskToDelete = deleteCategoryRequest(name, this.state.name.getID());
-        //let temp = this.state.data;
-        //temp.push(newTask);
-        //this.setState({data : temp});
-        //document.getElementById('taskName').value = "";
-        //document.getElementById('taskName').hintText = "Add a category";
-        //}
-
         deleteCategoryRequest(this.state.childrenCurrentCategory[index])
             .then(() => getSubcategories(this.state.currentCategory))
             .then(childrenCurrentCategory => {
@@ -176,7 +190,7 @@ class Menu extends Component {
                 <ArrowIcon style={{ padding: '0px 20px', color: 'white'}}
                            className="BackIcon" onClick={(e) => { this.filterBackwards(e)}}/>
                 <h1 className="title">{this.state.currentCategory.getName()}</h1>
-                {this.state.childrenCurrentCategory.map((object, index) =>
+                {this.state.childrenCurrentCategory.filter(cat => cat.getName() !== "None").map((object, index) =>
                     <li key={`item-${index}`}>
                         {
                             this.state.trashesVisibility
