@@ -13,7 +13,7 @@ import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc'
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
 import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Styles/Styling"
-import {swapFilteredRequest, swapRequest} from "./Requests/Requests";
+import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
 
@@ -110,6 +110,14 @@ class MaterialUIs extends Component {
         }
     }
 
+    containsCategoryToDisplay(categoryName) {
+        for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
+            if(this.props.categoriesToDisplay[i].getName() === categoryName){
+                return true;
+            }
+        }
+        return false;
+    }
 
     onSortEnd = ({oldIndex, newIndex}) => {
         let data = this.props.getData();
@@ -126,27 +134,6 @@ class MaterialUIs extends Component {
             }
 
             this.props.setData(arrayMove(this.props.getData(), oldIndex, newIndex));
-        }
-    };
-
-    onSortEndFiltered = ({oldIndex, newIndex}) => {
-        let data = this.props.getFilteredData();
-        if(oldIndex !== newIndex){
-            let taskID = data[oldIndex].getID();
-            console.log(oldIndex);
-            console.log(newIndex);
-            console.log(data[oldIndex].getCategoryID());
-            if(oldIndex > newIndex){
-                let newParentID = null;
-                if(newIndex - 1 >= 0){
-                    newParentID = data[newIndex-1].getID();
-                }
-                swapFilteredRequest(taskID, newParentID, data[oldIndex].getCategoryID());
-            } else {
-                swapFilteredRequest(taskID, data[newIndex].getID(), data[oldIndex].getCategoryID());
-            }
-
-            this.props.setData(arrayMove(this.props.getData(), this.props.getIndex(taskID), this.props.getIndex(data[newIndex].getID())));
         }
     };
 
@@ -197,10 +184,51 @@ class MaterialUIs extends Component {
                             this.props.addTaskWithCategory(e, this.props.currentCategoryId)
                         }}
                     /><br/><br/>
-
-                    <SortableTable getData={this.props.getFilteredData.bind(this)} getIndex={this.props.getFilteredIndex.bind(this)}
-                                   removeTask={this.props.removeTask.bind(this)} handleCheck={this.props.handleCheck.bind(this)}
-                                   onSortEnd={this.onSortEndFiltered}/>
+                    <Table
+                        fixedHeader={getMainStateTable().fixedHeader}
+                        fixedFooter={getMainStateTable().fixedFooter}
+                        selectable={getMainStateTable().selectable}
+                        multiSelectable={getMainStateTable().multiSelectable}
+                        style={{ tableLayout: "auto" }}
+                    >
+                        <TableBody
+                            displayRowCheckbox={getMainStateTable().showCheckboxes}
+                            deselectOnClickaway={getMainStateTable().deselectOnClickaway}
+                            showRowHover={getMainStateTable().showRowHover}
+                            stripedRows={getMainStateTable().stripedRows}
+                        >
+                            <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                                <TableHeaderColumn>Status</TableHeaderColumn>
+                                <TableHeaderColumn>Name</TableHeaderColumn>
+                                <TableHeaderColumn>Category</TableHeaderColumn>
+                                <TableHeaderColumn>Date</TableHeaderColumn>
+                                <TableHeaderColumn>Delete</TableHeaderColumn>
+                            </TableRow>
+                            {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => (
+                                <TableRow key={index}
+                                          style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState())}}>
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        <Checkbox id="taskStatus"
+                                                  checked={value.getState()}
+                                                  onCheck={() => this.props.handleCheck(value.getID())}
+                                        />
+                                    </TableRowColumn>
+                                    <TableRowColumn id="taskName">
+                                        {value.getName()}
+                                    </TableRowColumn>
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        {value.getCategoryName()}
+                                    </TableRowColumn>
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        { value.getDate() == null ? "Unassigned" : singleDate(value.getDate())}
+                                    </TableRowColumn>
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
+                                    </TableRowColumn>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                     <br/>
                     {this.props.appLoading? <Loader/> : <div></div>}
                 </div>
