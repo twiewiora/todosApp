@@ -262,6 +262,7 @@ export function getAllTasks() {
                         let newTask = new Task(task.title, task.id);
                         newTask.setState(task.done);
                         newTask.setCategory(task.categoryId);
+                        newTask.setDate(task.deadline);
                         newTask.setCategoryName(categoryIdToNameMap[task.categoryId]);
                         return newTask;
                     })
