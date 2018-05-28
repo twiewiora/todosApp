@@ -47,7 +47,6 @@ class Menu extends Component {
                 }
             }
             categoriesToDisplayInTasks.push(temp);
-
             if (currentCategoryID === null) {
                 this.props.moveMenuIcon();
                 this.props.toggleMenu();
@@ -77,10 +76,9 @@ class Menu extends Component {
                     childrenCurrentCategory: categories
                 });
 
+                this.props.setCurrentCategoryField(currentCategory);
                 this.props.setCurrentCategories(categoriesToDisplayInTasks);
                 this.props.setSelectedCategory(currentCategoryID);
-
-
             }
         });
     }
@@ -118,6 +116,7 @@ class Menu extends Component {
                 childrenCurrentCategory: categories
             });
 
+            this.props.setCurrentCategoryField(currentCategory);
             this.props.setCurrentCategories(categoriesToDisplayInTasks);
             this.props.setSelectedCategory(currentCategoryID);
         });
@@ -175,7 +174,7 @@ class Menu extends Component {
         return (
             <div id="flyoutMenu" className={visibility}> <br/>
                 <ArrowIcon style={{ padding: '0px 20px', color: 'white'}}
-                           className="BackIcon" onClick={(e) => {this.filterBackwards(e)}}/>
+                           className="BackIcon" onClick={(e) => { this.filterBackwards(e)}}/>
                 <h1 className="title">{this.state.currentCategory.getName()}</h1>
                 {this.state.childrenCurrentCategory.map((object, index) =>
                     <li key={`item-${index}`}>
@@ -227,9 +226,10 @@ class MenuBase extends Component {
             visible: false
         };
 
-        this.changeMenuVisibility = this.changeMenuVisibility.bind(this);
+        this.showOrHideMenu = this.showOrHideMenu.bind(this);
         this.toggleMenu = this.toggleMenu.bind(this);
         this.moveMenuIcon = this.moveMenuIcon.bind(this);
+        this.setCurrentCategoryField = this.setCurrentCategoryField.bind(this);
     }
 
     toggleMenu() {
@@ -239,28 +239,50 @@ class MenuBase extends Component {
         this.props.pageZoomedIn();
     }
 
-    changeMenuVisibility(e) {
+    showOrHideMenu(e) {
         this.moveMenuIcon();
         this.toggleMenu();
+        this.showOrHideCategoryName();
         e.stopPropagation();
     };
 
     moveMenuIcon() {
         if (!this.state.visible)
-            document.getElementById("menuIcon").style.padding = "0px 0px 0px 270px";
+            document.getElementById("menuIcon").style.paddingLeft = "270px";
         else
-            document.getElementById("menuIcon").style.padding = "0px 0px 0px 0px";
-    }
+            document.getElementById("menuIcon").style.paddingLeft = "0px";
+    };
+
+    showOrHideCategoryName() {
+        let field = document.getElementById("currentCategoryField");
+        if (this.state.visible) {
+            field.style.display = "inline";
+        } else {
+            field.style.display = "none";
+        }
+    };
+
+    setCurrentCategoryField(current){
+        if(current.getParentID() == null)
+            document.getElementById("currentCategoryField").textContent = "";
+        else
+            document.getElementById("currentCategoryField").textContent = current.getName();
+    };
 
     render() {
         return (
             <div className="MenuIcon">
-                <MenuIcon id="menuIcon" onClick={(e) => {this.changeMenuVisibility(e)}}/>
+                <p>
+                    <MenuIcon id="menuIcon" onClick={(e) => {this.showOrHideMenu(e)}}/>
+                    <text style={{padding: '0px 6px'}} id="currentCategoryField"></text>
+                </p>
                 <Menu menuVisibility={this.state.visible}
                       toggleMenu={this.toggleMenu.bind(this)}
                       moveMenuIcon={this.moveMenuIcon.bind(this)}
+                      setCurrentCategoryField={this.setCurrentCategoryField.bind(this)}
                       setCurrentCategories={this.props.setCurrentCategories.bind(this)}
-                      setSelectedCategory={this.props.setSelectedCategory.bind(this)}/>
+                      setSelectedCategory={this.props.setSelectedCategory.bind(this)}
+                />
             </div>
         );
     }
