@@ -174,9 +174,7 @@ class App extends Component {
     };
 
     getFilteredData = () => {
-        return this.state.data.filter(task => this.
-
-                                      sCategoryToDisplay(task.getCategoryName()));
+        return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
     };
 
     setData = (newData) => {
