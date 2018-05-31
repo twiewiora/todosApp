@@ -30,7 +30,7 @@ class App extends Component {
             loading: true,
             ifSetDragnDrop: true,
             editVisibility: false,
-            currentCategoryId: 1
+            currentCategoryId: 1,
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -118,9 +118,7 @@ class App extends Component {
         }
     }
 
-    addTask = function () {
-        let name = document.getElementById("taskName").value;
-
+    addTask = function (name) {
         if (name !== ""){
             addRequest(name)
                 .then((newTask)=>{
@@ -130,8 +128,6 @@ class App extends Component {
                 }
                 ).then(temp=> {
                     this.setState({data: temp});
-                    document.getElementById("taskName").value = "";
-                    document.getElementById('taskName').hintText = "name";
                 }
             )
         }
