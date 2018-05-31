@@ -48,18 +48,26 @@ class Menu extends Component {
     filterBackwards(e){
         e.stopPropagation();
 
-        getAllCategories().
-            then(data => {
+        getAllCategories()
+            .then(data => this.setState({data: data}))
+            .then( () => {
+                console.log('getAllCategories', this.state.data)
             let currentCategoryID = this.state.currentCategory.getParentID();
             let currentCategory = new Category("Base categories", 1, null);
-            let temp = new Category("None", 1, null);
+            let temp = new Category("None", 0, null);
             let categoriesToDisplayInTasks = [];
 
+            console.log('currentCategory', currentCategory);
+            console.log('currentCategoryID', currentCategoryID);
+
+
+
             if (currentCategoryID !== 1) {
-                for (let i = 0; i < data.length; i++) {
+                for (let i = 0; i < this.state.data.length; i++) {
+                    console.log('state.data[', i, ']', this.state.data[i])
                     if (this.state.data[i].getID() === currentCategoryID) {
-                        currentCategory = data[i];
-                        temp = data[i];
+                        currentCategory = this.state.data[i];
+                        temp = this.state.data[i];
                         break;
                     }
                 }
@@ -70,10 +78,10 @@ class Menu extends Component {
                 this.props.toggleMenu();
             } else {
                 let categories = [];
-                for (let i = 0; i < data.length; i++) {
-                    if (data[i].getParentID() === currentCategoryID) {
-                        categories.push(data[i]);
-                        categoriesToDisplayInTasks.push(data[i]);
+                for (let i = 0; i < this.state.data.length; i++) {
+                    if (this.state.data[i].getParentID() === currentCategoryID) {
+                        categories.push(this.state.data[i]);
+                        categoriesToDisplayInTasks.push(this.state.data[i]);
                     }
                 }
 
@@ -81,9 +89,9 @@ class Menu extends Component {
                 while (j !== categoriesToDisplayInTasks.length) {
                     let cID = categoriesToDisplayInTasks[j].getID();
 
-                    for (let k = 0; k < data.length; k++) {
-                        if (data[k].getParentID() === cID) {
-                            categoriesToDisplayInTasks.push(data[k]);
+                    for (let k = 0; k < this.state.data.length; k++) {
+                        if (this.state.data[k].getParentID() === cID) {
+                            categoriesToDisplayInTasks.push(this.state.data[k]);
                         }
                     }
                     j += 1;
