@@ -48,7 +48,8 @@ class Menu extends Component {
     filterBackwards(e){
         e.stopPropagation();
 
-        getAllCategories().then(data => {
+        getAllCategories().
+            then(data => {
             let currentCategoryID = this.state.currentCategory.getParentID();
             let currentCategory = new Category("Base categories", 1, null);
             let temp = new Category("None", 1, null);
