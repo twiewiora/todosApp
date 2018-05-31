@@ -178,6 +178,12 @@ class Menu extends Component {
         });
     }
 
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.addCategory(event);
+        }
+    }
+
     render() {
         let visibility = "hide";
 
@@ -211,7 +217,9 @@ class Menu extends Component {
                             this.filterCategories(e, index)
                         }}>{object.getName()}</h2>
                     </li>)}
-                <TextField id="categoryName" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}} inputStyle={{color: 'white'}} hintText="Add a category"/><br />
+                <TextField id="categoryName" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
+                           inputStyle={{color: 'white'}} hintText="Add a category"
+                           onKeyPress={(e) => {this.handleKeyPress(e)}}/><br />
                 <RaisedButton
                     label="Add Category"
                     style={{margin: '0 auto'}}
