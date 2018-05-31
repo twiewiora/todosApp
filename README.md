@@ -2,6 +2,12 @@
 
 # TODOs Application
 
+Wymagania aplikacji:
+- Java 8,
+- Maven,
+- NodeJS 8,
+- npm 5.
+
 Instrukcja instalacji aplikacji:
 
 - `git clone https://github.com/twiewiora/todosApp.git`

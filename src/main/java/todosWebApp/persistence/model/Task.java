@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Task {
@@ -16,21 +14,16 @@ public class Task {
 	private Long id;
 
     @JsonIgnore
-    @OneToMany(mappedBy="task")
-    private Set<OrderNode> orderList = new HashSet<>();
+    @OneToOne
+    @JoinColumn(name = "PARENT_FOREIGN_KEY", referencedColumnName = "id")
+    private Task parent;
 
-    @Transient
-    Category currentCategoryScope = null;
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "CHILD_FOREIGN_KEY", referencedColumnName = "id")
+    private Task child;
 
-    public Set<OrderNode> getOrderList() {
-        return orderList;
-    }
-
-    public void setOrderList(Set<OrderNode> orderList) {
-        this.orderList = orderList;
-    }
-
-    private String title;
+	private String title;
 
     @JsonIgnore
     private Long date;
@@ -53,14 +46,6 @@ public class Task {
     @JsonProperty
     public Long getCategoryId() {
         return category.getId();
-    }
-
-    public void clearOrderList(){
-        orderList.clear();
-    }
-
-    public void addOrderNode(OrderNode orderNode){
-        orderList.add(orderNode);
     }
 
     public Category getCategory() {
@@ -100,6 +85,24 @@ public class Task {
         return date;
     }
 
+    public void setDate(Long date) { this.date = date; }
+
+    public Task getParent() {
+        return parent;
+    }
+
+    public void setParent(Task parent) {
+        this.parent = parent;
+    }
+
+    public Task getChild() {
+        return child;
+    }
+
+    public void setChild(Task child) {
+        this.child = child;
+    }
+
 
     @JsonProperty
     public String getDeadline() {
@@ -109,10 +112,6 @@ public class Task {
         } else {
             return "";
         }
-    }
-
-    public void setDate(Long date) {
-        this.date = date;
     }
 
 }

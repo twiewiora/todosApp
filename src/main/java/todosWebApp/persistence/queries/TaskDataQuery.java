@@ -1,6 +1,5 @@
 package todosWebApp.persistence.queries;
 
-import todosWebApp.persistence.model.OrderNode;
 import todosWebApp.persistence.model.Task;
 
 import java.util.List;
