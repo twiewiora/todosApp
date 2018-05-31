@@ -174,9 +174,7 @@ class App extends Component {
     };
 
     getFilteredData = () => {
-        return this.state.data.filter(task => this.
-                                      
-                                      sCategoryToDisplay(task.getCategoryName()));
+        return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
     };
 
     setData = (newData) => {
@@ -231,25 +229,6 @@ class App extends Component {
             }
         }
     };
-
-    getFilteredIndex = (id) => {
-        let data = this.getFilteredData();
-        let length = data.length;
-        for (let i = 0; i < length; i++) {
-            if(data[i].getID() === id){
-                return i;
-            }
-        }
-    };
-
-    containsCategoryToDisplay(categoryName) {
-        for(let i = 0; i < this.state.categoriesToDisplay.length; i++){
-            if(this.state.categoriesToDisplay[i].getName() === categoryName){
-                return true;
-            }
-        }
-        return false;
-    }
 
     render() {
         return (
