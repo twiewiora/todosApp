@@ -16,77 +16,9 @@ import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Style
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
+import Input from "material-ui-icons/es/Input";
 
-
-const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck, getEditVisibility}) =>
-    <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(getIndex(row.getID()), row.getState()),
-              color: setTextColorDoneTasks(getIndex(row.getID()), row.getState())}}>
-        {
-            getEditVisibility()
-                ? (<TableRowColumn style={{ width: "10%" }}>
-                    <EditIcon id="editTaskIcon"/>
-                </TableRowColumn>)
-                : null
-        }
-        <TableRowColumn style={{ width: "10%" }}>
-            <Checkbox id="taskStatus"
-                checked={row.getState()}
-                onCheck={() => handleCheck(getIndex(row.getID()))}
-            />
-        </TableRowColumn>
-        <TableRowColumn id="taskName">
-            {row.getName()}
-        </TableRowColumn>
-        <TableRowColumn style={{ width: "10%" }}>
-            { row.getCategoryName()}
-        </TableRowColumn>
-        <TableRowColumn style={{ width: "10%" }}>
-            { row.getDate() === "" || row.getDate() == null ? "Unassigned" : singleDate(row.getDate())}
-        </TableRowColumn>
-        <TableRowColumn style={{ width: "10%" }}>
-            <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
-            style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
-        </TableRowColumn>
-    </TableRow>);
-
-
-const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck, getEditVisibility}) => {
-    return (
-        <Table
-            fixedHeader={getMainStateTable().fixedHeader}
-            fixedFooter={getMainStateTable().fixedFooter}
-            selectable={getMainStateTable().selectable}
-            multiSelectable={getMainStateTable().multiSelectable}
-            style={{ tableLayout: "auto" }}
-        >
-            <TableBody
-                displayRowCheckbox={getMainStateTable().showCheckboxes}
-                deselectOnClickaway={getMainStateTable().deselectOnClickaway}
-                showRowHover={getMainStateTable().showRowHover}
-                stripedRows={getMainStateTable().stripedRows}
-            >
-                <TableRow style ={{ background: '#354778' , padding: '5px 20px', height: 10}} >
-                    {
-                        getEditVisibility()
-                            ? (<TableHeaderColumn>Edit</TableHeaderColumn>)
-                            : null
-                    }
-                    <TableHeaderColumn>Status</TableHeaderColumn>
-                    <TableHeaderColumn>Name</TableHeaderColumn>
-                    <TableHeaderColumn>Category</TableHeaderColumn>
-                    <TableHeaderColumn>Date</TableHeaderColumn>
-                    <TableHeaderColumn>Delete</TableHeaderColumn>
-                </TableRow>
-                    {getData().map((value, index) => (
-                        <SortableItem key={`item-${index}`} index={index} row={value}
-                                      getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}
-                                      getEditVisibility={getEditVisibility}/>
-                    ))}
-            </TableBody>
-        </Table>
-    );
-});
+import SortableTable from "./UI/SortableTable"
 
 
 
@@ -94,15 +26,26 @@ class MaterialUIs extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            name: '',
+        }
+
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleKeyPressAtCategory = this.handleKeyPressAtCategory.bind(this);
     }
 
-    handleKeyPress(event) {
+   handleKeyPress(event) {
+
         if (event.key === 'Enter') {
-            this.props.addTask();
+            this.props.addTask(this.state.name);
+            this.setState({name: ''});
+            event.target.hintText = 'Add Task';
         }
     }
+
+    handleChange = event => {
+        this.setState({ name: event.target.value });
+    };
 
     handleKeyPressAtCategory(event, categoryId) {
         if (event.key === 'Enter') {
@@ -142,7 +85,9 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
-                    <TextField id="taskName" hintText="name" onKeyPress={this.handleKeyPress} /><br />
+                    <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
+                               onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
+
                     <div className="topBarMenu">
                         <RaisedButton
                             label="Add task"
@@ -176,8 +121,9 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
-                    <TextField id="taskName" hintText="name"
-                               onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}} /><br />
+
+                    <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
+                               onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
                     <div className="topBarMenu">
                     <RaisedButton
                         label="Add task"
@@ -233,13 +179,13 @@ class MaterialUIs extends Component {
                             ))}
                         </TableBody>
                     </Table>
+
                     <br/>
                     {this.props.appLoading? <Loader/> : <div></div>}
                 </div>
             );
         }
     }
-
 }
 
 export default MaterialUIs;

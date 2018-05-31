@@ -79,7 +79,6 @@ input[type=submit] {
 
 input[type=submit]:hover {
   background-color: #4CAF50;
-  /*background: #333399;*/
 }
 
 .App-header {
