@@ -175,15 +175,19 @@ class MaterialUIs extends Component {
         } else{
             return (
                 <div>
-                    <h1 className="title"> New task </h1>
-                    <TextField id="taskName" hintText="name" onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}} /><br />
+                    <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
+                    <TextField id="taskName" hintText="name"
+                               onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}} /><br />
+                    <div className="topBarMenu">
                     <RaisedButton
                         label="Add task"
                         id="addButton"
+                        className="addButton"
                         onClick={(e) => {
                             this.props.addTaskWithCategory(e, this.props.currentCategoryId)
                         }}
-                    /><br/><br/>
+                    />
+                    </div><br/><br/>
                     <Table
                         fixedHeader={getMainStateTable().fixedHeader}
                         fixedFooter={getMainStateTable().fixedFooter}
@@ -197,7 +201,7 @@ class MaterialUIs extends Component {
                             showRowHover={getMainStateTable().showRowHover}
                             stripedRows={getMainStateTable().stripedRows}
                         >
-                            <TableRow style ={{ background: '#ccccff' , padding: '5px 20px', height: 10}} >
+                            <TableRow style ={{ background: '#354778',  padding: '5px 20px', height: 10}} >
                                 <TableHeaderColumn>Status</TableHeaderColumn>
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Category</TableHeaderColumn>
