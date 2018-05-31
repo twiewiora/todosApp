@@ -57,14 +57,9 @@ class Menu extends Component {
             let temp = new Category("None", 0, null);
             let categoriesToDisplayInTasks = [];
 
-            console.log('currentCategory', currentCategory);
-            console.log('currentCategoryID', currentCategoryID);
-
-
 
             if (currentCategoryID !== 1) {
                 for (let i = 0; i < this.state.data.length; i++) {
-                    console.log('state.data[', i, ']', this.state.data[i])
                     if (this.state.data[i].getID() === currentCategoryID) {
                         currentCategory = this.state.data[i];
                         temp = this.state.data[i];

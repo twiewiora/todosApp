@@ -123,7 +123,8 @@ class MaterialUIs extends Component {
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
 
                     <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
-                               onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
+                               onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}}
+                               onChange={this.handleChange} /><br/>
                     <div className="topBarMenu">
                     <RaisedButton
                         label="Add task"
