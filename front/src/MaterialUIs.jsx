@@ -37,6 +37,7 @@ class MaterialUIs extends Component {
             this.props.addTask(this.state.name);
             this.setState({name: ''});
             event.target.hintText = 'Add Task';
+            event.target.value = '';
         }
     }
 
@@ -49,6 +50,7 @@ class MaterialUIs extends Component {
             this.props.addTaskWithCategory(event, categoryId, this.state.name);
             this.setState({name: ''});
             event.target.hintText = 'Add Task';
+            event.target.value = '';
         }
     }
 
@@ -98,7 +100,10 @@ class MaterialUIs extends Component {
                             id="addButton"
                             className="addButton"
                             onClick={(e) => {
-                                this.props.addTask(e)
+                                this.props.addTask(this.state.name);
+                                this.setState({name: ''});
+                                e.target.hintText = 'Add Task';
+                                e.target.value = '';
                             }}
                         />
                         <RaisedButton
@@ -138,7 +143,10 @@ class MaterialUIs extends Component {
                         id="addButton"
                         className="addButton"
                         onClick={(e) => {
-                            this.props.addTaskWithCategory(e, this.props.currentCategoryId)
+                            this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
+                            this.setState({name: ''});
+                            e.target.hintText = 'Add Task';
+                            e.target.value = '';
                         }}
                     />
                     </div><br/><br/>

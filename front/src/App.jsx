@@ -40,19 +40,9 @@ class App extends Component {
             open: false
         };
 
-        this.toggleZoom = this.toggleZoom.bind(this);
-        this.reloadPage = this.reloadPage.bind(this);
-
-        this.addTask = this.addTask.bind(this);
-        this.addTaskWithCategory = this.addTaskWithCategory.bind(this);
-        this.removeTask = this.removeTask.bind(this);
-        this.handleCheck = this.handleCheck.bind(this);
-        this.editTask = this.editTask.bind(this);
-        this.handleCloseEditWindow = this.handleCloseEditWindow.bind(this);
-
     }
 
-    toggleZoom() {
+    toggleZoom = () => {
         if(this.state.zoomedIn === "zoomOut"){
             this.setState({
                 zoomedIn: "zoomIn"
@@ -69,7 +59,7 @@ class App extends Component {
         this.reloadPage();
     }
 
-    reloadPage() {
+    reloadPage = () => {
         this.setState({loading: true});
         getAllTasks()
             .then(data => {
@@ -80,7 +70,7 @@ class App extends Component {
             })
     }
 
-    handleCheck(taskID){
+    handleCheck = (taskID) => {
         let i = -1;
         if(this.state.ifSetDragnDrop){
             i = taskID;
@@ -128,7 +118,7 @@ class App extends Component {
         }
     }
 
-    addTask = function (name) {
+    addTask = (name) => {
         if (name !== ""){
             addRequest(name)
                 .then((newTask)=>{
@@ -143,7 +133,7 @@ class App extends Component {
         }
     };
 
-    addTaskWithCategory = function (e, categoryId, taskName) {
+    addTaskWithCategory = (e, categoryId, taskName) => {
         if (taskName !== ""){
             addWithCategoryRequest(taskName, categoryId)
                 .then((newTask)=> {
@@ -157,7 +147,7 @@ class App extends Component {
         }
     };
 
-    editTask = function (e, name) {
+    editTask = (e, name) => {
         this.setState({open: true});
     };
 
@@ -165,7 +155,7 @@ class App extends Component {
         this.setState({open: false})
     };
 
-    removeTask = function (e, taskID) {
+    removeTask = (e, taskID) => {
         let i = -1;
         if(this.state.ifSetDragnDrop){
             i = taskID;
@@ -282,7 +272,7 @@ class App extends Component {
                                 onClose={ () => this.handleCloseEditWindow()}
                                 aria-labelledby="form-dialog-title"
                             >
-                                <DialogTitle id="form-dialog-title">Task edition</DialogTitle>
+                                <DialogTitle id="form-dialog-title">Edit task</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
                                         Task name
