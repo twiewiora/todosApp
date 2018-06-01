@@ -222,14 +222,14 @@ class Menu extends Component {
                         }}>{object.getName()}</h2>
                     </li>)}
                 <TextField id="categoryName" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
-                           inputStyle={{color: 'white'}} hintText="Add a category"
+                           inputStyle={{color: 'white'}} hintText="Add Category"
                            onKeyPress={(e) => {this.handleKeyPress(e)}}/><br />
                 <RaisedButton
                     label="Add Category"
                     style={{margin: '0 auto'}}
                     id="addButton"
                     onClick={(e) => {
-                        this.addCategory(e)
+                        this.addCategory(e);
                     }} />
                 <br/><br/>
                 <RaisedButton
