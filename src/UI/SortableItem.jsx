@@ -13,14 +13,16 @@ import {setTextColorDoneTasks, setTrashIconColor} from "../Styles/Styling"
 import {singleDate} from "../Utils/DateFunctions";
 
 
-const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck, getEditVisibility}) =>
+const SortableItem = SortableElement((
+    {index, row, getIndex, removeTask, handleCheck, getEditVisibility, openEditWindow, editTask}) =>
+
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25,
                   color: setTextColorDoneTasks(getIndex(row.getID()), row.getState())}}>
         {
             getEditVisibility()
                 ? (<TableRowColumn style={{ width: "10%" }}>
-                    <EditIcon id="editTaskIcon"/>
+                    <EditIcon id="editTaskIcon" onClick={(e) => { editTask(e, getIndex(row.getID())) }}/>
                 </TableRowColumn>)
                 : null
         }

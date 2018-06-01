@@ -116,7 +116,10 @@ class MaterialUIs extends Component {
                                    removeTask={this.props.removeTask.bind(this)}
                                    handleCheck={this.props.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}
-                                   getEditVisibility={this.props.getEditVisibility.bind(this)}/>
+                                   getEditVisibility={this.props.getEditVisibility.bind(this)}
+                                   openEditWindow={this.props.open}
+                                   editTask={this.props.editTask.bind(this)}
+                    />
                     <br/>
                     {this.props.appLoading ? <Loader/> : <div></div>}
                 </div>
