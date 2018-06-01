@@ -262,14 +262,14 @@ public class TaskController {
             method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
     @CrossOrigin(origins = crossOriginUrl)
-    public String editTask(@RequestParam String taskID, @RequestParam String name,
+    public String editTask(@PathVariable String id, @RequestParam String name,
                            @RequestParam String date, @RequestParam String categoryID){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Long dateTask = dateFormatter.parse(date).getTime();
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
 
-            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(taskID), name, category, dateTask));
+            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), name, category, dateTask));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
             return UrlRequest.FAIL_RETURN_VALUE;
