@@ -13,7 +13,7 @@ import SortableItem from "./SortableItem"
 
 
 const SortableTable = SortableContainer((
-    {getData, getIndex, removeTask, handleCheck, getEditVisibility, openEditWindow, editTask}) => {
+    {getData, getIndex, removeTask, handleCheck, getEditVisibility, getDeleteVisibility, openEditWindow, editTask}) => {
     return (
         <Table
             fixedHeader={getMainStateTable().fixedHeader}
@@ -38,7 +38,11 @@ const SortableTable = SortableContainer((
                     <TableHeaderColumn>Name</TableHeaderColumn>
                     <TableHeaderColumn>Category</TableHeaderColumn>
                     <TableHeaderColumn>Date</TableHeaderColumn>
-                    <TableHeaderColumn>Delete</TableHeaderColumn>
+                    {
+                        getDeleteVisibility()
+                            ? (<TableHeaderColumn>Delete</TableHeaderColumn>)
+                            : null
+                    }
                 </TableRow>
                 {getData().map((value, index) => (
                     <SortableItem key={`item-${index}`}
@@ -47,6 +51,7 @@ const SortableTable = SortableContainer((
                                   removeTask={removeTask}
                                   handleCheck={handleCheck}
                                   getEditVisibility={getEditVisibility}
+                                  getDeleteVisibility={getDeleteVisibility}
                                   openEditWindow={openEditWindow}
                                   editTask={editTask}
                     />

@@ -47,25 +47,31 @@
   height: auto;
 }
 
-.editButton {
+.deleteButton {
   display:inline-block;
     margin-left: 1%;
 
 }
 
-.addButton {
+.editButton {
   display: inline-block;
+}
+
+.addButton {
+    margin-bottom: 1%;
+    width: 17%;
+
 }
 
 
 input[type=text], input[type=date], select, textarea {
-  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   margin-top: 6px;
   margin-bottom: 16px;
   resize: vertical;
+  background: url(enter_arrow.png) no-repeat scroll 100% 40%;
 }
 
 input[type=submit] {
