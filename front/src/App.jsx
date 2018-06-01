@@ -15,11 +15,17 @@ import {
     markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
+import Button from '@material-ui/core/Button';
 import Category from "./Category/Category";
-import {RaisedButton} from "material-ui";
-
+import {RaisedButton, TextField} from "material-ui";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class App extends Component {
+
     constructor(props) {
         super(props);
 
@@ -31,6 +37,7 @@ class App extends Component {
             ifSetDragnDrop: true,
             editVisibility: false,
             currentCategoryId: 1,
+            open: false
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -40,6 +47,9 @@ class App extends Component {
         this.addTaskWithCategory = this.addTaskWithCategory.bind(this);
         this.removeTask = this.removeTask.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
+        this.editTask = this.editTask.bind(this);
+        this.handleCloseEditWindow = this.handleCloseEditWindow.bind(this);
+
     }
 
     toggleZoom() {
@@ -147,6 +157,14 @@ class App extends Component {
         }
     };
 
+    editTask = function (e, name) {
+        this.setState({open: true});
+    };
+
+    handleCloseEditWindow = () => {
+        this.setState({open: false})
+    };
+
     removeTask = function (e, taskID) {
         let i = -1;
         if(this.state.ifSetDragnDrop){
@@ -252,9 +270,45 @@ class App extends Component {
                                          appLoading={this.state.loading}
                                          ifSetDragnDrop={this.state.ifSetDragnDrop}
                                          categoriesToDisplay={this.state.categoriesToDisplay}
-                                         currentCategoryId={this.state.currentCategoryId}/>
+                                         currentCategoryId={this.state.currentCategoryId}
+                                         openEditWindow={this.state.open}
+                                         editTask={this.editTask.bind(this)}
+                            />
+                        </div>
+
+                        <div>
+                            <Dialog
+                                open={this.state.open}
+                                onClose={ () => this.handleCloseEditWindow()}
+                                aria-labelledby="form-dialog-title"
+                            >
+                                <DialogTitle id="form-dialog-title">Task edition</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        Task name
+                                    </DialogContentText>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="name"
+                                        label="Task Name"
+                                        type="taskName"
+                                        fullWidth
+                                    />
+                                </DialogContent>
+
+                                <DialogActions>
+                                    <Button onClick={()=> this.handleCloseEditWindow()} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={() => this.handleCloseEditWindow()} color="primary">
+                                        OK
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                         </div>
                     </div>
+
                 </MuiThemeProvider>
             </div>);
     }

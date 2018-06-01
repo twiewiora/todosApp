@@ -12,7 +12,8 @@ import {getMainStateTable} from "../Styles/TablesStates";
 import SortableItem from "./SortableItem"
 
 
-const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleCheck, getEditVisibility}) => {
+const SortableTable = SortableContainer((
+    {getData, getIndex, removeTask, handleCheck, getEditVisibility, openEditWindow, editTask}) => {
     return (
         <Table
             fixedHeader={getMainStateTable().fixedHeader}
@@ -40,9 +41,15 @@ const SortableTable = SortableContainer(({getData, getIndex, removeTask, handleC
                     <TableHeaderColumn>Delete</TableHeaderColumn>
                 </TableRow>
                 {getData().map((value, index) => (
-                    <SortableItem key={`item-${index}`} index={index} row={value}
-                                  getIndex={getIndex} removeTask={removeTask} handleCheck={handleCheck}
-                                  getEditVisibility={getEditVisibility}/>
+                    <SortableItem key={`item-${index}`}
+                                  index={index} row={value}
+                                  getIndex={getIndex}
+                                  removeTask={removeTask}
+                                  handleCheck={handleCheck}
+                                  getEditVisibility={getEditVisibility}
+                                  openEditWindow={openEditWindow}
+                                  editTask={editTask}
+                    />
                 ))}
             </TableBody>
         </Table>
