@@ -8,15 +8,12 @@ import {
 from 'material-ui/Table';
 import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import EditIcon from "material-ui/svg-icons/image/edit"
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
-import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
-import Input from "material-ui-icons/es/Input";
 
 import SortableTable from "./UI/SortableTable"
 
@@ -49,7 +46,9 @@ class MaterialUIs extends Component {
 
     handleKeyPressAtCategory(event, categoryId) {
         if (event.key === 'Enter') {
-            this.props.addTaskWithCategory(event, categoryId);
+            this.props.addTaskWithCategory(event, categoryId, this.state.name);
+            this.setState({name: ''});
+            event.target.hintText = 'Add Task';
         }
     }
 
@@ -79,6 +78,11 @@ class MaterialUIs extends Component {
             this.props.setData(arrayMove(this.props.getData(), oldIndex, newIndex));
         }
     };
+
+    filterData() {
+
+        return this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName()))
+    }
 
     render() {
         if(this.props.ifSetDragnDrop){
@@ -114,7 +118,7 @@ class MaterialUIs extends Component {
                                    onSortEnd={this.onSortEnd}
                                    getEditVisibility={this.props.getEditVisibility.bind(this)}/>
                     <br/>
-                    {this.props.appLoading? <Loader/> : <div></div>}
+                    {this.props.appLoading ? <Loader/> : <div></div>}
                 </div>
             );
         } else{
@@ -155,9 +159,9 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Date</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
-                            {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => (
+                            {this.filterData().map((value, index) => (
                                 <TableRow key={index}
-                                          style={{ padding: '5px 20px', height: 25, background : getStripedStyle(index, value.getState())}}>
+                                          style={{ padding: '5px 20px', height: 25}}>
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <Checkbox id="taskStatus"
                                                   checked={value.getState()}
@@ -190,3 +194,6 @@ class MaterialUIs extends Component {
 }
 
 export default MaterialUIs;
+
+/** return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
+ {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => ( **/

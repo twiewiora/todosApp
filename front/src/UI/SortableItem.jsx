@@ -9,13 +9,13 @@ import TrashIcon from "material-ui/svg-icons/action/delete";
 import EditIcon from "material-ui/svg-icons/image/edit"
 import {SortableElement} from 'react-sortable-hoc';
 import '../Styles/App.css';
-import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "../Styles/Styling"
+import {setTextColorDoneTasks, setTrashIconColor} from "../Styles/Styling"
 import {singleDate} from "../Utils/DateFunctions";
 
 
 const SortableItem = SortableElement(({index, row, getIndex, removeTask, handleCheck, getEditVisibility}) =>
     <TableRow key={getIndex(row.getID())}
-              style={{ padding: '5px 20px', height: 25, background : getStripedStyle(getIndex(row.getID()), row.getState()),
+              style={{ padding: '5px 20px', height: 25,
                   color: setTextColorDoneTasks(getIndex(row.getID()), row.getState())}}>
         {
             getEditVisibility()
