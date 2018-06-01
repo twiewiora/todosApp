@@ -103,6 +103,13 @@ public class Task {
         this.child = child;
     }
 
+    public Task editTask(String title, Category category, Long date) {
+        this.title = title;
+        this.category = category;
+        this.date = date;
+        return this;
+    }
+
 
     @JsonProperty
     public String getDeadline() {

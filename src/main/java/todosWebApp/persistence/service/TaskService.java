@@ -240,6 +240,10 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         taskRepository.save(task);
     }
 
+    private void setTaskCategoryRelation(Task task, Category category){
+        task.setCategory(category);
+    }
+
     @Override
     public void setDone(Long taskId, boolean isDone) {
         Task task = getTaskById(taskId);
@@ -247,7 +251,11 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         taskRepository.save(task);
     }
 
-    private void setTaskCategoryRelation(Task task, Category category){
-        task.setCategory(category);
+    @Override
+    public Task editTask(Long taskId, String name, Category category, Long date) {
+        Task task = getTaskById(taskId);
+        task = task.editTask(name, category, date);
+        taskRepository.save(task);
+        return task;
     }
 }

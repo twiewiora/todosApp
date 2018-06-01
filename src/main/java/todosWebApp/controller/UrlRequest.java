@@ -34,6 +34,8 @@ public class UrlRequest {
 
     public static final String URL_TASK_DELETE = "/task/delete{id}";
 
+    public static final String URL_TASK_EDIT = "/task/edit";
+
     public static final String URL_CATEGORY_GET_BASE = "/category/getBase";
 
     public static final String URL_CATEGORY_GET_ALL = "/category/getAll";
