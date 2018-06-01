@@ -36,6 +36,7 @@ class App extends Component {
             loading: true,
             ifSetDragnDrop: true,
             editVisibility: false,
+            deleteVisibility: false,
             currentCategoryId: 1,
             open: false
         };
@@ -193,9 +194,19 @@ class App extends Component {
         return this.state.editVisibility;
     };
 
+    getDeleteVisibility = () => {
+        return this.state.deleteVisibility;
+    };
+
     toggleEditTask = () => {
         this.setState({
             editVisibility: !this.state.editVisibility
+        });
+    };
+
+    toggleDeleteTask = () => {
+        this.setState({
+            deleteVisibility: !this.state.deleteVisibility
         });
     };
 
@@ -256,7 +267,10 @@ class App extends Component {
                                          getIndex={this.getIndex.bind(this)}
                                          editVisibility={this.state.editVisibility}
                                          getEditVisibility={this.getEditVisibility.bind(this)}
+                                         deleteVisibility={this.state.deleteVisibility}
+                                         getDeleteVisibility={this.getDeleteVisibility.bind(this)}
                                          toggleEditTask={this.toggleEditTask.bind(this)}
+                                         toggleDeleteTask={this.toggleDeleteTask.bind(this)}
                                          appLoading={this.state.loading}
                                          ifSetDragnDrop={this.state.ifSetDragnDrop}
                                          categoriesToDisplay={this.state.categoriesToDisplay}

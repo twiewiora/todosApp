@@ -8,6 +8,7 @@ import {
 from 'material-ui/Table';
 import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
+import EditIcon from "material-ui/svg-icons/image/edit";
 import {arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
@@ -93,25 +94,32 @@ class MaterialUIs extends Component {
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
                     <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
                                onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
-
+                    <RaisedButton
+                        label="Add a task"
+                        id="addButton"
+                        className="addButton"
+                        onClick={(e) => {
+                            this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
+                            this.setState({name: ''});
+                            e.target.hintText = 'Add Task';
+                            e.target.value = '';
+                        }}
+                    /> <br/>
                     <div className="topBarMenu">
-                        <RaisedButton
-                            label="Add task"
-                            id="addButton"
-                            className="addButton"
-                            onClick={(e) => {
-                                this.props.addTask(this.state.name);
-                                this.setState({name: ''});
-                                e.target.hintText = 'Add Task';
-                                e.target.value = '';
-                            }}
-                        />
                         <RaisedButton
                             label="Edit tasks"
                             id="editButton"
                             className="editButton"
                             onClick={(e) => {
-                                this.props.toggleEditTask(e)
+                                this.props.toggleEditTask(e);
+                            }}
+                        />
+                        <RaisedButton
+                            label="Delete tasks"
+                            id="deleteButton"
+                            className="deleteButton"
+                            onClick={(e) => {
+                                this.props.toggleDeleteTask(e)
                             }}
                             side="right"
                         />
@@ -122,6 +130,7 @@ class MaterialUIs extends Component {
                                    handleCheck={this.props.handleCheck.bind(this)}
                                    onSortEnd={this.onSortEnd}
                                    getEditVisibility={this.props.getEditVisibility.bind(this)}
+                                   getDeleteVisibility={this.props.getDeleteVisibility.bind(this)}
                                    openEditWindow={this.props.open}
                                    editTask={this.props.editTask.bind(this)}
                     />
@@ -137,9 +146,8 @@ class MaterialUIs extends Component {
                     <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
                                onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}}
                                onChange={this.handleChange} /><br/>
-                    <div className="topBarMenu">
                     <RaisedButton
-                        label="Add task"
+                        label="Add a task"
                         id="addButton"
                         className="addButton"
                         onClick={(e) => {
@@ -149,6 +157,24 @@ class MaterialUIs extends Component {
                             e.target.value = '';
                         }}
                     />
+                    <div className="topBarMenu">
+                        <RaisedButton
+                            label="Edit tasks"
+                            id="editButton"
+                            className="editButton"
+                            onClick={(e) => {
+                                this.props.toggleEditTask(e);
+                            }}
+                        />
+                        <RaisedButton
+                            label="Delete tasks"
+                            id="deleteButton"
+                            className="deleteButton"
+                            onClick={(e) => {
+                                this.props.toggleDeleteTask(e)
+                            }}
+                            side="right"
+                        />
                     </div><br/><br/>
                     <Table
                         fixedHeader={getMainStateTable().fixedHeader}
@@ -164,6 +190,11 @@ class MaterialUIs extends Component {
                             stripedRows={getMainStateTable().stripedRows}
                         >
                             <TableRow style ={{ background: '#354778',  padding: '5px 20px', height: 10}} >
+                                {
+                                    this.props.getEditVisibility()
+                                        ? (<TableHeaderColumn>Edit</TableHeaderColumn>)
+                                        : null
+                                }
                                 <TableHeaderColumn>Status</TableHeaderColumn>
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Category</TableHeaderColumn>
@@ -173,6 +204,13 @@ class MaterialUIs extends Component {
                             {this.filterData().map((value, index) => (
                                 <TableRow key={index}
                                           style={{ padding: '5px 20px', height: 25}}>
+                                    {
+                                        this.props.getEditVisibility()
+                                            ? (<TableRowColumn style={{ width: "10%" }}>
+                                                <EditIcon id="editTaskIcon" onClick={(e) => { this.props.editTask(e, this.props.getIndex(value.getID())) }}/>
+                                            </TableRowColumn>)
+                                            : null
+                                    }
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <Checkbox id="taskStatus"
                                                   checked={value.getState()}

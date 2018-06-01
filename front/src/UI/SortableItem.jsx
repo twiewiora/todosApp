@@ -6,7 +6,7 @@ import {
     from 'material-ui/Table';
 import {Checkbox} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
-import EditIcon from "material-ui/svg-icons/image/edit"
+import EditIcon from "material-ui/svg-icons/image/edit";
 import {SortableElement} from 'react-sortable-hoc';
 import '../Styles/App.css';
 import {setTextColorDoneTasks, setTrashIconColor} from "../Styles/Styling"
@@ -14,7 +14,7 @@ import {singleDate} from "../Utils/DateFunctions";
 
 
 const SortableItem = SortableElement((
-    {index, row, getIndex, removeTask, handleCheck, getEditVisibility, openEditWindow, editTask}) =>
+    {index, row, getIndex, removeTask, handleCheck, getEditVisibility, getDeleteVisibility, openEditWindow, editTask}) =>
 
     <TableRow key={getIndex(row.getID())}
               style={{ padding: '5px 20px', height: 25,
@@ -41,10 +41,14 @@ const SortableItem = SortableElement((
         <TableRowColumn style={{ width: "10%" }}>
             { row.getDate() === "" || row.getDate() == null ? "Unassigned" : singleDate(row.getDate())}
         </TableRowColumn>
-        <TableRowColumn style={{ width: "10%" }}>
-            <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
-                       style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
-        </TableRowColumn>
+        {
+            getDeleteVisibility()
+                ? (<TableRowColumn style={{ width: "10%" }}>
+                    <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
+                               style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
+                </TableRowColumn>)
+                : null
+        }
     </TableRow>);
 
 export default SortableItem;
