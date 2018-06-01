@@ -11,7 +11,6 @@ import {fade} from 'material-ui/utils/colorManipulator';
 export const muiTheme = getMuiTheme({
     //TODO
     palette: {
-        //textColor: '#792e00',
         primary1Color: '#354778',
         primary2Color: '#354778',
         primary3Color: '#354778',

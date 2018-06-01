@@ -133,15 +133,17 @@ class App extends Component {
         }
     };
 
-    addTaskWithCategory = function (e, categoryId) {
-        let name = document.getElementById("taskName").value;
-        if (name !== ""){
-            let newTask = addWithCategoryRequest(name, categoryId);
-            let temp = this.state.data;
-            temp.unshift(newTask);
-            this.setState({data : temp});
-            document.getElementById('taskName').value = "";
-            document.getElementById('taskName').hintText = "name";
+    addTaskWithCategory = function (e, categoryId, taskName) {
+        if (taskName !== ""){
+            addWithCategoryRequest(taskName, categoryId)
+                .then((newTask)=> {
+                    let temp = this.state.data;
+                    temp.unshift(newTask);
+                    return temp
+                }
+                ).then(temp => {
+                    this.setState({data : temp});
+                })
         }
     };
 
