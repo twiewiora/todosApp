@@ -44,7 +44,7 @@ const SortableTable = SortableContainer((
                             : null
                     }
                 </TableRow>
-                {getData().map((value, index) => (
+                {getData.map((value, index) => (
                     <SortableItem key={`item-${index}`}
                                   index={index} row={value}
                                   getIndex={getIndex}
