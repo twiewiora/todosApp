@@ -90,14 +90,17 @@ class MaterialUIs extends Component {
         }
     };
 
-    filterData() {
+    filterDataByCategory() {
 
-        return this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName()))
+        return this.filterDataByTitle().filter(task => this.containsCategoryToDisplay(task.getCategoryName()))
+    }
+
+    filterDataByTitle() {
+        return this.props.getData().filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS));
     }
 
     render() {
         if(this.props.ifSetDragnDrop){
-            const filteredTitles = this.props.getData().filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS));
             return (
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
@@ -138,7 +141,7 @@ class MaterialUIs extends Component {
                             </div>
                     </div><br/><br/>
                     <SortableTable //getData={this.props.getData.bind(this)}
-                                   getData={filteredTitles}
+                                   getData={this.filterDataByTitle()}
                                    getIndex={this.props.getIndex.bind(this)}
                                    removeTask={this.props.removeTask.bind(this)}
                                    handleCheck={this.props.handleCheck.bind(this)}
@@ -189,6 +192,10 @@ class MaterialUIs extends Component {
                             }}
                             side="right"
                         />
+                            <div>
+                                {/*<SearchInput className="search-input" onChange={this.props.searchUpdated}/>*/}
+                                <input type="text" id="searcher" onChange={this.handleSearching}/>
+                            </div>
                     </div><br/><br/>
                     <Table
                         fixedHeader={getMainStateTable().fixedHeader}
@@ -215,7 +222,7 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Date</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
-                            {this.filterData().map((value, index) => (
+                            {this.filterDataByCategory().map((value, index) => (
                                 <TableRow key={index}
                                           style={{ padding: '5px 20px', height: 25}}>
                                     {
