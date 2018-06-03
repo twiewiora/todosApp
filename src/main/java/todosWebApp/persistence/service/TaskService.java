@@ -138,9 +138,12 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     public List<Task> getTasksFromLastWeek(Long date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
-        cal.add(Calendar.DAY_OF_WEEK, -cal.get(Calendar.DAY_OF_WEEK) + 2);
+        int currentDay = cal.get(Calendar.DAY_OF_WEEK);
+        if(cal.get(Calendar.DAY_OF_WEEK) == 1)
+            currentDay += 7;
+        cal.add(Calendar.DAY_OF_WEEK, -currentDay + Calendar.MONDAY);
         Long start = cal.getTimeInMillis();
-        cal.add(Calendar.DAY_OF_WEEK, 1);
+        cal.add(Calendar.DAY_OF_WEEK, 7);
         Long end = cal.getTimeInMillis();
         return getTasksFromInterval(start, end);
     }
