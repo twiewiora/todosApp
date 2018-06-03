@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import SearchInput, {createFilter} from 'react-search-input'
 import {
     Table,
     TableBody,
@@ -12,13 +13,14 @@ import EditIcon from "material-ui/svg-icons/image/edit";
 import {arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
+import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
 
 import SortableTable from "./UI/SortableTable"
 
-
+const KEYS_TO_FILTERS = ['name'];
 
 class MaterialUIs extends Component {
     constructor(props) {
@@ -30,6 +32,7 @@ class MaterialUIs extends Component {
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleKeyPressAtCategory = this.handleKeyPressAtCategory.bind(this);
+        this.handleSearching = this.handleSearching.bind(this);
     }
 
    handleKeyPress(event) {
@@ -45,6 +48,11 @@ class MaterialUIs extends Component {
     handleChange = event => {
         this.setState({ name: event.target.value });
     };
+
+    handleSearching(event) {
+
+            this.props.searchUpdated();
+    }
 
     handleKeyPressAtCategory(event, categoryId) {
         if (event.key === 'Enter') {
@@ -82,9 +90,13 @@ class MaterialUIs extends Component {
         }
     };
 
-    filterData() {
+    filterDataByCategory() {
 
-        return this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName()))
+        return this.filterDataByTitle().filter(task => this.containsCategoryToDisplay(task.getCategoryName()))
+    }
+
+    filterDataByTitle() {
+        return this.props.getData().filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS));
     }
 
     render() {
@@ -123,8 +135,13 @@ class MaterialUIs extends Component {
                             }}
                             side="right"
                         />
+                            <div>
+                            {/*<SearchInput className="search-input" onChange={this.props.searchUpdated}/>*/}
+                            <input type="text" id="searcher" onChange={this.handleSearching}/>
+                            </div>
                     </div><br/><br/>
-                    <SortableTable getData={this.props.getData.bind(this)}
+                    <SortableTable //getData={this.props.getData.bind(this)}
+                                   getData={this.filterDataByTitle()}
                                    getIndex={this.props.getIndex.bind(this)}
                                    removeTask={this.props.removeTask.bind(this)}
                                    handleCheck={this.props.handleCheck.bind(this)}
@@ -175,6 +192,10 @@ class MaterialUIs extends Component {
                             }}
                             side="right"
                         />
+                            <div>
+                                {/*<SearchInput className="search-input" onChange={this.props.searchUpdated}/>*/}
+                                <input type="text" id="searcher" onChange={this.handleSearching}/>
+                            </div>
                     </div><br/><br/>
                     <Table
                         fixedHeader={getMainStateTable().fixedHeader}
@@ -201,7 +222,7 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Date</TableHeaderColumn>
                                 <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
-                            {this.filterData().map((value, index) => (
+                            {this.filterDataByCategory().map((value, index) => (
                                 <TableRow key={index}
                                           style={{ padding: '5px 20px', height: 25}}>
                                     {
@@ -233,7 +254,6 @@ class MaterialUIs extends Component {
                             ))}
                         </TableBody>
                     </Table>
-
                     <br/>
                     {this.props.appLoading? <Loader/> : <div></div>}
                 </div>

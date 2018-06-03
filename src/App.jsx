@@ -25,7 +25,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 class App extends Component {
-
     constructor(props) {
         super(props);
 
@@ -38,7 +37,8 @@ class App extends Component {
             editVisibility: false,
             deleteVisibility: false,
             currentCategoryId: 1,
-            open: false
+            open: false,
+            searchTerm: ''
         };
 
     }
@@ -247,6 +247,21 @@ class App extends Component {
         }
     };
 
+    containsCategoryToDisplay(categoryName) {
+        for(let i = 0; i < this.state.categoriesToDisplay.length; i++){
+            if(this.state.categoriesToDisplay[i].getName() === categoryName){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    searchUpdated = function() {
+        console.log("i'm in search update");
+        let name = document.getElementById("searcher").value;
+        this.setState({searchTerm: name});
+    };
+
     render() {
         return (
             <div className="App">
@@ -254,13 +269,14 @@ class App extends Component {
                     <div>
                         <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                                   setSelectedCategory={this.setSelectedCategory.bind(this)}
-                                  setCurrentCategories={this.setCurrentCategories}/>
+                                  setCurrentCategories={this.setCurrentCategories.bind(this)}/>
                         <div id="App1" className={this.state.zoomedIn}>
                             <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}
                                         side="right"/>
                             <MaterialAll removeTask={this.removeTask.bind(this)}
                                          addTask={this.addTask.bind(this)}
                                          addTaskWithCategory={this.addTaskWithCategory.bind(this)}
+                                         searchUpdated={this.searchUpdated.bind(this)}
                                          handleCheck={this.handleCheck.bind(this)}
                                          getData={this.getData.bind(this)}
                                          setData={this.setData.bind(this)}
@@ -275,9 +291,9 @@ class App extends Component {
                                          ifSetDragnDrop={this.state.ifSetDragnDrop}
                                          categoriesToDisplay={this.state.categoriesToDisplay}
                                          currentCategoryId={this.state.currentCategoryId}
+                                         searchTerm={this.state.searchTerm}
                                          openEditWindow={this.state.open}
-                                         editTask={this.editTask.bind(this)}
-                            />
+                                         editTask={this.editTask.bind(this)}/>
                         </div>
 
                         <div>
@@ -333,7 +349,6 @@ class App extends Component {
                             </Dialog>
                         </div>
                     </div>
-
                 </MuiThemeProvider>
             </div>);
     }
