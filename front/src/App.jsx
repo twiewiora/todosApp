@@ -299,6 +299,27 @@ class App extends Component {
                                         type="taskName"
                                         fullWidth
                                     />
+                                    <DialogContentText>
+                                        Description
+                                    </DialogContentText>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="description"
+                                        label="Task description"
+                                        type="taskName"
+                                        fullWidth
+                                    />
+                                    <DialogContentText>
+                                        Category
+                                    </DialogContentText>
+                                    <form>
+                                        <select id="categorySelect">
+                                            <option>Category1</option>
+                                            <option>Category2</option>
+                                        </select>
+                                    </form>
+
                                 </DialogContent>
 
                                 <DialogActions>
