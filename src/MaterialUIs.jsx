@@ -141,6 +141,7 @@ class MaterialUIs extends Component {
                             </div>
                     </div><br/><br/>
                     <SortableTable //getData={this.props.getData.bind(this)}
+                          pressDelay={200}
                                    getData={this.filterDataByTitle()}
                                    getIndex={this.props.getIndex.bind(this)}
                                    removeTask={this.props.removeTask.bind(this)}
