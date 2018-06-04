@@ -119,7 +119,7 @@ class MaterialUIs extends Component {
                     /> <br/>
                     <div className="topBarMenu">
                         <RaisedButton
-                            label="Edit tasks"
+                            label={this.props.getEditVisibility() ? "Edit mode ON" : "Edit mode OFF"}
                             id="editButton"
                             className="editButton"
                             onClick={(e) => {
@@ -127,11 +127,11 @@ class MaterialUIs extends Component {
                             }}
                         />
                         <RaisedButton
-                            label="Delete tasks"
+                            label={this.props.getDeleteVisibility() ? "Delete mode ON" : "Delete mode OFF"}
                             id="deleteButton"
                             className="deleteButton"
                             onClick={(e) => {
-                                this.props.toggleDeleteTask(e)
+                                this.props.toggleDeleteTask(e);
                             }}
                             side="right"
                         />
@@ -176,7 +176,7 @@ class MaterialUIs extends Component {
                     />
                     <div className="topBarMenu">
                         <RaisedButton
-                            label="Edit tasks"
+                            label={this.props.getEditVisibility() ? "Edit mode ON" : "Edit mode OFF"}
                             id="editButton"
                             className="editButton"
                             onClick={(e) => {
@@ -184,11 +184,11 @@ class MaterialUIs extends Component {
                             }}
                         />
                         <RaisedButton
-                            label="Delete tasks"
+                            label={this.props.getDeleteVisibility() ? "Delete mode ON" : "Delete mode OFF"}
                             id="deleteButton"
                             className="deleteButton"
                             onClick={(e) => {
-                                this.props.toggleDeleteTask(e)
+                                this.props.toggleDeleteTask(e);
                             }}
                             side="right"
                         />

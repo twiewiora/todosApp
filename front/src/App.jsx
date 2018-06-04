@@ -208,6 +208,7 @@ class App extends Component {
         this.setState({
             deleteVisibility: !this.state.deleteVisibility
         });
+
     };
 
     getFirstDoneTaskIndex = function () {
