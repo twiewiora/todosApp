@@ -9,20 +9,21 @@ import {arrayMove} from "react-sortable-hoc";
 import {
     addRequest,
     addWithCategoryRequest,
-    deleteRequest,
+    deleteRequest, getAllCategories,
     getAllTasks, getRootCategory,
     markAndDropRequest,
     markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 import Button from '@material-ui/core/Button';
-import Category from "./Category/Category";
-import {RaisedButton, TextField} from "material-ui";
+import {DatePicker, MenuItem, RaisedButton, SelectField, TextField} from "material-ui";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Task from "./Task/Task";
+import Category from "./Category/Category";
 
 class App extends Component {
     constructor(props) {
@@ -38,7 +39,13 @@ class App extends Component {
             deleteVisibility: false,
             currentCategoryId: 1,
             open: false,
-            searchTerm: ''
+            searchTerm: '',
+
+            editingTask: new Task("title", -1),
+            selectStatusValue: null,
+            selectCategoryValue: null,
+            selectDateValue: null,
+            allCategories: []
         };
 
     }
@@ -68,6 +75,13 @@ class App extends Component {
                     data,
                     loading: false,
                 })
+            })
+
+        getAllCategories()
+            .then(allCategories =>
+            {
+                allCategories.unshift(new Category("None", 0, null));
+                this.setState({allCategories: allCategories});
             })
     }
 
@@ -148,12 +162,35 @@ class App extends Component {
         }
     };
 
-    editTask = (e, name) => {
-        this.setState({open: true});
+    editTask = (e, task) => {
+        let categoryIndex = 0;
+        let category = null;
+        let date = null;
+
+        for(let i = 0; i < this.state.allCategories.length; i++){
+            if(this.state.allCategories[i].getID() === task.getCategoryID()){
+                categoryIndex = i;
+                category = this.state.allCategories[i];
+                break;
+            }
+        }
+
+        if(task.getDate() !== ""){
+            date = new Date(task.getDate())
+        }
+
+        this.setState({
+            open: true,
+            editingTask: task,
+            selectStatusValue: task.getState() ? 1 : 0,
+            selectCategoryValue: category,
+            selectDateValue: date});
     };
 
     handleCloseEditWindow = () => {
-        this.setState({open: false})
+        this.setState({
+            open: false,
+            editingTask: new Task("title", -1)})
     };
 
     removeTask = (e, taskID) => {
@@ -263,6 +300,20 @@ class App extends Component {
         this.setState({searchTerm: name});
     };
 
+    handleSelectStatusChange = (event, index, selectStatusValue) =>
+        this.setState({
+            selectStatusValue: selectStatusValue,
+        });
+    handleSelectCategoryChange = (event, index, selectCategoryValue) =>
+        this.setState({
+            selectCategoryValue: selectCategoryValue,
+        });
+    handleSelectDateChange = (event, selectDateValue) => {
+        this.setState({
+            selectDateValue: selectDateValue,
+        });
+    };
+
     render() {
         return (
             <div className="App">
@@ -300,43 +351,58 @@ class App extends Component {
                         <div>
                             <Dialog
                                 open={this.state.open}
+                                style={{
+                                    width: "100%",
+                                    maxWidth: 'none',
+                                }}
                                 onClose={ () => this.handleCloseEditWindow()}
                                 aria-labelledby="form-dialog-title"
                             >
                                 <DialogTitle id="form-dialog-title">Edit task</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
-                                        Task name
+                                        Change chosen values and finish the edit by clicking 'Ok' button.
                                     </DialogContentText>
                                     <TextField
                                         autoFocus
                                         margin="dense"
                                         id="name"
-                                        label="Task Name"
+                                        floatingLabelText="Task Name"
+                                        defaultValue={this.state.editingTask.getName()}
                                         type="taskName"
                                         fullWidth
                                     />
-                                    <DialogContentText>
-                                        Description
-                                    </DialogContentText>
                                     <TextField
                                         autoFocus
                                         margin="dense"
                                         id="description"
-                                        label="Task description"
+                                        floatingLabelText="Task description"
+                                        defaultValue={this.state.editingTask.getDescription()}
                                         type="taskName"
                                         fullWidth
                                     />
-                                    <DialogContentText>
-                                        Category
-                                    </DialogContentText>
-                                    <form>
-                                        <select id="categorySelect">
-                                            <option>Category1</option>
-                                            <option>Category2</option>
-                                        </select>
-                                    </form>
-
+                                    <SelectField
+                                        floatingLabelText="Status"
+                                        value={this.state.selectStatusValue}
+                                        onChange={this.handleSelectStatusChange}
+                                        fullWidth
+                                    >
+                                        <MenuItem key={0} value={0} primaryText="Not Done"/>
+                                        <MenuItem key={1} value={1} primaryText="Done"/>
+                                    </SelectField>
+                                    <SelectField
+                                        floatingLabelText="Categories"
+                                        value={this.state.selectCategoryValue}
+                                        onChange={this.handleSelectCategoryChange}
+                                        fullWidth
+                                    >
+                                        {this.state.allCategories.map((value, index) => (
+                                            <MenuItem key={index} value={value} primaryText={value.getName()}/>
+                                        ))}
+                                    </SelectField>
+                                    <DatePicker floatingLabelText="Assigned Date"
+                                                value={this.state.selectDateValue}
+                                                onChange={this.handleSelectDateChange}/>
                                 </DialogContent>
 
                                 <DialogActions>

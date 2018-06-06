@@ -197,11 +197,11 @@ class Menu extends Component {
 
         return (
             <div id="flyoutMenu" className={visibility}> <br/>
-                <ArrowIcon style={{ padding: '0px 20px', color: 'white'}}
+                <ArrowIcon style={{ padding: '0px 20px', color: 'white', cursor: "pointer"}}
                            className="BackIcon" onClick={(e) => { this.filterBackwards(e)}}/>
                 <h1 className="title">{this.state.currentCategory.getName()}</h1>
                 {this.state.childrenCurrentCategory.filter(cat => cat.getName() !== "None").map((object, index) =>
-                    <li key={`item-${index}`}>
+                    <li key={`item-${index}`} style={{cursor: "pointer"}}>
                         {
                             this.state.trashesVisibility
                                 ? (<TrashIcon id="trashIcon"
@@ -221,7 +221,7 @@ class Menu extends Component {
                             this.filterCategories(e, index)
                         }}>{object.getName()}</h2>
                     </li>)}
-                <TextField id="categoryName" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
+                <TextField id="categoryName" className="addTextFieldMenu" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
                            inputStyle={{color: 'white'}} hintText="Add Category"
                            onKeyPress={(e) => {this.handleKeyPress(e)}}/><br />
                 <RaisedButton
@@ -233,7 +233,7 @@ class Menu extends Component {
                     }} />
                 <br/><br/>
                 <RaisedButton
-                    label="Delete Category"
+                    label={this.state.trashesVisibility ? "Delete Category Mode ON" : "Delete Category Mode OFF"}
                     style={{margin: '0 auto'}}
                     id="deleteButton"
                     onClick={(e) => {
