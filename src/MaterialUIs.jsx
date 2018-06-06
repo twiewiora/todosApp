@@ -104,7 +104,7 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
-                    <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
+                    <TextField id="taskName" className="addTextField" floatingLabelText="Add Task" value={this.state.name}
                                onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
                     <RaisedButton
                         label="Add a task"

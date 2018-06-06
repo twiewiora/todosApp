@@ -22,7 +22,7 @@ const SortableItem = SortableElement((
         {
             getEditVisibility()
                 ? (<TableRowColumn style={{ width: "10%" }}>
-                    <EditIcon id="editTaskIcon" onClick={(e) => { editTask(e, getIndex(row.getID())) }}/>
+                    <EditIcon id="editTaskIcon" style={{cursor: "pointer"}} onClick={(e) => { editTask(e, row) }}/>
                 </TableRowColumn>)
                 : null
         }
@@ -45,7 +45,7 @@ const SortableItem = SortableElement((
             getDeleteVisibility()
                 ? (<TableRowColumn style={{ width: "10%" }}>
                     <TrashIcon id="trashIcon" onClick={(e) => { removeTask(e, getIndex(row.getID())) }}
-                               style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() )}}/>
+                               style={{color: setTrashIconColor(getIndex(row.getID()),row.getState() ), cursor: "pointer"}}/>
                 </TableRowColumn>)
                 : null
         }

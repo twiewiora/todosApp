@@ -7,6 +7,7 @@ class Task {
         this.categoryId = null;
         this.categoryName = null;
         this.deadline = null;
+        this.description="";
     }
 
     getState = function () {
@@ -42,6 +43,12 @@ class Task {
     setState = function (newState) {
         this.done = newState;
     };
+    getDescription = function () {
+        return this.description;
+    }
+    setDescription = function (newDescription) {
+        this.description = newDescription;
+    }
 }
 
 export default Task;

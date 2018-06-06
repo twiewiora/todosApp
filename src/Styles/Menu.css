@@ -49,3 +49,7 @@
 #flyoutMenu li:hover {
     text-decoration: underline;
 }
+
+.addTextFieldMenu {
+    background: url(enter_arrow.png) no-repeat scroll 100% 40%;
+}
