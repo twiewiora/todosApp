@@ -43,6 +43,9 @@ class Task {
     setState = function (newState) {
         this.done = newState;
     };
+    setName = function (name) {
+        this.name = name;
+    };
     getDescription = function () {
         return this.description;
     }
