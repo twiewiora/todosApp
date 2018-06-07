@@ -264,6 +264,3 @@ class MaterialUIs extends Component {
 }
 
 export default MaterialUIs;
-
-/** return this.state.data.filter(task => this.containsCategoryToDisplay(task.getCategoryName()));
- {this.props.getData().filter(task => this.containsCategoryToDisplay(task.getCategoryName())).map((value, index) => ( **/

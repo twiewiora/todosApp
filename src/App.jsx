@@ -9,7 +9,7 @@ import {arrayMove} from "react-sortable-hoc";
 import {
     addRequest,
     addWithCategoryRequest,
-    deleteRequest, getAllCategories,
+    deleteRequest, editTaskRequest, getAllCategories,
     getAllTasks, getRootCategory,
     markAndDropRequest,
     markRequest
@@ -24,6 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Task from "./Task/Task";
 import Category from "./Category/Category";
+import {dateFormat, jsDateToCustom} from "./Utils/DateFunctions";
 
 class App extends Component {
     constructor(props) {
@@ -45,6 +46,8 @@ class App extends Component {
             selectStatusValue: null,
             selectCategoryValue: null,
             selectDateValue: null,
+            newTaskName: "",
+            taskDescription: "",
             allCategories: []
         };
 
@@ -175,6 +178,9 @@ class App extends Component {
             }
         }
 
+        // category = this.state.allCategories.filter(category => category.getID() === task.getCategoryID());
+
+
         if(task.getDate() !== ""){
             date = new Date(task.getDate())
         }
@@ -188,6 +194,32 @@ class App extends Component {
     };
 
     handleCloseEditWindow = () => {
+        this.setState({
+            open: false,
+            editingTask: new Task("title", -1)})
+    };
+
+    handleOkEditWindow = () => {
+        let selectedTask = this.state.editingTask;
+
+        console.log(this.state.newTaskName, this.state.selectCategoryValue, this.state.selectStatusValue);
+        console.log(this.state.selectCategoryValue.getName(), this.state.selectCategoryValue.getID());
+
+        console.log(this.state.selectDateValue);
+
+        if (this.state.newTaskName !== "") {
+            selectedTask.setName(this.state.newTaskName);
+        }
+        if (this.state.taskDescription !== "") {
+            selectedTask.setDescription(this.state.taskDescription);
+        }
+        selectedTask.setState(this.state.selectStatusValue);
+        selectedTask.setDate(this.state.selectDateValue);
+        selectedTask.setCategoryName(this.state.selectCategoryValue.getName());
+        selectedTask.setCategory(this.state.selectCategoryValue.getID());
+
+        editTaskRequest(selectedTask);
+
         this.setState({
             open: false,
             editingTask: new Task("title", -1)})
@@ -310,7 +342,21 @@ class App extends Component {
         });
     handleSelectDateChange = (event, selectDateValue) => {
         this.setState({
-            selectDateValue: selectDateValue,
+            selectDateValue: jsDateToCustom(selectDateValue),
+        });
+    };
+    handleChangeName = (event) => {
+        let name = document.getElementById("name").value;
+        console.log(name)
+        this.setState({
+            newTaskName: name,
+        });
+    };
+    handleChangeDescription = (event) => {
+        let new_decription = document.getElementById("description").value;
+        console.log(new_decription)
+        this.setState({
+            taskDescription: new_decription,
         });
     };
 
@@ -370,6 +416,7 @@ class App extends Component {
                                         floatingLabelText="Task Name"
                                         defaultValue={this.state.editingTask.getName()}
                                         type="taskName"
+                                        onChange={this.handleChangeName}
                                         fullWidth
                                     />
                                     <TextField
@@ -379,6 +426,7 @@ class App extends Component {
                                         floatingLabelText="Task description"
                                         defaultValue={this.state.editingTask.getDescription()}
                                         type="taskName"
+                                        onChange={this.handleChangeDescription}
                                         fullWidth
                                     />
                                     <SelectField
@@ -400,7 +448,8 @@ class App extends Component {
                                             <MenuItem key={index} value={value} primaryText={value.getName()}/>
                                         ))}
                                     </SelectField>
-                                    <DatePicker floatingLabelText="Assigned Date"
+                                    <DatePicker
+                                                floatingLabelText="Assigned Date"
                                                 value={this.state.selectDateValue}
                                                 onChange={this.handleSelectDateChange}/>
                                 </DialogContent>
@@ -409,7 +458,7 @@ class App extends Component {
                                     <Button onClick={()=> this.handleCloseEditWindow()} color="primary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={() => this.handleCloseEditWindow()} color="primary">
+                                    <Button onClick={() => this.handleOkEditWindow()} color="primary">
                                         OK
                                     </Button>
                                 </DialogActions>

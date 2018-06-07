@@ -2,6 +2,7 @@
 /* eslint no-restricted-globals: ["off", "location"] */
 import Task from "../Task/Task";
 import Category from "../Category/Category"
+import {dateFormat, reverseDate, singleDate} from "../Utils/DateFunctions";
 
 let host = 'http://localhost:8080';
 
@@ -237,6 +238,20 @@ export function deleteCategoryRequest(selectedCategory) {
             showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
             throw new Error();
         });
+}
+
+export function editTaskRequest(selectedTask) {
+    let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
+        "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
+    console.log(data.toString());
+    fetch(host + '/task/edit', {method: 'POST', body: data})
+        .then(res => {
+            if (res.status !== 200) {
+                showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+            }
+        }).catch(function () {
+        showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
+    });
 }
 
 export function getAllTasks() {
