@@ -103,8 +103,9 @@ public class Task {
         this.child = child;
     }
 
-    public Task editTask(String title, Category category, Long date) {
+    public Task editTask(String title, Boolean done, Category category, Long date) {
         this.title = title;
+        this.done = done;
         this.category = category;
         this.date = date;
         return this;

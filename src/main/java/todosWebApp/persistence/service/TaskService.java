@@ -255,9 +255,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public Task editTask(Long taskId, String name, Category category, Long date) {
+    public Task editTask(Long taskId, String title, Boolean done, Category category, Long date) {
         Task task = getTaskById(taskId);
-        task = task.editTask(name, category, date);
+        task = task.editTask(title, done, category, date);
         taskRepository.save(task);
         return task;
     }

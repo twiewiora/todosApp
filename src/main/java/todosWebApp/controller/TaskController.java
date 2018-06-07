@@ -161,8 +161,6 @@ public class TaskController {
                              @RequestParam(required = false) String categoryID) {
         ObjectMapper objectMapper = new ObjectMapper();
         Task newTask;
-        System.out.println("DATA");
-        System.out.println(date);
         try {
             if (date != null && categoryID != null) {
                 Long dateTask = dateFormatter.parse(date).getTime();
@@ -259,17 +257,20 @@ public class TaskController {
 
     @RequestMapping(
             value = UrlRequest.URL_TASK_EDIT,
-            method = RequestMethod.POST,
-            produces = "application/json; charset=UTF-8")
+            method = RequestMethod.POST)
+           // produces = "application/json; charset=UTF-8")
     @CrossOrigin(origins = crossOriginUrl)
-    public String editTask(@PathVariable String id, @RequestParam String name,
-                           @RequestParam String date, @RequestParam String categoryID){
+    public String editTask(@RequestParam String id,
+                           @RequestParam String title,
+                           @RequestParam Boolean done,
+                           @RequestParam String date,
+                           @RequestParam String categoryID){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Long dateTask = dateFormatter.parse(date).getTime();
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
 
-            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), name, category, dateTask));
+            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, done, category, dateTask));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
             return UrlRequest.FAIL_RETURN_VALUE;
