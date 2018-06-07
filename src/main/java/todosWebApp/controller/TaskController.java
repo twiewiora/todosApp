@@ -262,6 +262,7 @@ public class TaskController {
     @CrossOrigin(origins = crossOriginUrl)
     public String editTask(@RequestParam String id,
                            @RequestParam String title,
+                           @RequestParam String description,
                            @RequestParam Boolean done,
                            @RequestParam String date,
                            @RequestParam String categoryID){
@@ -270,7 +271,8 @@ public class TaskController {
             Long dateTask = dateFormatter.parse(date).getTime();
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
 
-            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, done, category, dateTask));
+            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, description, done,
+                    category, dateTask));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
             return UrlRequest.FAIL_RETURN_VALUE;

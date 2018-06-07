@@ -139,7 +139,7 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
         int currentDay = cal.get(Calendar.DAY_OF_WEEK);
-        if(cal.get(Calendar.DAY_OF_WEEK) == 1)
+        if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
             currentDay += 7;
         cal.add(Calendar.DAY_OF_WEEK, -currentDay + Calendar.MONDAY);
         Long start = cal.getTimeInMillis();
@@ -255,9 +255,9 @@ public class TaskService implements TaskDataQuery, TaskDataCreator {
     }
 
     @Override
-    public Task editTask(Long taskId, String title, Boolean done, Category category, Long date) {
+    public Task editTask(Long taskId, String title, String description, Boolean done, Category category, Long date) {
         Task task = getTaskById(taskId);
-        task = task.editTask(title, done, category, date);
+        task.editTask(title, description, done, category, date);
         taskRepository.save(task);
         return task;
     }
