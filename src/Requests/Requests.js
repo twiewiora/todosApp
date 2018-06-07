@@ -243,8 +243,7 @@ export function deleteCategoryRequest(selectedCategory) {
 export function editTaskRequest(selectedTask) {
     let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
         "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
-    console.log(data.toString());
-    fetch(host + '/task/edit', {method: 'POST', body: data})
+    return fetch(host + '/task/edit', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Your changes won't be saved.");

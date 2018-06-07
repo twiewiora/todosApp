@@ -100,7 +100,8 @@ class App extends Component {
                 }
             }
         }
-
+        console.log("dupa"+ this.state.data.length);
+        console.log("dupa"+ i);
         let state = this.state.data[i].getState();
         let firstDoneIndex = this.getFirstDoneTaskIndex();
 
@@ -201,11 +202,11 @@ class App extends Component {
 
     handleOkEditWindow = () => {
         let selectedTask = this.state.editingTask;
-
-        console.log(this.state.newTaskName, this.state.selectCategoryValue, this.state.selectStatusValue);
-        console.log(this.state.selectCategoryValue.getName(), this.state.selectCategoryValue.getID());
-
-        console.log(this.state.selectDateValue);
+        //
+        // console.log(this.state.newTaskName, this.state.selectCategoryValue, this.state.selectStatusValue);
+        // console.log(this.state.selectCategoryValue.getName(), this.state.selectCategoryValue.getID());
+        //
+        // console.log(this.state.selectDateValue);
 
         if (this.state.newTaskName !== "") {
             selectedTask.setName(this.state.newTaskName);
@@ -214,15 +215,24 @@ class App extends Component {
             selectedTask.setDescription(this.state.taskDescription);
         }
         selectedTask.setState(this.state.selectStatusValue);
-        selectedTask.setDate(this.state.selectDateValue);
+        //todo
+        //this.handleCheck przyjmuje id na liscie a nie taskID
+        // console.log(selectedTask.getID());
+        // this.handleCheck(selectedTask.getID());
+        if (this.state.selectDateValue !== null) {
+            selectedTask.setDate(jsDateToCustom(this.state.selectDateValue));
+        }
         selectedTask.setCategoryName(this.state.selectCategoryValue.getName());
         selectedTask.setCategory(this.state.selectCategoryValue.getID());
 
-        editTaskRequest(selectedTask);
+        editTaskRequest(selectedTask).then(() => {
+                this.setState({
+                    open: false,
+                    editingTask: new Task("title", -1)
+                })
+            }
+        );
 
-        this.setState({
-            open: false,
-            editingTask: new Task("title", -1)})
     };
 
     removeTask = (e, taskID) => {
@@ -342,7 +352,7 @@ class App extends Component {
         });
     handleSelectDateChange = (event, selectDateValue) => {
         this.setState({
-            selectDateValue: jsDateToCustom(selectDateValue),
+            selectDateValue: selectDateValue,
         });
     };
     handleChangeName = (event) => {
