@@ -60,6 +60,7 @@ class MaterialUIs extends Component {
             this.setState({name: ''});
             event.target.hintText = 'Add Task';
             event.target.value = '';
+
         }
     }
 
@@ -136,11 +137,10 @@ class MaterialUIs extends Component {
                             side="right"
                         />
                             <div>
-                            {/*<SearchInput className="search-input" onChange={this.props.searchUpdated}/>*/}
                             <input type="text" id="searcher" onChange={this.handleSearching}/>
                             </div>
                     </div><br/><br/>
-                    <SortableTable //getData={this.props.getData.bind(this)}
+                    <SortableTable
                           pressDelay={200}
                                    getData={this.filterDataByTitle()}
                                    getIndex={this.props.getIndex.bind(this)}
@@ -194,7 +194,6 @@ class MaterialUIs extends Component {
                             side="right"
                         />
                             <div>
-                                {/*<SearchInput className="search-input" onChange={this.props.searchUpdated}/>*/}
                                 <input type="text" id="searcher" onChange={this.handleSearching}/>
                             </div>
                     </div><br/><br/>
