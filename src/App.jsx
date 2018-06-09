@@ -54,7 +54,7 @@ class App extends Component {
     }
 
     toggleZoom = () => {
-        if(this.state.zoomedIn === "zoomOut"){
+        if (this.state.zoomedIn === "zoomOut") {
             this.setState({
                 zoomedIn: "zoomIn"
             });
@@ -63,7 +63,7 @@ class App extends Component {
                 zoomedIn: "zoomOut"
             });
         }
-    }
+    };
 
     componentWillMount() {
         //invoke before render method
@@ -81,28 +81,24 @@ class App extends Component {
             })
 
         getAllCategories()
-            .then(allCategories =>
-            {
+            .then(allCategories => {
                 allCategories.unshift(new Category("None", 0, null));
                 this.setState({allCategories: allCategories});
             })
-    }
+    };
 
     handleCheck = (taskID) => {
         let i = -1;
-        if(this.state.ifSetDragnDrop){
+        if (this.state.ifSetDragnDrop) {
             i = taskID;
         } else {
             for (let id = 0; id < this.state.data.length; id++) {
-                if(this.state.data[id].getID() === taskID){
+                if (this.state.data[id].getID() === taskID) {
                     i = id;
                     break;
                 }
             }
         }
-        console.log("dupa"+ this.state.data.length);
-        console.log("dupa"+ i);
-        console.log("dupa"+ taskID);
 
         let state = this.state.data[i].getState();
         let firstDoneIndex = this.getFirstDoneTaskIndex();
@@ -117,10 +113,10 @@ class App extends Component {
             };
         });
 
-        if(firstDoneIndex !== 1 || firstDoneIndex !== 0){
-            if(!(this.state.data[i].getState() && i === firstDoneIndex-1)
+        if (firstDoneIndex !== 1 || firstDoneIndex !== 0) {
+            if (!(this.state.data[i].getState() && i === firstDoneIndex - 1)
                 && !(!this.state.data[i].getState() && i <= firstDoneIndex)) {
-                if(i > firstDoneIndex){
+                if (i > firstDoneIndex) {
                     this.setState({
                         data: arrayMove(this.state.data, i, firstDoneIndex),
                     });
@@ -129,10 +125,10 @@ class App extends Component {
                         data: arrayMove(this.state.data, i, firstDoneIndex - 1),
                     });
                 }
-                if(firstDoneIndex === 0)
+                if (firstDoneIndex === 0)
                     markAndDropRequest(selectedTask, null);
                 else
-                    markAndDropRequest(selectedTask, this.state.data[firstDoneIndex-1]);
+                    markAndDropRequest(selectedTask, this.state.data[firstDoneIndex - 1]);
             } else {
                 markRequest(selectedTask);
             }
@@ -140,14 +136,14 @@ class App extends Component {
     }
 
     addTask = (name) => {
-        if (name !== ""){
+        if (name !== "") {
             addRequest(name)
-                .then((newTask)=>{
-                    let temp = this.state.data;
-                    temp.unshift(newTask);
-                    return temp
-                }
-                ).then(temp=> {
+                .then((newTask) => {
+                        let temp = this.state.data;
+                        temp.unshift(newTask);
+                        return temp
+                    }
+                ).then(temp => {
                     this.setState({data: temp});
                 }
             )
@@ -155,16 +151,16 @@ class App extends Component {
     };
 
     addTaskWithCategory = (e, categoryId, taskName) => {
-        if (taskName !== ""){
+        if (taskName !== "") {
             addWithCategoryRequest(taskName, categoryId)
-                .then((newTask)=> {
-                    let temp = this.state.data;
-                    temp.unshift(newTask);
-                    return temp
-                }
+                .then((newTask) => {
+                        let temp = this.state.data;
+                        temp.unshift(newTask);
+                        return temp
+                    }
                 ).then(temp => {
-                    this.setState({data : temp});
-                })
+                this.setState({data: temp});
+            })
         }
     };
 
@@ -173,18 +169,15 @@ class App extends Component {
         let category = null;
         let date = null;
 
-        for(let i = 0; i < this.state.allCategories.length; i++){
-            if(this.state.allCategories[i].getID() === task.getCategoryID()){
+        for (let i = 0; i < this.state.allCategories.length; i++) {
+            if (this.state.allCategories[i].getID() === task.getCategoryID()) {
                 categoryIndex = i;
                 category = this.state.allCategories[i];
                 break;
             }
         }
 
-        // category = this.state.allCategories.filter(category => category.getID() === task.getCategoryID());
-
-
-        if(task.getDate() !== ""){
+        if (task.getDate() !== "") {
             date = new Date(task.getDate())
         }
 
@@ -193,13 +186,15 @@ class App extends Component {
             editingTask: task,
             selectStatusValue: task.getState() ? 1 : 0,
             selectCategoryValue: category,
-            selectDateValue: date});
+            selectDateValue: date
+        });
     };
 
     handleCloseEditWindow = () => {
         this.setState({
             open: false,
-            editingTask: new Task("title", -1)})
+            editingTask: new Task("title", -1)
+        })
     };
 
     handleOkEditWindow = () => {
@@ -212,15 +207,14 @@ class App extends Component {
             selectedTask.setDescription(this.state.taskDescription);
         }
 
-        if (this.state.selectStatusValue){
+        if (this.state.selectStatusValue) {
             let id = -1;
             for (let i = 0; i < this.state.data.length; i++) {
-                if(this.state.data[i].getID() === selectedTask.getID()){
+                if (this.state.data[i].getID() === selectedTask.getID()) {
                     id = i;
                     break;
                 }
             }
-            console.log("id "+ id);
             this.handleCheck(id);
         }
 
@@ -242,11 +236,11 @@ class App extends Component {
 
     removeTask = (e, taskID) => {
         let i = -1;
-        if(this.state.ifSetDragnDrop){
+        if (this.state.ifSetDragnDrop) {
             i = taskID;
         } else {
             for (let id = 0; id < this.state.data.length; id++) {
-                if(this.state.data[id].getID() === taskID){
+                if (this.state.data[id].getID() === taskID) {
                     i = id;
                     break;
                 }
@@ -298,8 +292,8 @@ class App extends Component {
     getFirstDoneTaskIndex = function () {
         let length = this.state.data.length;
         let firstDoneTaskIndexAtTheBottom = length;
-        for (let i = length-1; i >= 0; i--){
-            if(this.state.data[i].getState() === false) {
+        for (let i = length - 1; i >= 0; i--) {
+            if (this.state.data[i].getState() === false) {
                 break;
             } else {
                 firstDoneTaskIndexAtTheBottom = i;
@@ -309,14 +303,11 @@ class App extends Component {
     };
 
     setCurrentCategories = (categoriesToDisplay) => {
-        console.log('setCurrentCategories', categoriesToDisplay);
         const ifSetDragnDrop = categoriesToDisplay[0].getName() === "None";
         this.setState({categoriesToDisplay, ifSetDragnDrop});
     };
 
-    setSelectedCategory = function(categoryId){
-        console.log(categoryId);
-
+    setSelectedCategory = function (categoryId) {
         this.setState({
             currentCategoryId: categoryId
         });
@@ -326,23 +317,22 @@ class App extends Component {
         let data = this.state.data;
         let length = data.length;
         for (let i = 0; i < length; i++) {
-            if(data[i].getID() === id){
+            if (data[i].getID() === id) {
                 return i;
             }
         }
     };
 
     containsCategoryToDisplay(categoryName) {
-        for(let i = 0; i < this.state.categoriesToDisplay.length; i++){
-            if(this.state.categoriesToDisplay[i].getName() === categoryName){
+        for (let i = 0; i < this.state.categoriesToDisplay.length; i++) {
+            if (this.state.categoriesToDisplay[i].getName() === categoryName) {
                 return true;
             }
         }
         return false;
     }
 
-    searchUpdated = function() {
-        console.log("i'm in search update");
+    searchUpdated = function () {
         let name = document.getElementById("searcher").value;
         this.setState({searchTerm: name});
     };
@@ -362,14 +352,12 @@ class App extends Component {
     };
     handleChangeName = (event) => {
         let name = document.getElementById("name").value;
-        console.log(name)
         this.setState({
             newTaskName: name,
         });
     };
     handleChangeDescription = (event) => {
         let new_decription = document.getElementById("description").value;
-        console.log(new_decription)
         this.setState({
             taskDescription: new_decription,
         });
@@ -416,7 +404,7 @@ class App extends Component {
                                     width: "100%",
                                     maxWidth: 'none',
                                 }}
-                                onClose={ () => this.handleCloseEditWindow()}
+                                onClose={() => this.handleCloseEditWindow()}
                                 aria-labelledby="form-dialog-title"
                             >
                                 <DialogTitle id="form-dialog-title">Edit task</DialogTitle>
@@ -464,13 +452,13 @@ class App extends Component {
                                         ))}
                                     </SelectField>
                                     <DatePicker
-                                                floatingLabelText="Assigned Date"
-                                                value={this.state.selectDateValue}
-                                                onChange={this.handleSelectDateChange}/>
+                                        floatingLabelText="Assigned Date"
+                                        value={this.state.selectDateValue}
+                                        onChange={this.handleSelectDateChange}/>
                                 </DialogContent>
 
                                 <DialogActions>
-                                    <Button onClick={()=> this.handleCloseEditWindow()} color="primary">
+                                    <Button onClick={() => this.handleCloseEditWindow()} color="primary">
                                         Cancel
                                     </Button>
                                     <Button onClick={() => this.handleOkEditWindow()} color="primary">
