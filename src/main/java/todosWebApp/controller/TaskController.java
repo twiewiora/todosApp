@@ -266,11 +266,15 @@ public class TaskController {
                            @RequestParam String categoryID){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Long dateTask = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
+            Long dateTask;
+            if(!date.equals("")) {
+                dateTask = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
+            }
+            else {
+                dateTask = null;
+            }
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
-
-            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, description, done,
-                    category, dateTask));
+            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, description, done, category, dateTask));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
             return UrlRequest.FAIL_RETURN_VALUE;

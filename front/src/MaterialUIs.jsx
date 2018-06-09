@@ -228,7 +228,7 @@ class MaterialUIs extends Component {
                                     {
                                         this.props.getEditVisibility()
                                             ? (<TableRowColumn style={{ width: "10%" }}>
-                                                <EditIcon id="editTaskIcon" onClick={(e) => { this.props.editTask(e, this.props.getIndex(value.getID())) }}/>
+                                                <EditIcon id="editTaskIcon" onClick={(e) => { this.props.editTask(e, value) }}/>
                                             </TableRowColumn>)
                                             : null
                                     }
