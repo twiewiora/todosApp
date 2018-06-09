@@ -102,6 +102,8 @@ class App extends Component {
         }
         console.log("dupa"+ this.state.data.length);
         console.log("dupa"+ i);
+        console.log("dupa"+ taskID);
+
         let state = this.state.data[i].getState();
         let firstDoneIndex = this.getFirstDoneTaskIndex();
 
@@ -202,11 +204,6 @@ class App extends Component {
 
     handleOkEditWindow = () => {
         let selectedTask = this.state.editingTask;
-        //
-        // console.log(this.state.newTaskName, this.state.selectCategoryValue, this.state.selectStatusValue);
-        // console.log(this.state.selectCategoryValue.getName(), this.state.selectCategoryValue.getID());
-        //
-        // console.log(this.state.selectDateValue);
 
         if (this.state.newTaskName !== "") {
             selectedTask.setName(this.state.newTaskName);
@@ -214,11 +211,19 @@ class App extends Component {
         if (this.state.taskDescription !== "") {
             selectedTask.setDescription(this.state.taskDescription);
         }
-        selectedTask.setState(this.state.selectStatusValue);
-        //todo
-        //this.handleCheck przyjmuje id na liscie a nie taskID
-        // console.log(selectedTask.getID());
-        // this.handleCheck(selectedTask.getID());
+
+        if (this.state.selectStatusValue){
+            let id = -1;
+            for (let i = 0; i < this.state.data.length; i++) {
+                if(this.state.data[i].getID() === selectedTask.getID()){
+                    id = i;
+                    break;
+                }
+            }
+            console.log("id "+ id);
+            this.handleCheck(id);
+        }
+
         if (this.state.selectDateValue !== null) {
             selectedTask.setDate(jsDateToCustom(this.state.selectDateValue));
         }
