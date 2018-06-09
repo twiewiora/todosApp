@@ -30,6 +30,6 @@ public interface TaskDataCreator {
 
    void moveTasksToParentCategory(Long categoryId);
 
-   Task editTask(Long taskId, String title, Boolean done, Category category, Long date);
+   Task editTask(Long taskId, String title, String description, Boolean done, Category category, Long date);
 
 }

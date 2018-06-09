@@ -25,6 +25,8 @@ public class Task {
 
 	private String title;
 
+	private String description = "";
+
     @JsonIgnore
     private Long date;
 
@@ -81,6 +83,14 @@ public class Task {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Long getDate() {
         return date;
     }
@@ -103,12 +113,12 @@ public class Task {
         this.child = child;
     }
 
-    public Task editTask(String title, Boolean done, Category category, Long date) {
+    public void editTask(String title, String description, Boolean done, Category category, Long date) {
         this.title = title;
+        this.description = description;
         this.done = done;
         this.category = category;
         this.date = date;
-        return this;
     }
 
 

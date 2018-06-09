@@ -262,6 +262,7 @@ public class TaskController {
     @CrossOrigin(origins = crossOriginUrl)
     public String editTask(@RequestParam String id,
                            @RequestParam String title,
+                           @RequestParam String description,
                            @RequestParam Boolean done,
                            @RequestParam String date,
                            @RequestParam String categoryID){

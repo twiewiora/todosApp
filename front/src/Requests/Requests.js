@@ -163,7 +163,7 @@ export function addRequest(newTaskName) {
         });
 }
 
-export function addWithCategoryRequest(newTaskName, categoryId) {
+export function addWithCategoryRequest(newTaskName, categoryId, categoryName) {
     let data = new URLSearchParams("title=" + newTaskName + "&categoryID=" + categoryId);
     let newTask = new Task(newTaskName, -1);
     return fetch(host + '/task/create', {method: 'POST', body: data})
@@ -176,13 +176,16 @@ export function addWithCategoryRequest(newTaskName, categoryId) {
         .then(data => {
             newTask.setID(data.id);
             newTask.setCategory(data.categoryId);
+            newTask.setCategoryName(categoryName);
             newTask.setState(data.done);
+            newTask.setDate(null);
             return newTask;
 
         }).catch(function () {
             showRestartAlert("Oops! Problem with server. Your changes won't be saved.");
         });
 }
+
 
 export function getRootCategory() {
     return(
@@ -243,7 +246,7 @@ export function deleteCategoryRequest(selectedCategory) {
 export function editTaskRequest(selectedTask) {
 
     let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
-        "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
+        "&description="+ selectedTask.getDescription() + "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
     //console.log("xD " + data.toString());
     return fetch(host + '/task/edit', {method: 'POST', body: data})
         .then(res => {
