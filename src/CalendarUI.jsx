@@ -44,7 +44,6 @@ class CalendarUI extends Component {
             unassigned: [],
             weekly: [],
             loading: true,
-            weekLoading: true,
             currentDateObject: today,
             currentDateTitle: dateFormat(today),
             weeklyViewDisplayed: false
@@ -74,26 +73,22 @@ class CalendarUI extends Component {
             if(section !== null) {
                 section.style.display = 'block';
                 weekDisplay = true;
-                this.setState({
-                    weekLoading: true
-                });
-                getWeeklyTasks(this.state.currentDateTitle).then(
+                getWeeklyTasks(this.state.currentDateTitle).then( w =>
                     this.setState({
-                        weekly: this.state.data,
-                        weekLoading: false
+                        weekly: w,
                     })
                 );
                 this.setState({weeklyViewDisplayed: true});
             }
         }
-    }
+    };
 
     reloadPage = () => {
         this.setState({
             loading: true,
-            weekLoading: true
         });
         getUnassignedTasks().then(u => {
+            console.log(u);
             this.setState({
                 unassigned: u
             })
@@ -105,19 +100,16 @@ class CalendarUI extends Component {
         });
         getWeeklyTasks(this.state.currentDateTitle).then(w => {
             this.setState({
-                //why there was -> weekly: this.state.data, w ?
                 weekly: w,
                 loading: false,
-                weekLoading: false
             })
         });
+
     };
     reloadTasks(date){
         this.setState({
             loading: true,
-            weekLoading: true,
             currentDateObject: date,
-            //
         });
 
         let dateDescription = dateFormat(date);
@@ -129,13 +121,14 @@ class CalendarUI extends Component {
         });
         getWeeklyTasks(dateDescription).then(w => {
             this.setState({
-
                 weekly: w,
-                loading: false,
-                weekLoading: false
             })
         });
+        this.setState({
+            loading: false
+        })
     }
+
     previousDay = () => {
         let newDate = this.state.currentDateObject;
         newDate.setDate(newDate.getDate()-1);
@@ -160,7 +153,7 @@ class CalendarUI extends Component {
         this.reloadTasks(newDate);
     };
 
-    assignDate = (index) => {
+    assignDate (index) {
         this.setState({
             loading: true,
         });
@@ -181,6 +174,11 @@ class CalendarUI extends Component {
             data: newData,
             unassigned: newUnassigned,
             loading: false
+        });
+        getWeeklyTasks(this.state.currentDateTitle).then(w => {
+            this.setState({
+                weekly: w,
+            })
         });
     };
     unassignDate(index) {
@@ -219,7 +217,7 @@ class CalendarUI extends Component {
         markRequest(selectedTask);
     }
 
-    removeTask = function (e, i) {
+    removeTask (e, i) {
         let selectedTask = this.state.data[i];
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
@@ -239,6 +237,7 @@ class CalendarUI extends Component {
     };
 
     containsCategoryToDisplay(categoryID) {
+        console.log(categoryID);
         for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
             if(this.props.categoriesToDisplay[i].getID() === categoryID){
                 return true;
@@ -282,7 +281,7 @@ class CalendarUI extends Component {
 
                         {this.state.weekly.filter(task => this.containsCategoryToDisplay(task.getCategoryID())).map( (row, index) => (
                             <TableRow
-                                key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
+                                key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.weekly) }}>
                                 <TableRowColumn style={{width:50}}>
                                 <Checkbox checked={row.getState()} disabled={true}/>
                                 </TableRowColumn>
@@ -296,7 +295,6 @@ class CalendarUI extends Component {
 
                     </TableBody>
                 </Table>
-                {this.state.weekLoading ? <Loader/> : <div></div>}
             </div>
                 <h2 align="center" className="title"> Daily tasks
                 </h2>
@@ -358,7 +356,7 @@ class CalendarUI extends Component {
                     ))}
                 </TableBody>
             </Table>
-            {this.state.loading ? <Loader/> : <div></div>}
+                {this.state.loading ? <Loader/> : <div></div>}
         </div>
         )
     }

@@ -59,8 +59,6 @@ class Calendar extends React.Component{
     }
 
     setCurrentCategories = function(categories) {
-        console.log(categories);
-
         this.setState({
             categoriesToDisplay: categories,
         });
@@ -68,7 +66,6 @@ class Calendar extends React.Component{
     };
 
     setSelectedCategory = function(categoryId){
-        console.log(categoryId);
 
         this.setState({
             currentCategoryId: categoryId

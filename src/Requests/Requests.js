@@ -36,7 +36,6 @@ export function getDailyTasks(day) {
             })
         })
         .then(tasks => {
-            console.log(tasks);
             return tasks;
         })
         .catch(function () {
@@ -45,22 +44,23 @@ export function getDailyTasks(day) {
 }
 
 export function getWeeklyTasks(day) {
-    let tasks = [];
     return fetch(host + '/task/weeklyTasks/date=' + day)
         .then(res => {
             if (res.status !== 200) {
                 showRestartAlert("Oops! Problem with server. Cannot load tasks.");
             }
             return res.json();
+        }).then(data => {
+            return data.map(t => {
+                let newTask = new Task(t.title, t.id);
+                newTask.setState(t.done);
+                newTask.setCategory(t.categoryId);
+                let date = t.deadline.substr(0, 10).replace(" ", '-').replace(" ", '-');
+                newTask.setDate(date);
+                return newTask;
+            })
         })
-        .then(data => {
-            for (let i = 0; i < data.length; i++) {
-                let newTask = new Task(data[i].title, data[i].id);
-                newTask.setState(data[i].done);
-                newTask.setState(data[i].deadline);
-
-                tasks.push(newTask);
-            }
+        .then(tasks => {
             return tasks;
 
         }).catch(function () {
@@ -80,6 +80,7 @@ export function getUnassignedTasks() {
                 let newTask = new Task(task.title, task.id);
                 newTask.setState(task.done);
                 newTask.setCategory(task.categoryId);
+                console.log(task.categoryId);
                 return newTask;
             });
         })
@@ -209,7 +210,6 @@ export function getRootCategory() {
 export function addCategoryRequest(newCategoryName, parentID) {
     let data = new URLSearchParams("name=" + newCategoryName + "&parentCategoryId=" + parentID);
     let newCategory = new Category(newCategoryName, -1, parentID);
-    console.log('addCategoryRequest',newCategory)
     return fetch(host + '/category/create', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
@@ -249,7 +249,7 @@ export function editTaskRequest(selectedTask) {
     let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
         "&description="+ selectedTask.getDescription() + "&done="+ selectedTask.getState() + "&date=" +
         reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + categoryId);
-    //console.log("xD " + data.toString());
+
     return fetch(host + '/task/edit', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
@@ -338,7 +338,6 @@ export function getAllCategories() {
             )
         )
         .then(data => {
-            console.log('getAllCategories', data);
             return data;
         })
         .catch(() => {
