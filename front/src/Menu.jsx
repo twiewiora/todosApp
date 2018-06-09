@@ -5,8 +5,9 @@ import './Styles/App.css'
 import './Styles/Menu.css'
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories, getRootCategory} from './Requests/Requests'
-import {RaisedButton, TextField} from "material-ui";
+import {FloatingActionButton, RaisedButton, TextField} from "material-ui";
 import Category from "./Category/Category";
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 class Menu extends Component {
     constructor(props) {
@@ -199,7 +200,17 @@ class Menu extends Component {
             <div id="flyoutMenu" className={visibility}> <br/>
                 <ArrowIcon style={{ padding: '0px 20px', color: 'white', cursor: "pointer"}}
                            className="BackIcon" onClick={(e) => { this.filterBackwards(e)}}/>
-                <h1 className="title">{this.state.currentCategory.getName()}</h1>
+                <div><FloatingActionButton mini={true}
+                                            secondary={this.state.trashesVisibility}
+                                            onClick={(e) => {
+                                                this.showTrashes(e)
+                                            }}
+                                            style={{float: 'right', position: 'relative', top: '-10px', right: '10px'}}>
+                    <TrashIcon/>
+                </FloatingActionButton>
+                    <h1 className="title">{this.state.currentCategory.getName()}</h1></div>
+
+
                 {this.state.childrenCurrentCategory.filter(cat => cat.getName() !== "None").map((object, index) =>
                     <li key={`item-${index}`} style={{cursor: "pointer"}}>
                         {
@@ -221,24 +232,17 @@ class Menu extends Component {
                             this.filterCategories(e, index)
                         }}>{object.getName()}</h2>
                     </li>)}
-                <TextField id="categoryName" className="addTextFieldMenu" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
+                    <TextField id="categoryName" className="addTextFieldMenu" style={{margin: '0 8px'}} hintStyle={{color: '#bababa'}}
                            inputStyle={{color: 'white'}} hintText="Add Category"
                            onKeyPress={(e) => {this.handleKeyPress(e)}}/><br />
-                <RaisedButton
-                    label="Add Category"
-                    style={{margin: '0 auto'}}
-                    id="addButton"
-                    onClick={(e) => {
-                        this.addCategory(e);
-                    }} />
-                <br/><br/>
-                <RaisedButton
-                    label={this.state.trashesVisibility ? "Delete Category Mode ON" : "Delete Category Mode OFF"}
-                    style={{margin: '0 auto'}}
-                    id="deleteButton"
-                    onClick={(e) => {
-                        this.showTrashes(e)
-                    }}/>
+
+                <FloatingActionButton mini={true}
+                                      /*secondary={this.props.deleteVisibility}*/
+                                      onClick={(e) => {
+                                          this.addCategory(e);
+                                      }}>
+                    <ContentAdd/>
+                </FloatingActionButton>
             </div>
         );
     }

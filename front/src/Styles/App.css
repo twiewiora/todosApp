@@ -42,9 +42,10 @@
 
 .topBarMenu {
   display: block;
-  margin: auto;
-  align-content: center;
-  height: auto;
+    align-content: right;
+    float: right;
+    margin: auto 5px auto auto;
+    height: auto;
 }
 
 .deleteButton {
@@ -86,7 +87,32 @@ input[type=submit]:hover {
   background-color: #4CAF50;
 }
 
-.addTextField input[type=text], input[type=date], select, textarea {
+.addTaskPanel{
+    width: 100%;
+    display: flex;
+    margin: 6px 0 0 0;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.taskViewPanel {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    margin: 6px 0 0 0;
+    justify-content: flex-end;
+    align-items: baseline;
+}
+
+.addTextField input[type=text] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    background: url(enter_arrow.png) no-repeat scroll 100% 40%;
+}
+
+input[type=date], select, textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
