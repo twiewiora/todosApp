@@ -245,8 +245,10 @@ export function deleteCategoryRequest(selectedCategory) {
 
 export function editTaskRequest(selectedTask) {
 
+    let categoryId = selectedTask.getCategoryID() === 0 ? 1 : selectedTask.getCategoryID();
     let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
-        "&description="+ selectedTask.getDescription() + "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
+        "&description="+ selectedTask.getDescription() + "&done="+ selectedTask.getState() + "&date=" +
+        reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + categoryId);
     //console.log("xD " + data.toString());
     return fetch(host + '/task/edit', {method: 'POST', body: data})
         .then(res => {
