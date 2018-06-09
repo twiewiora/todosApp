@@ -19,8 +19,6 @@ public class TaskController {
 
     private CategoryService categoryService;
 
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
-
     private final String crossOriginUrl = "http://localhost:3000";
 
     @Autowired
@@ -67,7 +65,7 @@ public class TaskController {
     public String getTaskForGivenDay(@PathVariable String date){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Long time = dateFormatter.parse(date).getTime();
+            Long time = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
             return objectMapper.writeValueAsString(taskService.getTasksForGivenDay(time));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
@@ -83,7 +81,7 @@ public class TaskController {
     public String getTaskFromLastWeek(@PathVariable String date){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Long time = dateFormatter.parse(date).getTime();
+            Long time = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
             return objectMapper.writeValueAsString(taskService.getTasksFromLastWeek(time));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
@@ -163,11 +161,11 @@ public class TaskController {
         Task newTask;
         try {
             if (date != null && categoryID != null) {
-                Long dateTask = dateFormatter.parse(date).getTime();
+                Long dateTask = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
                 Category category = categoryService.getCategoryById(Long.decode(categoryID));
                 newTask = taskService.createTask(title, dateTask, category);
             } else if (date != null) {
-                Long dateTask = dateFormatter.parse(date).getTime();
+                Long dateTask = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
                 newTask = taskService.createTask(title, dateTask);
             } else if(categoryID != null){
                 Category category = categoryService.getCategoryById(Long.decode(categoryID));
@@ -237,7 +235,7 @@ public class TaskController {
             (@RequestParam String taskID,
              @RequestParam String date) {
         try {
-            taskService.assignDate(Long.decode(taskID), dateFormatter.parse(date).getTime());
+            taskService.assignDate(Long.decode(taskID), new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -268,7 +266,7 @@ public class TaskController {
                            @RequestParam String categoryID){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Long dateTask = dateFormatter.parse(date).getTime();
+            Long dateTask = new SimpleDateFormat("dd-MM-yyyy").parse(date).getTime();
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
 
             return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, description, done,

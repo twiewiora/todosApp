@@ -208,11 +208,6 @@ class App extends Component {
 
     handleOkEditWindow = () => {
         let selectedTask = this.state.editingTask;
-        //
-        // console.log(this.state.newTaskName, this.state.selectCategoryValue, this.state.selectStatusValue);
-        // console.log(this.state.selectCategoryValue.getName(), this.state.selectCategoryValue.getID());
-        //
-        // console.log(this.state.selectDateValue);
 
         if (this.state.newTaskName !== "") {
             selectedTask.setName(this.state.newTaskName);
