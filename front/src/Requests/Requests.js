@@ -282,6 +282,7 @@ export function getAllTasks() {
                         newTask.setState(task.done);
                         newTask.setCategory(task.categoryId);
                         newTask.setDate(task.deadline);
+                        newTask.setDescription(task.description);
                         newTask.setCategoryName(categoryIdToNameMap[task.categoryId]);
                         return newTask;
                     })
