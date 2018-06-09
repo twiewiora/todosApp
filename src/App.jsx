@@ -151,16 +151,24 @@ class App extends Component {
     };
 
     addTaskWithCategory = (e, categoryId, taskName) => {
-        if (taskName !== "") {
-            addWithCategoryRequest(taskName, categoryId)
-                .then((newTask) => {
-                        let temp = this.state.data;
-                        temp.unshift(newTask);
-                        return temp
-                    }
+        if (taskName !== ""){
+            let categoryName = "None";
+            for(let i = 0; i < this.state.allCategories.length; i++) {
+                if (this.state.allCategories[i].getID() === categoryId) {
+                    categoryName = this.state.allCategories[i].name;
+                }
+
+            }
+            addWithCategoryRequest(taskName, categoryId, categoryName)
+                .then((newTask)=> {
+                    console.log('addTaskWithCategory', newTask)
+                    let temp = this.state.data;
+                    temp.unshift(newTask);
+                    return temp
+                }
                 ).then(temp => {
-                this.setState({data: temp});
-            })
+                    this.setState({data : temp});
+                })
         }
     };
 
@@ -350,13 +358,13 @@ class App extends Component {
             selectDateValue: selectDateValue,
         });
     };
-    handleChangeName = (event) => {
+    handleChangeName = () => {
         let name = document.getElementById("name").value;
         this.setState({
             newTaskName: name,
         });
     };
-    handleChangeDescription = (event) => {
+    handleChangeDescription = () => {
         let new_decription = document.getElementById("description").value;
         this.setState({
             taskDescription: new_decription,
