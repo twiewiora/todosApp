@@ -7,7 +7,7 @@ import {
     TableRowColumn,
 }
 from 'material-ui/Table';
-import {Checkbox, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
+import {Checkbox, FloatingActionButton, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import EditIcon from "material-ui/svg-icons/image/edit";
 import {arrayMove} from 'react-sortable-hoc';
@@ -17,7 +17,7 @@ import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Style
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
-
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import SortableTable from "./UI/SortableTable"
 
 const KEYS_TO_FILTERS = ['name'];
@@ -105,41 +105,46 @@ class MaterialUIs extends Component {
             return (
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
-                    <TextField id="taskName" className="addTextField" floatingLabelText="Add Task" value={this.state.name}
-                               onKeyPress={this.handleKeyPress} onChange={this.handleChange} /><br/>
-                    <RaisedButton
-                        label="Add a task"
-                        id="addButton"
-                        className="addButton"
-                        onClick={(e) => {
-                            this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
-                            this.setState({name: ''});
-                            e.target.hintText = 'Add Task';
-                            e.target.value = '';
-                        }}
-                    /> <br/>
-                    <div className="topBarMenu">
-                        <RaisedButton
-                            label={this.props.getEditVisibility() ? "Edit mode ON" : "Edit mode OFF"}
-                            id="editButton"
-                            className="editButton"
-                            onClick={(e) => {
-                                this.props.toggleEditTask(e);
-                            }}
-                        />
-                        <RaisedButton
-                            label={this.props.getDeleteVisibility() ? "Delete mode ON" : "Delete mode OFF"}
-                            id="deleteButton"
-                            className="deleteButton"
-                            onClick={(e) => {
-                                this.props.toggleDeleteTask(e);
-                            }}
-                            side="right"
-                        />
-                            <div>
-                            <input type="text" id="searcher" onChange={this.handleSearching}/>
-                            </div>
-                    </div><br/><br/>
+                    <div className='addTaskPanel'>
+                            <TextField id="taskName" className="addTextField"
+                                                                       floatingLabelText="Add Task"
+                                                                       value={this.state.name}
+                                                                       onKeyPress={this.handleKeyPress}
+                                                                       onChange={this.handleChange}/><br/>
+                            <FloatingActionButton mini={true}
+                                                  onClick={(e) => {
+                                                      this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
+                                                      this.setState({name: ''});
+                                                      e.target.hintText = 'Add Task';
+                                                      e.target.value = '';
+                                                  }}>
+                                <ContentAdd/>
+                            </FloatingActionButton>
+                    </div>
+                    <div className="taskViewPanel">
+                        <TextField type="text" id="searcher"
+                                   floatingLabelText="Search"
+                                   onChange={this.handleSearching}/>
+
+                        <FloatingActionButton mini={true}
+                                              secondary={this.props.deleteVisibility}
+                                              onClick={(e) => {
+                                                  this.props.toggleDeleteTask(e);
+                                              }}>
+                            <TrashIcon id="trashIcon"
+                                       style={{cursor: "pointer"}}/>
+
+                        </FloatingActionButton>
+
+                        <FloatingActionButton mini={true}
+                                              secondary={this.props.editVisibility}
+                                              onClick={(e) => {
+                                                  this.props.toggleEditTask(e);
+                                              }}>
+                            <EditIcon id="editTaskIcon" style={{cursor: "pointer"}} />
+                        </FloatingActionButton>
+                    </div>
+                    <br/><br/>
                     <SortableTable
                           pressDelay={200}
                                    getData={this.filterDataByTitle()}
@@ -161,42 +166,50 @@ class MaterialUIs extends Component {
                 <div>
                     <h1 className="title" style={{fontFamily: 'Lobster'} }> Your notepad </h1>
 
-                    <TextField id="taskName" floatingLabelText="Add Task" value={this.state.name}
-                               onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}}
-                               onChange={this.handleChange} /><br/>
-                    <RaisedButton
-                        label="Add a task"
-                        id="addButton"
-                        className="addButton"
-                        onClick={(e) => {
-                            this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
-                            this.setState({name: ''});
-                            e.target.hintText = 'Add Task';
-                            e.target.value = '';
-                        }}
-                    />
-                    <div className="topBarMenu">
-                        <RaisedButton
-                            label={this.props.getEditVisibility() ? "Edit mode ON" : "Edit mode OFF"}
-                            id="editButton"
-                            className="editButton"
-                            onClick={(e) => {
+                    <div className='addTaskPanel'>
+                        <TextField id="taskName" className="addTextField" floatingLabelText="Add Task"
+                                   value={this.state.name}
+                                   onKeyPress={(e) => {this.handleKeyPressAtCategory(e, this.props.currentCategoryId)}}
+                                   onChange={this.handleChange}/><br/>
+                        <FloatingActionButton mini={true}
+                                              onClick={(e) => {
+                                                  this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
+                                                  this.setState({name: ''});
+                                                  e.target.hintText = 'Add Task';
+                                                  e.target.value = '';
+                                              }}>
+                            <ContentAdd />
+                        </FloatingActionButton>
+                    </div>
+
+                    <div className="taskViewPanel">
+                        <TextField type="text" id="searcher"
+                                   floatingLabelText="Search"
+                                   onChange={this.handleSearching}/>
+                        <FloatingActionButton mini={true}
+                                              secondary={this.props.deleteVisibility}
+                                              onClick={(e) => {
+                                                  this.props.toggleDeleteTask(e);
+                                              }}>
+                            <TrashIcon/>
+
+                        </FloatingActionButton>
+
+                        <FloatingActionButton mini={true}
+                                              secondary={this.props.editVisibility}
+                                              onClick={(e) => {
+                                                  this.props.addTaskWithCategory(e, this.props.currentCategoryId, this.state.name);
+                                                  this.setState({name: ''});
+                                                  e.target.hintText = 'Add Task';
+                                                  e.target.value = '';
+                                              }}>
+                            <EditIcon id="editTaskIcon" style={{cursor: "pointer"}} onClick={(e) => {
                                 this.props.toggleEditTask(e);
-                            }}
-                        />
-                        <RaisedButton
-                            label={this.props.getDeleteVisibility() ? "Delete mode ON" : "Delete mode OFF"}
-                            id="deleteButton"
-                            className="deleteButton"
-                            onClick={(e) => {
-                                this.props.toggleDeleteTask(e);
-                            }}
-                            side="right"
-                        />
-                            <div>
-                                <input type="text" id="searcher" onChange={this.handleSearching}/>
-                            </div>
-                    </div><br/><br/>
+                            }}/>
+                        </FloatingActionButton>
+                    </div>
+
+                    <br/><br/>
                     <Table
                         fixedHeader={getMainStateTable().fixedHeader}
                         fixedFooter={getMainStateTable().fixedFooter}
