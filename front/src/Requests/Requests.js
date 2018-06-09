@@ -244,7 +244,7 @@ export function editTaskRequest(selectedTask) {
 
     let data = new URLSearchParams("id=" + selectedTask.getID() + "&title="+ selectedTask.getName() +
         "&done="+ selectedTask.getState() + "&date=" + reverseDate(singleDate(selectedTask.getDate())) + "&categoryID=" + selectedTask.getCategoryID());
-    console.log("xD " + data.toString());
+    //console.log("xD " + data.toString());
     return fetch(host + '/task/edit', {method: 'POST', body: data})
         .then(res => {
             if (res.status !== 200) {
