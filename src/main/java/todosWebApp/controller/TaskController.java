@@ -276,7 +276,7 @@ public class TaskController {
                 dateTask = null;
             }
             Category category = categoryService.getCategoryById(Long.decode(categoryID));
-            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, done, category, dateTask));
+            return objectMapper.writeValueAsString(taskService.editTask(Long.decode(id), title, description, done, category, dateTask));
         } catch (ParseException | JsonProcessingException e) {
             e.printStackTrace();
             return UrlRequest.FAIL_RETURN_VALUE;
