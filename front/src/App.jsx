@@ -229,8 +229,10 @@ class App extends Component {
         if (this.state.selectDateValue !== null) {
             selectedTask.setDate(jsDateToCustom(this.state.selectDateValue));
         }
-        selectedTask.setCategoryName(this.state.selectCategoryValue.getName());
-        selectedTask.setCategory(this.state.selectCategoryValue.getID());
+        if (this.state.selectCategoryValue !== null){
+            selectedTask.setCategoryName(this.state.selectCategoryValue.getName());
+            selectedTask.setCategory(this.state.selectCategoryValue.getID());
+        }
 
         editTaskRequest(selectedTask).then(() => {
                 this.setState({
@@ -365,9 +367,9 @@ class App extends Component {
         });
     };
     handleChangeDescription = () => {
-        let new_decription = document.getElementById("description").value;
+        let new_description = document.getElementById("description").value;
         this.setState({
-            taskDescription: new_decription,
+            taskDescription: new_description,
         });
     };
 
