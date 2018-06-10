@@ -4,14 +4,23 @@ export function dateFormat(day) {
 }
 
 export function singleDate(date){
-    return date.substr(0, 10).replace(/\.| /g, '-');
+    return date.substr(0, 10).replace(/[. ]/g, '-');
 }
 
 export function reverseDate(dateString){
     let tab = dateString.split("-").reverse();
     return tab.join("-");
 }
+export function americanDate(dateString) {
+    const pattern = /^\d\d\d\d.*/i;
+    return pattern.test(dateString);
 
+}
+export function sortDateFunction(a,b){
+    let dateA = new Date(a.getDate()).getTime();
+    let dateB = new Date(b.getDate()).getTime();
+    return dateA > dateB ? 1 : -1;
+}
 /*
 converts JS standard string representation of date into custom one, used in db, e.g.
  in: "Fri Jun 08 2018 00:00:00 GMT+0200 (CEST)"
@@ -26,7 +35,6 @@ export function jsDateToCustom(date) {
 
 function toFullLocaleDateString(date) {
     let localeDate = date.toLocaleString();
-    console.log(localeDate);
     if(localeDate[1] === ".")
         localeDate = "0" + localeDate;
     return localeDate;

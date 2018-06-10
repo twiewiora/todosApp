@@ -80,7 +80,6 @@ export function getUnassignedTasks() {
                 let newTask = new Task(task.title, task.id);
                 newTask.setState(task.done);
                 newTask.setCategory(task.categoryId);
-                console.log(task.categoryId);
                 return newTask;
             });
         })

@@ -7,6 +7,7 @@ import {
     TableRowColumn,
 }
 from 'material-ui/Table';
+import IconButton from '@material-ui/core/IconButton'
 import {Checkbox, FloatingActionButton, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import EditIcon from "material-ui/svg-icons/image/edit";
@@ -241,7 +242,11 @@ class MaterialUIs extends Component {
                                     {
                                         this.props.getEditVisibility()
                                             ? (<TableRowColumn style={{ width: "10%" }}>
-                                                <EditIcon id="editTaskIcon" onClick={(e) => { this.props.editTask(e, value) }}/>
+                                            <IconButton id="editTaskButton"
+                                                        aria-label="Edit">
+                                                        onClick={(e) => { this.props.editTask(e, value) }}>
+                                                <EditIcon id="editTaskIcon"/>
+                                            </IconButton>
                                             </TableRowColumn>)
                                             : null
                                     }
@@ -261,7 +266,11 @@ class MaterialUIs extends Component {
                                         { value.getDate() == null ? "Unassigned" : singleDate(value.getDate())}
                                     </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
-                                        <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}/>
+                                        <IconButton id="singleTrashButton"
+                                                    aria-label="Delete">
+                                                    onClick={(e) => { this.props.removeTask(e, value.getID()) }}>
+                                        <TrashIcon id="singleTrashIcon" />
+                                        </IconButton>
                                     </TableRowColumn>
                                 </TableRow>
                             ))}
