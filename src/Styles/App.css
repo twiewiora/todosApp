@@ -1,0 +1,160 @@
+.App {
+  text-align: center;
+  padding-top: 10px;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+#App1 {
+    transition: transform .5s
+    cubic-bezier(0, .52, 0, 1);
+}
+
+#App1.zoomIn {
+    transform: scale(0.8, 0.8);
+    transform-origin: right top;
+}
+
+#App1.zoomOut {
+    transform: scale(1);
+    transform-origin: right top;
+}
+
+.MenuIcon {
+    text-align: left;
+}
+
+.weekFlowButton {
+  position: absolute;
+  left: 5px;
+}
+.assignButton{
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+.BackIcon {
+  text-align: left;
+}
+.assignDiv{
+  position: absolute;
+}
+
+.topBarMenu {
+  display: block;
+    align-content: right;
+    float: right;
+    margin: auto 5px auto auto;
+    height: auto;
+}
+
+.deleteButton {
+  display:inline-block;
+    margin-left: 1%;
+
+}
+
+.editButton {
+  display: inline-block;
+}
+
+.addButton {
+    margin-bottom: 1%;
+    width: 17%;
+
+}
+
+
+input[type=text], input[type=date], select, textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #4CAF50;
+}
+
+.addTaskPanel{
+    width: 100%;
+    display: flex;
+    margin: 6px 0 0 0;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.taskViewPanel {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    margin: 6px 0 0 0;
+    justify-content: flex-end;
+    align-items: baseline;
+}
+
+.addTextField input[type=text] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    background: url(enter_arrow.png) no-repeat scroll 100% 40%;
+}
+
+input[type=date], select, textarea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+    background: url(enter_arrow.png) no-repeat scroll 100% 40%;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+table.center {
+  padding: 8px;
+  margin-left:auto;
+  margin-right:auto;
+}
+table.mini {
+  padding: 8px;
+  width: 400px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.weekTable {
+  display: none;
+}
