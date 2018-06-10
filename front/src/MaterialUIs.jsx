@@ -253,7 +253,7 @@ class MaterialUIs extends Component {
                                     <TableRowColumn style={{ width: "10%" }}>
                                         <Checkbox id="taskStatus"
                                                   checked={value.getState()}
-                                                  onCheck={() => this.props.handleCheck(value.getID())}
+                                                  onCheck={() => this.props.handleCheck(this.props.getIndex(value.getID()))}
                                         />
                                     </TableRowColumn>
                                     <TableRowColumn id="taskName">
@@ -263,7 +263,7 @@ class MaterialUIs extends Component {
                                         {value.getCategoryName()}
                                     </TableRowColumn>
                                     <TableRowColumn style={{ width: "10%" }}>
-                                        { value.getDate() == null ? "Unassigned" : singleDate(value.getDate())}
+                                        { value.getDate() === "" || value.getDate() == null ? "Unassigned" : singleDate(value.getDate())}
                                     </TableRowColumn>
                                     {
                                         this.props.getDeleteVisibility()
