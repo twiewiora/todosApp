@@ -14,7 +14,7 @@ import EditIcon from "material-ui/svg-icons/image/edit";
 import {arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
-import {getStripedStyle, setTrashIconColor} from "./Styles/Styling"
+import {getStripedStyle} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
@@ -234,11 +234,7 @@ class MaterialUIs extends Component {
                                 <TableHeaderColumn>Name</TableHeaderColumn>
                                 <TableHeaderColumn>Category</TableHeaderColumn>
                                 <TableHeaderColumn>Date</TableHeaderColumn>
-                                {
-                                    this.props.getDeleteVisibility()
-                                        ? (<TableHeaderColumn>Delete</TableHeaderColumn>)
-                                        : null
-                                }
+                                <TableHeaderColumn>Delete</TableHeaderColumn>
                             </TableRow>
                             {this.filterDataByCategory().map((value, index) => (
                                 <TableRow key={index}
@@ -246,8 +242,11 @@ class MaterialUIs extends Component {
                                     {
                                         this.props.getEditVisibility()
                                             ? (<TableRowColumn style={{ width: "10%" }}>
-                                                <EditIcon id="editTaskIcon" style={{cursor: "pointer"}}
-                                                          onClick={(e) => { this.props.editTask(e, value) }}/>
+                                            <IconButton id="editTaskButton"
+                                                        aria-label="Edit">
+                                                        onClick={(e) => { this.props.editTask(e, value) }}>
+                                                <EditIcon id="editTaskIcon"/>
+                                            </IconButton>
                                             </TableRowColumn>)
                                             : null
                                     }
@@ -266,14 +265,13 @@ class MaterialUIs extends Component {
                                     <TableRowColumn style={{ width: "10%" }}>
                                         { value.getDate() == null ? "Unassigned" : singleDate(value.getDate())}
                                     </TableRowColumn>
-                                    {
-                                        this.props.getDeleteVisibility()
-                                            ? (<TableRowColumn style={{ width: "10%" }}>
-                                                <TrashIcon id="trashIcon" onClick={(e) => { this.props.removeTask(e, value.getID()) }}
-                                                           style={{color: setTrashIconColor(index, value.getState() ), cursor: "pointer"}}/>
-                                            </TableRowColumn>)
-                                            : null
-                                    }
+                                    <TableRowColumn style={{ width: "10%" }}>
+                                        <IconButton id="singleTrashButton"
+                                                    aria-label="Delete">
+                                                    onClick={(e) => { this.props.removeTask(e, value.getID()) }}>
+                                        <TrashIcon id="singleTrashIcon" />
+                                        </IconButton>
+                                    </TableRowColumn>
                                 </TableRow>
                             ))}
                         </TableBody>
