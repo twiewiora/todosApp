@@ -11,6 +11,7 @@ import {
     TableRowColumn
 } from "material-ui";
 
+import IconButton from '@material-ui/core/IconButton'
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import PreviousDayIcon from "material-ui/svg-icons/av/fast-rewind";
 import NextDayIcon from "material-ui/svg-icons/av/fast-forward";
@@ -28,8 +29,8 @@ import {
 } from "./Requests/Requests";
 import Loader from "./Loader/Loader";
 import {getRowStatusStyle} from "./Styles/Styling";
-import {removeIndex} from "./Utils/ArrayFunctions";
-import {dateFormat} from "./Utils/DateFunctions";
+import {findTaskIndexInArray, removeIndex, removeTaskFromArray} from "./Utils/ArrayFunctions";
+import {americanDate, dateFormat, reverseDate, sortDateFunction} from "./Utils/DateFunctions";
 import {getCalendarDayStateTable, getUnassignedStateTable} from "./Styles/TablesStates";
 
 let weekDisplay = false;
@@ -75,7 +76,7 @@ class CalendarUI extends Component {
                 weekDisplay = true;
                 getWeeklyTasks(this.state.currentDateTitle).then( w =>
                     this.setState({
-                        weekly: w,
+                        weekly: w.sort(sortDateFunction),
                     })
                 );
                 this.setState({weeklyViewDisplayed: true});
@@ -100,7 +101,7 @@ class CalendarUI extends Component {
         });
         getWeeklyTasks(this.state.currentDateTitle).then(w => {
             this.setState({
-                weekly: w,
+                weekly: w.sort(sortDateFunction),
                 loading: false,
             })
         });
@@ -121,7 +122,7 @@ class CalendarUI extends Component {
         });
         getWeeklyTasks(dateDescription).then(w => {
             this.setState({
-                weekly: w,
+                weekly: w.sort(sortDateFunction),
             })
         });
         this.setState({
@@ -166,19 +167,18 @@ class CalendarUI extends Component {
 
         let newData = this.state.data.slice();
         newData.push(selectedTask);
+        console.log(americanDate(selectedTask.getDate()))
+        let weeklyData = this.state.weekly.slice();
+        weeklyData.push(selectedTask);
         this.setState({
             loading: true,
         });
         assignToDate(selectedTask);
         this.setState({
             data: newData,
+            weekly: weeklyData.sort(sortDateFunction),
             unassigned: newUnassigned,
             loading: false
-        });
-        getWeeklyTasks(this.state.currentDateTitle).then(w => {
-            this.setState({
-                weekly: w,
-            })
         });
     };
     unassignDate(index) {
@@ -187,10 +187,14 @@ class CalendarUI extends Component {
         });
 
         let selectedTask = this.state.data[index];
+        console.log(americanDate(selectedTask.getDate()));
         selectedTask.setDate(null);
 
         let newData = this.state.data.slice();
         newData = removeIndex(newData, index);
+
+        let newWeekly = this.state.weekly.slice();
+        newWeekly = removeTaskFromArray(newWeekly, selectedTask);
 
         let newUnassigned = this.state.unassigned.slice();
         newUnassigned.push(selectedTask);
@@ -198,6 +202,7 @@ class CalendarUI extends Component {
 
         this.setState({
             data: newData,
+            weekly: newWeekly,
             unassigned: newUnassigned,
             loading: false
         });
@@ -207,7 +212,9 @@ class CalendarUI extends Component {
         let state = this.state.data[i].getState();
 
         let selectedTask = this.state.data[i];
+        let weeklyIndex = findTaskIndexInArray(this.state.weekly, selectedTask);
         this.state.data[i].setState(!state);
+        this.state.weekly[weeklyIndex].setState(!state);
         this.setState((oldState) => {
             return {
                 checked: !oldState.checked,
@@ -221,6 +228,7 @@ class CalendarUI extends Component {
         let selectedTask = this.state.data[i];
         this.setState(state => ({
             data: state.data.filter((x, j) => j !== i),
+            weekly: state.weekly.filter((x, j) => j !== i),
         }));
         deleteRequest(selectedTask);
     };
@@ -237,7 +245,6 @@ class CalendarUI extends Component {
     };
 
     containsCategoryToDisplay(categoryID) {
-        console.log(categoryID);
         for(let i = 0; i < this.props.categoriesToDisplay.length; i++){
             if(this.props.categoriesToDisplay[i].getID() === categoryID){
                 return true;
@@ -287,7 +294,7 @@ class CalendarUI extends Component {
                                 </TableRowColumn>
                                 <TableRowColumn style = {{width: 150}}>{row.name}</TableRowColumn>
                                 <TableRowColumn style={{width:100}}>
-                                    {row.getDate()}
+                                    {americanDate(row.getDate()) ? row.getDate() : reverseDate(row.getDate())}
                                 </TableRowColumn>
                             </TableRow>
 
@@ -321,10 +328,18 @@ class CalendarUI extends Component {
                             </TableRowColumn>
                             <TableRowColumn style={{width:150}}>{row.name}</TableRowColumn>
                             <TableRowColumn style={{width:60}}>
-                                <TrashIcon id="trashIcon" onClick={(e) => { this.removeTask(e, this.getIndex(row.getID())) }}/>
+                                <IconButton id={"trashButton"}
+                                            onClick={(e) => { this.removeTask(e, this.getIndex(row.getID())) }}
+                                            aria-label="Delete">
+                                <TrashIcon id="trashIcon"/>
+                                </IconButton>
                             </TableRowColumn>
                             <TableRowColumn style={{width:60}}>
-                                <UnassignIcon id="unassignIcon" onClick={(e) => {this.unassignDate(index)}}/>
+                                <IconButton id={"unassignButton"}
+                                            onClick={(e) => {this.unassignDate(index)}}
+                                            aria-label="Unassign">
+                                <UnassignIcon id="unassignIcon" />
+                                </IconButton>
                             </TableRowColumn>
                         </TableRow>
                     ))}
@@ -349,7 +364,9 @@ class CalendarUI extends Component {
                             key={index}  style={{ padding: '5px 20px', height: 25, width: 50, background : getRowStatusStyle(index, this.state.unassigned) }}>
                             <TableRowColumn>{row.name}</TableRowColumn>
                             <TableRowColumn style={{width:50}}>
-                                <AssignIcon id="assignIcon" onClick={(e) => {this.assignDate(index)}}/>
+                                <IconButton id = "assingButton" onClick={(e) => {this.assignDate(index)}}>
+                                <AssignIcon id="assignIcon" />
+                                </IconButton>
                             </TableRowColumn>
                         </TableRow>
 
