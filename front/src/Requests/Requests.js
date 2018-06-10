@@ -2,7 +2,7 @@
 /* eslint no-restricted-globals: ["off", "location"] */
 import Task from "../Task/Task";
 import Category from "../Category/Category"
-import {dateFormat, reverseDate, singleDate} from "../Utils/DateFunctions";
+import {reverseDate, singleDate} from "../Utils/DateFunctions";
 
 let host = 'http://localhost:8080';
 
@@ -76,6 +76,7 @@ export function getUnassignedTasks() {
             return res.json();
         })
         .then(data => {
+            data.reverse();
             return data.map(task => {
                 let newTask = new Task(task.title, task.id);
                 newTask.setState(task.done);

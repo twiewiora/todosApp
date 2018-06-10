@@ -10,13 +10,13 @@ import {
     addRequest,
     addWithCategoryRequest,
     deleteRequest, editTaskRequest, getAllCategories,
-    getAllTasks, getRootCategory,
+    getAllTasks,
     markAndDropRequest,
     markRequest
 } from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
 import Button from '@material-ui/core/Button';
-import {DatePicker, MenuItem, RaisedButton, SelectField, TextField} from "material-ui";
+import {DatePicker, MenuItem, SelectField, TextField} from "material-ui";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -24,7 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Task from "./Task/Task";
 import Category from "./Category/Category";
-import {dateFormat, jsDateToCustom} from "./Utils/DateFunctions";
+import {jsDateToCustom} from "./Utils/DateFunctions";
 
 class App extends Component {
     constructor(props) {
@@ -78,7 +78,7 @@ class App extends Component {
                     data,
                     loading: false,
                 })
-            })
+            });
 
         getAllCategories()
             .then(allCategories => {

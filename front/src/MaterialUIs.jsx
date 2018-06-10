@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import SearchInput, {createFilter} from 'react-search-input'
+import {createFilter} from 'react-search-input'
 import {
     Table,
     TableBody,
@@ -8,13 +8,13 @@ import {
 }
 from 'material-ui/Table';
 import IconButton from '@material-ui/core/IconButton'
-import {Checkbox, FloatingActionButton, RaisedButton, TableHeaderColumn, TextField} from "material-ui";
+import {Checkbox, FloatingActionButton, TableHeaderColumn, TextField} from "material-ui";
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import EditIcon from "material-ui/svg-icons/image/edit";
 import {arrayMove} from 'react-sortable-hoc';
 import './Styles/App.css';
 import Loader from "./Loader/Loader"
-import {getStripedStyle, setTextColorDoneTasks, setTrashIconColor} from "./Styles/Styling"
+import {getStripedStyle} from "./Styles/Styling"
 import {swapRequest} from "./Requests/Requests";
 import {getMainStateTable} from "./Styles/TablesStates";
 import {singleDate} from "./Utils/DateFunctions";
