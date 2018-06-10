@@ -74,6 +74,7 @@ class App extends Component {
         this.setState({loading: true});
         getAllTasks()
             .then(data => {
+                console.log(data);
                 this.setState({
                     data,
                     loading: false,
@@ -88,17 +89,7 @@ class App extends Component {
     };
 
     handleCheck = (taskID) => {
-        let i = -1;
-        if (this.state.ifSetDragnDrop) {
-            i = taskID;
-        } else {
-            for (let id = 0; id < this.state.data.length; id++) {
-                if (this.state.data[id].getID() === taskID) {
-                    i = id;
-                    break;
-                }
-            }
-        }
+        let i = taskID;
 
         let state = this.state.data[i].getState();
         let firstDoneIndex = this.getFirstDoneTaskIndex();
@@ -133,7 +124,7 @@ class App extends Component {
                 markRequest(selectedTask);
             }
         }
-    }
+    };
 
     addTask = (name) => {
         if (name !== "") {

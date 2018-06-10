@@ -156,7 +156,7 @@ export function addRequest(newTaskName) {
             newTask.setCategory(data.categoryId);
             newTask.setCategoryName(null);
             newTask.setState(data.done);
-            newTask.setDate(null);
+            newTask.setDate("");
             return newTask;
 
         }).catch(function () {
@@ -179,7 +179,7 @@ export function addWithCategoryRequest(newTaskName, categoryId, categoryName) {
             newTask.setCategory(data.categoryId);
             newTask.setCategoryName(categoryName);
             newTask.setState(data.done);
-            newTask.setDate(null);
+            newTask.setDate("");
             return newTask;
 
         }).catch(function () {
