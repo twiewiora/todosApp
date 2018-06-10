@@ -20,7 +20,6 @@ import {singleDate} from "./Utils/DateFunctions";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import SortableTable from "./UI/SortableTable"
 
-const KEYS_TO_FILTERS = ['name'];
 
 class MaterialUIs extends Component {
     constructor(props) {
@@ -97,8 +96,11 @@ class MaterialUIs extends Component {
     }
 
     filterDataByTitle() {
-        return this.props.getData().filter(createFilter(this.props.searchTerm, KEYS_TO_FILTERS));
+        return this.props.getData().filter(task => {
+            return task.getName().toLowerCase().includes(this.props.searchTerm.toLowerCase())
+        });
     }
+
 
     render() {
         if(this.props.ifSetDragnDrop){
