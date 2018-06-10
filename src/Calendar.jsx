@@ -30,18 +30,13 @@ class Calendar extends React.Component{
 
     reloadPage() {
         this.setState({loading: true});
-        let tasks = getAllTasks();
-
-        this.setState({
-            loading: true
-        }, function(){
-            setTimeout(function() {
+        getAllTasks()
+            .then(data => {
                 this.setState({
-                    data: tasks,
-                    loading: false
-                });
-            }.bind(this), 3000)
-        }.bind(this));
+                    data,
+                    loading: false,
+                })
+            })
 
     }
 

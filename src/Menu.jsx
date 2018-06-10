@@ -5,7 +5,7 @@ import './Styles/App.css'
 import './Styles/Menu.css'
 import TrashIcon from "material-ui/svg-icons/action/delete";
 import {addCategoryRequest, deleteCategoryRequest, getAllCategories, getSubcategories, getRootCategory} from './Requests/Requests'
-import {FloatingActionButton, RaisedButton, TextField} from "material-ui";
+import {FloatingActionButton, TextField} from "material-ui";
 import Category from "./Category/Category";
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
@@ -39,7 +39,7 @@ class Menu extends Component {
             )
             .then((rootId)=> getSubcategories(new Category("root", rootId, null)))
             .then(childrenCurrentCategory => {
-                childrenCurrentCategory.unshift(new Category("None", 0, null));     //to display also tasks without assigned category
+                childrenCurrentCategory.unshift(new Category("None", 1, null));     //to display also tasks without assigned category
                 console.log('Show categories', childrenCurrentCategory);
                 this.setState({childrenCurrentCategory});
                 this.props.setCurrentCategories(childrenCurrentCategory);
