@@ -74,7 +74,6 @@ class App extends Component {
         this.setState({loading: true});
         getAllTasks()
             .then(data => {
-                console.log(data);
                 this.setState({
                     data,
                     loading: false,
@@ -152,7 +151,6 @@ class App extends Component {
             }
             addWithCategoryRequest(taskName, categoryId, categoryName)
                 .then((newTask)=> {
-                    console.log('addTaskWithCategory', newTask)
                     let temp = this.state.data;
                     temp.unshift(newTask);
                     return temp
@@ -333,6 +331,13 @@ class App extends Component {
         return false;
     }
 
+    addCategoryToAll(newCategory) {
+        let newAll = this.state.allCategories;
+        newAll.push(newCategory);
+
+        this.setState({allCategories: newAll});
+    }
+
     searchUpdated = function () {
         let name = document.getElementById("searcher").value;
         this.setState({searchTerm: name});
@@ -371,7 +376,8 @@ class App extends Component {
                     <div>
                         <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                                   setSelectedCategory={this.setSelectedCategory.bind(this)}
-                                  setCurrentCategories={this.setCurrentCategories.bind(this)}/>
+                                  setCurrentCategories={this.setCurrentCategories.bind(this)}
+                                  addCategoryToAll={this.addCategoryToAll.bind(this)}/>
                         <div id="App1" className={this.state.zoomedIn}>
                             <ModeButton label="Calendar Mode" onClick={() => this.props.pager.push(Calendar)}
                                         side="right"/>

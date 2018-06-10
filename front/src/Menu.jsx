@@ -52,7 +52,7 @@ class Menu extends Component {
         getAllCategories()
             .then(data => this.setState({data: data}))
             .then( () => {
-                console.log('getAllCategories', this.state.data)
+                console.log('getAllCategories', this.state.data);
             let currentCategoryID = this.state.currentCategory.getParentID();
             let currentCategory = new Category("Base categories", 1, null);
             let temp = new Category("None", 0, null);
@@ -155,10 +155,11 @@ class Menu extends Component {
 
         if (name !== ""){
                 addCategoryRequest(name, this.state.currentCategory.getID())
-                .then( newCategory =>
+                .then( newCategory =>{
+                    this.props.addCategoryToAll(newCategory);
                 this.setState({
                     childrenCurrentCategory: [...this.state.childrenCurrentCategory, newCategory]
-                }))
+                })})
                 .then(()=> {
                         console.log('addCategory, childrenCurrentCategory',this.state.childrenCurrentCategory);
                         document.getElementById("categoryName").value = "";
@@ -312,6 +313,7 @@ class MenuBase extends Component {
                       setCurrentCategoryField={this.setCurrentCategoryField.bind(this)}
                       setCurrentCategories={this.props.setCurrentCategories.bind(this)}
                       setSelectedCategory={this.props.setSelectedCategory.bind(this)}
+                      addCategoryToAll={this.props.addCategoryToAll.bind(this)}
                 />
             </div>
         );
