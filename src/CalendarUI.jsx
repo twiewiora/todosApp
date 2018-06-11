@@ -25,13 +25,14 @@ import {
     getDailyTasks,
     markRequest,
     deleteRequest,
-    unassignFromDate, getWeeklyTasks,
+    unassignFromDate, getWeeklyTasks, getAllCategories,
 } from "./Requests/Requests";
 import Loader from "./Loader/Loader";
 import {getRowStatusStyle} from "./Styles/Styling";
 import {findTaskIndexInArray, removeIndex, removeTaskFromArray} from "./Utils/ArrayFunctions";
 import {americanDate, dateFormat, reverseDate, sortDateFunction} from "./Utils/DateFunctions";
 import {getCalendarDayStateTable, getUnassignedStateTable} from "./Styles/TablesStates";
+import Category from "./Category/Category";
 
 let weekDisplay = false;
 class CalendarUI extends Component {
@@ -128,6 +129,7 @@ class CalendarUI extends Component {
         this.setState({
             loading: false
         })
+
     }
 
     previousDay = () => {

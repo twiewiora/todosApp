@@ -5,8 +5,9 @@ import App from "./App";
 import CalendarUI from "./CalendarUI";
 import ModeButton from "./UI/ModeButton";
 import MenuBase from "./Menu";
-import {getAllTasks} from "./Requests/Requests";
+import {getAllCategories, getAllTasks} from "./Requests/Requests";
 import {muiTheme} from "./UI/Theme";
+import Category from "./Category/Category";
 
 
 class Calendar extends React.Component{
@@ -18,6 +19,8 @@ class Calendar extends React.Component{
             loading: true,
             categoriesToDisplay: [],
             currentCategoryId: 1,
+            allCategories: []
+
         };
 
         this.toggleZoom = this.toggleZoom.bind(this);
@@ -36,6 +39,12 @@ class Calendar extends React.Component{
                     data,
                     loading: false,
                 })
+            })
+
+        getAllCategories()
+            .then(allCategories => {
+                allCategories.unshift(new Category("None", 1, null));
+                this.setState({allCategories: allCategories});
             })
 
     }
@@ -67,6 +76,13 @@ class Calendar extends React.Component{
         });
     };
 
+    addCategoryToAll(newCategory) {
+        let newAll = this.state.allCategories;
+        newAll.push(newCategory);
+
+        this.setState({allCategories: newAll});
+    }
+
     render() {
         return (
             <div className="Calendar">
@@ -75,6 +91,7 @@ class Calendar extends React.Component{
                     <MenuBase pageZoomedIn={this.toggleZoom.bind(this)}
                               setSelectedCategory={this.setSelectedCategory.bind(this)}
                               setCurrentCategories={this.setCurrentCategories.bind(this)}
+                              addCategoryToAll={this.addCategoryToAll.bind(this)}
                         />
                     <div id="App1" className={this.state.zoomedIn}>
                         <ModeButton
